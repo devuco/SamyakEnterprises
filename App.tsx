@@ -34,7 +34,7 @@ const App = () => {
           initialParams={{icon: 'favorite'}}
         />
         <Tab.Screen
-          name="Services"
+          name="Service"
           component={Home}
           initialParams={{icon: 'handyman'}}
         />
