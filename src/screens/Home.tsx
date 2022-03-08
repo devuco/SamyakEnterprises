@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {useState} from 'react';
 import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Api from '../service/Api';
+import {Api} from '../service/Api';
 import IProducts from '../types/IProducts';
 import Colors from '../utils/Colors';
 

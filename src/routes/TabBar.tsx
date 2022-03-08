@@ -64,7 +64,6 @@ const TabBar = ({state, navigation}) => {
             }}
             onPress={() => {
               setSelected(el.name);
-              // animate();
               if (state.index !== index) navigation.navigate(el.name);
             }}
             key={el.key}>
