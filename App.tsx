@@ -1,62 +1,57 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
-import type {Node} from 'react';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  useColorScheme,
-  View,
-} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {StatusBar, StyleSheet, useColorScheme} from 'react-native';
+import TabBar from './src/routes/TabBar';
+import Home from './src/screens/Home';
 
-const App: () => Node = () => {
+const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const Stack = createNativeStackNavigator();
+  const Tab = createBottomTabNavigator();
+  const Tabs = () => {
+    return (
+      <Tab.Navigator
+        screenOptions={() => ({headerShown: false})}
+        tabBar={props => {
+          return <TabBar {...props} />;
+        }}>
+        <Tab.Screen
+          name="Home"
+          component={Home}
+          initialParams={{icon: 'home'}}
+        />
+        <Tab.Screen
+          name="Categories"
+          component={Home}
+          initialParams={{icon: 'category'}}
+        />
+        <Tab.Screen
+          name="Whishlist"
+          component={Home}
+          initialParams={{icon: 'favorite'}}
+        />
+        <Tab.Screen
+          name="Service"
+          component={Home}
+          initialParams={{icon: 'handyman'}}
+        />
+      </Tab.Navigator>
+    );
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <NavigationContainer>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}></View>
-      </ScrollView>
-    </SafeAreaView>
+      <Stack.Navigator screenOptions={() => ({headerShown: false})}>
+        <Stack.Screen name="Tabs" component={Tabs} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+const styles = StyleSheet.create({});
 
 export default App;
