@@ -1,11 +1,23 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Animated, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Colors from '../utils/Colors';
 
 const TabBar = ({state, navigation}) => {
   const [selected, setSelected] = useState('Home');
   const {routes} = state;
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
+  const [y, setY] = useState(0);
+  const [transAnimation] = useState(new Animated.Value(0));
+
+  const animate = (x: number) => {
+    Animated.spring(transAnimation, {
+      toValue: x,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
     <View
       style={{
@@ -21,13 +33,30 @@ const TabBar = ({state, navigation}) => {
         paddingVertical: 10,
         paddingHorizontal: 10,
       }}>
-      {routes.map((el, index) => {
+      <Animated.View
+        style={{
+          backgroundColor: Colors.SECONDARY,
+          borderRadius: 15,
+          width: width,
+          height: height,
+          position: 'absolute',
+          transform: [{translateX: transAnimation}, {translateY: y}],
+        }}
+      />
+      {routes.map((el: any, index: number) => {
         return (
           <TouchableOpacity
+            onLayout={event => {
+              const params = event.nativeEvent.layout;
+              if (el.name === selected) {
+                setWidth(params.width);
+                setHeight(params.height);
+                animate(params.x);
+                setY(params.y);
+              }
+            }}
             style={{
               flexDirection: 'row',
-              backgroundColor:
-                el.name === selected ? Colors.SECONDARY : 'white',
               borderRadius: 15,
               alignItems: 'center',
               paddingVertical: 10,
@@ -35,6 +64,7 @@ const TabBar = ({state, navigation}) => {
             }}
             onPress={() => {
               setSelected(el.name);
+              // animate();
               if (state.index !== index) navigation.navigate(el.name);
             }}
             key={el.key}>
