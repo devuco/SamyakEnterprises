@@ -20,7 +20,7 @@ const Home = () => {
   return (
     <View
       style={{
-        backgroundColor: 'white',
+        backgroundColor: Colors.THEME_PRIMARY,
         flex: 1,
       }}>
       <FlatList
@@ -32,7 +32,7 @@ const Home = () => {
             <View
               key={index}
               style={{
-                backgroundColor: '#f8f8f8',
+                backgroundColor: Colors.THEME_SECONDARY,
                 flex: 1,
                 alignItems: 'center',
                 margin: 5,
@@ -45,7 +45,10 @@ const Home = () => {
                 color="#cbcbcb"
               />
               <Image
-                source={{uri: 'http://192.168.0.108:3000/' + item.image}}
+                source={{
+                  uri: 'https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png',
+                  // 'http://192.168.0.108:3000/' + item.image
+                }}
                 style={{
                   height: 'auto',
                   width: '100%',
@@ -55,7 +58,7 @@ const Home = () => {
               />
               <View
                 style={{
-                  backgroundColor: Colors.WHITE,
+                  backgroundColor: Colors.THEME_PRIMARY,
                   width: '95%',
                   borderBottomLeftRadius: 20,
                   borderBottomRightRadius: 20,

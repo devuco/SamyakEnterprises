@@ -25,7 +25,7 @@ const TabBar = ({state, navigation}) => {
         justifyContent: 'space-between',
         position: 'absolute',
         bottom: 0,
-        backgroundColor: Colors.WHITE,
+        backgroundColor: Colors.THEME_PRIMARY,
         left: 0,
         right: 0,
         marginHorizontal: 20,
