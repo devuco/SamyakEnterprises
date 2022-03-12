@@ -5,4 +5,6 @@ export default interface IProducts {
   description: string;
   price: number;
   category: string;
+  bgColor?: string | undefined;
+  discount?: number | undefined;
 }

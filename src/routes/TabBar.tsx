@@ -43,12 +43,12 @@ const TabBar = ({state, navigation}) => {
           transform: [{translateX: transAnimation}, {translateY: y}],
         }}
       />
-      {routes.map((el: any, index: number) => {
+      {routes.map((item: any, index: number) => {
         return (
           <TouchableOpacity
             onLayout={event => {
               const params = event.nativeEvent.layout;
-              if (el.name === selected) {
+              if (item.name === selected) {
                 setWidth(params.width);
                 setHeight(params.height);
                 animate(params.x);
@@ -63,23 +63,23 @@ const TabBar = ({state, navigation}) => {
               paddingHorizontal: 15,
             }}
             onPress={() => {
-              setSelected(el.name);
-              if (state.index !== index) navigation.navigate(el.name);
+              setSelected(item.name);
+              if (state.index !== index) navigation.navigate(item.name);
             }}
-            key={el.key}>
+            key={item.key}>
             <Icon
-              name={el.params.icon}
-              color={el.name === selected ? Colors.PRIMARY : '#cbcbcb'}
+              name={item.params.icon}
+              color={item.name === selected ? Colors.PRIMARY : '#cbcbcb'}
               size={25}
             />
-            {el.name === selected && (
+            {item.name === selected && (
               <Text
                 style={{
                   color: Colors.PRIMARY,
                   marginLeft: 5,
                   fontWeight: '700',
                 }}>
-                {el.name}
+                {item.name}
               </Text>
             )}
           </TouchableOpacity>
