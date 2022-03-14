@@ -2,7 +2,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StatusBar, StyleSheet, useColorScheme} from 'react-native';
 import TabBar from './src/routes/TabBar';
 import Home from './src/screens/Home';
@@ -10,6 +10,7 @@ import {LogBox} from 'react-native';
 import Colors from './src/utils/Colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ProductDetails from './src/screens/ProductDetails';
+import Singleton from './src/utils/Singleton';
 
 LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",

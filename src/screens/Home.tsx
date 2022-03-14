@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useRef} from 'react';
 import {useState} from 'react';
 import {
   Appearance,
+  Dimensions,
   FlatList,
   Image,
   StyleSheet,
@@ -15,12 +16,14 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import HomeToolbar from '../components/HomeToolbar';
 import {Api} from '../service/Api';
 import BaseUrl from '../service/BaseUrl';
+import ICompanies from '../types/ICompanies';
 import IProducts from '../types/IProducts';
 import Colors, {isDarkMode} from '../utils/Colors';
+import Singleton from '../utils/Singleton';
 
 const Home = ({navigation}) => {
-  const [response, setResponse] = useState<Array<IProducts>>([]);
-
+  const [productsData, setProductsData] = useState<Array<IProducts>>([]);
+  const [companiesData, setCompaniesData] = useState<Array<ICompanies>>([]);
   useEffect(() => {
     Api.getProducts()
       .then(async res => {
@@ -32,11 +35,15 @@ const Home = ({navigation}) => {
             res.data[index].image = image;
           }),
         );
-        setResponse(res.data);
+        setProductsData(res.data);
       })
       .catch(error => {
         console.log(error);
       });
+
+    Api.getCompanies().then(response => {
+      setCompaniesData(response.data);
+    });
   }, []);
 
   const getBackgroundColor = async (uri: string) => {
@@ -50,28 +57,42 @@ const Home = ({navigation}) => {
     }
   };
 
+  const getDiscountedPrice = (item: IProducts) => {
+    const discount = (item.price * item.discount) / 100;
+    return item.price - discount;
+  };
+
   interface props {
     item: IProducts;
     index: number;
   }
-  const renderItems = ({item, index}: props) => {
+  const renderItems = ({item: product, index}: props) => {
     return (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('ProductDetails', {response: response[index]});
+          navigation.navigate('ProductDetails', {
+            response: productsData[index],
+          });
         }}
         key={index}
-        style={[styles.itemContainer, {backgroundColor: item.bgColor}]}>
+        style={[styles.productContainer, {backgroundColor: product.bgColor}]}>
         <Icon
           name="favorite"
-          style={styles.itemHeart}
+          style={styles.productHeart}
           size={25}
           color="#808080"
         />
-        <Image source={{uri: item.image}} style={styles.itemImage} />
-        <View style={styles.itemBottomContainer}>
-          <Text style={styles.itemName}>{item.name}</Text>
-          <Text style={styles.itemPrice}>{`₹${item.price}`}</Text>
+        <Image source={{uri: product.image}} style={styles.productImage} />
+        <View style={styles.productBottomContainer}>
+          <Text style={styles.productName}>{product.name}</Text>
+          <View style={styles.productPriceRow}>
+            <Text style={styles.productPrice}>{`₹${product.price}`}</Text>
+            <Text style={styles.productDiscountedPrice}>{`₹${getDiscountedPrice(
+              product,
+            )}`}</Text>
+          </View>
+          <Text
+            style={styles.productDiscount}>{`${product.discount}% off`}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -80,7 +101,28 @@ const Home = ({navigation}) => {
   return (
     <View style={styles.parent}>
       <HomeToolbar />
-      <FlatList numColumns={2} data={response} renderItem={renderItems} />
+      <FlatList
+        style={styles.productList}
+        data={companiesData}
+        renderItem={({item, index}) => {
+          return (
+            <Image
+              source={{uri: Singleton.BASE_URL + item.image}}
+              style={{
+                height: 80,
+                width: 'auto',
+                aspectRatio: 1,
+              }}
+            />
+          );
+        }}
+      />
+      <FlatList
+        data={productsData}
+        renderItem={renderItems}
+        horizontal
+        style={styles.productList}
+      />
     </View>
   );
 };
@@ -93,28 +135,29 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
   },
-  itemContainer: {
-    flex: 1,
+  productList: {flexGrow: 0},
+  productContainer: {
     alignItems: 'center',
     margin: 5,
     borderRadius: 20,
+    width: Dimensions.get('window').width / 2 - 20,
     overflow: 'hidden',
   },
-  itemHeart: {alignSelf: 'flex-end', marginRight: 15, marginTop: 15},
-  itemImage: {
+  productHeart: {alignSelf: 'flex-end', marginRight: 15, marginTop: 15},
+  productImage: {
     height: 'auto',
-    width: '100%',
-    aspectRatio: 1,
+    width: Dimensions.get('window').width / 2 - 20,
+    aspectRatio: 1.3,
     resizeMode: 'contain',
   },
-  itemBottomContainer: {
+  productBottomContainer: {
     backgroundColor: Colors.THEME_PRIMARY,
     width: '95%',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     marginVertical: 5,
   },
-  itemName: {
+  productName: {
     color: Colors.THEME_TEXT,
     alignSelf: 'center',
     textAlign: 'center',
@@ -122,11 +165,27 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     fontSize: 16,
   },
-  itemPrice: {
+  productPriceRow: {
+    flexDirection: 'row',
+    marginHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  productDiscountedPrice: {
     color: Colors.THEME_TEXT,
+    fontWeight: '700',
+    fontSize: 18,
+    marginLeft: 5,
+  },
+  productPrice: {
+    textDecorationLine: 'line-through',
+    color: Colors.THEME_TEXT,
+  },
+  productDiscount: {
+    color: 'green',
     alignSelf: 'center',
     marginBottom: 5,
-    marginLeft: 5,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
