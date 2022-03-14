@@ -1,4 +1,3 @@
-import {getTabBarHeight} from '@react-navigation/bottom-tabs/lib/typescript/src/views/BottomTabBar';
 import React, {useCallback, useEffect, useRef} from 'react';
 import {useState} from 'react';
 import {
@@ -11,22 +10,26 @@ import {
   View,
 } from 'react-native';
 import ImageColors from 'react-native-image-colors';
+import Credentials from 'react-native-secure-api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import HomeToolbar from '../components/HomeToolbar';
 import {Api} from '../service/Api';
+import BaseUrl from '../service/BaseUrl';
 import IProducts from '../types/IProducts';
 import Colors, {isDarkMode} from '../utils/Colors';
 
 const Home = ({navigation}) => {
   const [response, setResponse] = useState<Array<IProducts>>([]);
+
   useEffect(() => {
     Api.getProducts()
       .then(async res => {
         await Promise.all(
-          res.data.map(async (el, index) => {
-            const image = 'http://192.168.0.109:3000/' + el.image;
+          res.data.map(async (el: IProducts, index: number) => {
+            const image = (await BaseUrl()) + el.image;
             const bgColor = await getBackgroundColor(image);
             res.data[index].bgColor = bgColor;
+            res.data[index].image = image;
           }),
         );
         setResponse(res.data);
@@ -47,7 +50,11 @@ const Home = ({navigation}) => {
     }
   };
 
-  const renderItems = ({item, index}) => {
+  interface props {
+    item: IProducts;
+    index: number;
+  }
+  const renderItems = ({item, index}: props) => {
     return (
       <TouchableOpacity
         onPress={() => {
@@ -61,17 +68,10 @@ const Home = ({navigation}) => {
           size={25}
           color="#808080"
         />
-        <Image
-          source={{
-            uri:
-              //  'https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png',
-              'http://192.168.0.109:3000/' + item.image,
-          }}
-          style={styles.itemImage}
-        />
+        <Image source={{uri: item.image}} style={styles.itemImage} />
         <View style={styles.itemBottomContainer}>
           <Text style={styles.itemName}>{item.name}</Text>
-          <Text style={styles.itemPrice}>{item.description}</Text>
+          <Text style={styles.itemPrice}>{`₹${item.price}`}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -115,17 +115,18 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   itemName: {
-    color: 'grey',
+    color: Colors.THEME_TEXT,
     alignSelf: 'center',
+    textAlign: 'center',
     margin: 5,
     fontWeight: '900',
     fontSize: 16,
   },
   itemPrice: {
-    color: 'grey',
+    color: Colors.THEME_TEXT,
     alignSelf: 'center',
-    textAlign: 'center',
     marginBottom: 5,
+    marginLeft: 5,
     fontWeight: '700',
   },
 });

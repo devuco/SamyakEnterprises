@@ -50,7 +50,7 @@ const ProductDetails = ({route, navigation}) => {
             alignSelf: 'center',
           }}>
           <Image
-            source={{uri: 'http://192.168.0.109:3000/' + item.image}}
+            source={{uri: item.image}}
             style={{
               height: Dimensions.get('window').height / 3,
               width: '100%',
