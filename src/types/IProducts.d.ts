@@ -7,4 +7,8 @@ export default interface IProducts {
   category: string;
   bgColor?: string | undefined;
   discount?: number | undefined;
+  avgRating: number;
+  company: string;
+  totalRatings: number;
+  stock: number;
 }

@@ -28,6 +28,8 @@ const App = () => {
         screenOptions={{
           drawerActiveBackgroundColor: Colors.SECONDARY,
           drawerActiveTintColor: Colors.PRIMARY,
+          headerShown: false,
+          drawerStyle: {backgroundColor: Colors.THEME_PRIMARY},
         }}>
         <Drawer.Screen
           name="Tabs"
@@ -46,7 +48,9 @@ const App = () => {
   const Tabs = () => {
     return (
       <Tab.Navigator
-        screenOptions={() => ({headerShown: false})}
+        screenOptions={() => ({
+          headerShown: false,
+        })}
         tabBar={props => {
           return <TabBar {...props} />;
         }}>
@@ -63,7 +67,7 @@ const App = () => {
         <Tab.Screen
           name="Whishlist"
           component={Home}
-          initialParams={{icon: 'favorite'}}
+          initialParams={{icon: 'bookmark'}}
         />
         <Tab.Screen
           name="Service"

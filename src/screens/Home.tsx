@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import ImageColors from 'react-native-image-colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import HomeToolbar from '../components/HomeToolbar';
 import {Api} from '../service/Api';
 import IProducts from '../types/IProducts';
 import Colors, {isDarkMode} from '../utils/Colors';
@@ -23,7 +24,7 @@ const Home = ({navigation}) => {
       .then(async res => {
         await Promise.all(
           res.data.map(async (el, index) => {
-            const image = 'http://192.168.0.104:3000/' + el.image;
+            const image = 'http://192.168.0.109:3000/' + el.image;
             const bgColor = await getBackgroundColor(image);
             res.data[index].bgColor = bgColor;
           }),
@@ -53,17 +54,10 @@ const Home = ({navigation}) => {
           navigation.navigate('ProductDetails', {response: response[index]});
         }}
         key={index}
-        style={{
-          backgroundColor: item?.bgColor,
-          flex: 1,
-          alignItems: 'center',
-          margin: 5,
-          borderRadius: 20,
-          overflow: 'hidden',
-        }}>
+        style={[styles.itemContainer, {backgroundColor: item.bgColor}]}>
         <Icon
           name="favorite"
-          style={{alignSelf: 'flex-end', marginRight: 15, marginTop: 15}}
+          style={styles.itemHeart}
           size={25}
           color="#808080"
         />
@@ -71,66 +65,67 @@ const Home = ({navigation}) => {
           source={{
             uri:
               //  'https://i.pinimg.com/originals/62/98/b0/6298b026a65cf80bcf9dce061e9b79c9.png',
-              'http://192.168.0.104:3000/' + item.image,
+              'http://192.168.0.109:3000/' + item.image,
           }}
-          style={{
-            height: 'auto',
-            width: '100%',
-            aspectRatio: 1,
-            resizeMode: 'contain',
-          }}
+          style={styles.itemImage}
         />
-        <View
-          style={{
-            backgroundColor: Colors.THEME_PRIMARY,
-            width: '95%',
-            borderBottomLeftRadius: 20,
-            borderBottomRightRadius: 20,
-            marginVertical: 5,
-          }}>
-          <Text
-            style={{
-              color: 'grey',
-              alignSelf: 'center',
-              margin: 5,
-              fontWeight: '900',
-              fontSize: 16,
-            }}>
-            {item.name}
-          </Text>
-          <Text
-            style={{
-              color: 'grey',
-              alignSelf: 'center',
-              textAlign: 'center',
-              marginBottom: 5,
-              fontWeight: '700',
-            }}>
-            {item.description}
-          </Text>
+        <View style={styles.itemBottomContainer}>
+          <Text style={styles.itemName}>{item.name}</Text>
+          <Text style={styles.itemPrice}>{item.description}</Text>
         </View>
       </TouchableOpacity>
     );
   };
 
   return (
-    <View
-      style={{
-        backgroundColor: Colors.THEME_PRIMARY,
-        flex: 1,
-      }}>
-      <FlatList
-        keyExtractor={(item, index) => index.toString()}
-        style={{paddingHorizontal: 10}}
-        numColumns={2}
-        data={response}
-        renderItem={renderItems}
-        extraData={response}
-      />
+    <View style={styles.parent}>
+      <HomeToolbar />
+      <FlatList numColumns={2} data={response} renderItem={renderItems} />
     </View>
   );
 };
 
 export default Home;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  parent: {
+    backgroundColor: Colors.THEME_PRIMARY,
+    flex: 1,
+    paddingHorizontal: 10,
+  },
+  itemContainer: {
+    flex: 1,
+    alignItems: 'center',
+    margin: 5,
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  itemHeart: {alignSelf: 'flex-end', marginRight: 15, marginTop: 15},
+  itemImage: {
+    height: 'auto',
+    width: '100%',
+    aspectRatio: 1,
+    resizeMode: 'contain',
+  },
+  itemBottomContainer: {
+    backgroundColor: Colors.THEME_PRIMARY,
+    width: '95%',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    marginVertical: 5,
+  },
+  itemName: {
+    color: 'grey',
+    alignSelf: 'center',
+    margin: 5,
+    fontWeight: '900',
+    fontSize: 16,
+  },
+  itemPrice: {
+    color: 'grey',
+    alignSelf: 'center',
+    textAlign: 'center',
+    marginBottom: 5,
+    fontWeight: '700',
+  },
+});
