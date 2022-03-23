@@ -1,18 +1,20 @@
-import axios from 'axios';
 import ICategories from '../types/ICategories';
 import ICompanies from '../types/ICompanies';
-import IProducts from '../types/IProducts';
-import Singleton from '../utils/Singleton';
-import BaseUrl from './BaseUrl';
+import IProducts, {IResponse} from '../types/IProducts';
+import IToken from '../types/IToken';
+import Axios from './Axios';
 
 export class Api {
+  public static getToken = () => {
+    return Axios.get<IToken>('token', {headers: {deviceId: '1234'}});
+  };
   public static getCategories = () => {
-    return BaseUrl.get<ICategories>('categories/names');
+    return Axios.get<Array<ICategories>>('categories');
   };
   public static getCompanies = async () => {
-    return axios.get<Array<ICompanies>>((await BaseUrl()) + 'company');
+    return Axios.get<Array<ICompanies>>('company');
   };
   public static getProducts = () => {
-    return axios.get<Array<IProducts>>(Singleton.getBaseURL() + 'products');
+    return Axios.get<IResponse>('products');
   };
 }

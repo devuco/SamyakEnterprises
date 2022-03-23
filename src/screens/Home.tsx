@@ -1,7 +1,6 @@
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, {useEffect} from 'react';
 import {useState} from 'react';
 import {
-  Appearance,
   Dimensions,
   FlatList,
   Image,
@@ -10,39 +9,50 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import ImageColors from 'react-native-image-colors';
-import Credentials from 'react-native-secure-api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useRecoilValue, useSetRecoilState} from 'recoil';
 import HomeToolbar from '../components/HomeToolbar';
+import productState from '../recoil/productState';
 import {Api} from '../service/Api';
-import BaseUrl from '../service/BaseUrl';
+import ICategories from '../types/ICategories';
 import ICompanies from '../types/ICompanies';
-import IProducts from '../types/IProducts';
+import {IProducts, IResponse} from '../types/IProducts';
 import Colors, {isDarkMode} from '../utils/Colors';
 import Singleton from '../utils/Singleton';
 
 const Home = ({navigation}) => {
-  const [productsData, setProductsData] = useState<Array<IProducts>>([]);
+  const setProductsRecoil = useSetRecoilState(productState);
+  const productsData = useRecoilValue<IProducts>(productState);
   const [companiesData, setCompaniesData] = useState<Array<ICompanies>>([]);
+  const [categoriesData, setCategoriesData] = useState<Array<ICategories>>([]);
   useEffect(() => {
+    console.log('h token', Singleton.token);
+
     Api.getProducts()
       .then(async res => {
+        let response = res.data.data;
         await Promise.all(
-          res.data.map(async (el: IProducts, index: number) => {
-            const image = (await BaseUrl()) + el.image;
+          response.map(async (el: IProducts, index: number) => {
+            console.log(el);
+            const image = Singleton.BASE_URL + el.image;
             const bgColor = await getBackgroundColor(image);
-            res.data[index].bgColor = bgColor;
-            res.data[index].image = image;
+            response[index].bgColor = bgColor;
+            response[index].image = image;
           }),
         );
-        setProductsData(res.data);
+        setProductsRecoil(response);
       })
       .catch(error => {
-        console.log(error);
+        console.log('home', error.response.data);
       });
 
     Api.getCompanies().then(response => {
-      setCompaniesData(response.data);
+      setCompaniesData(response.data.data);
+    });
+    Api.getCategories().then(response => {
+      setCategoriesData(response.data.data);
     });
   }, []);
 
@@ -58,15 +68,15 @@ const Home = ({navigation}) => {
   };
 
   const getDiscountedPrice = (item: IProducts) => {
-    const discount = (item.price * item.discount) / 100;
-    return item.price - discount;
+    const discount = (item.data.price * item.data.discount) / 100;
+    return item.data.price - discount;
   };
 
-  interface props {
+  interface productProps {
     item: IProducts;
     index: number;
   }
-  const renderItems = ({item: product, index}: props) => {
+  const renderProducts: React.FC<productProps> = ({item: product, index}) => {
     return (
       <TouchableOpacity
         onPress={() => {
@@ -75,55 +85,87 @@ const Home = ({navigation}) => {
           });
         }}
         key={index}
-        style={[styles.productContainer, {backgroundColor: product.bgColor}]}>
+        style={[
+          styles.productContainer,
+          {backgroundColor: product.data.bgColor},
+        ]}>
         <Icon
           name="favorite"
           style={styles.productHeart}
           size={25}
-          color="#808080"
+          color={Colors.DARK_GREY}
         />
-        <Image source={{uri: product.image}} style={styles.productImage} />
+        <Image source={{uri: product.data.image}} style={styles.productImage} />
         <View style={styles.productBottomContainer}>
-          <Text style={styles.productName}>{product.name}</Text>
+          <Text style={styles.productName}>{product.data.name}</Text>
           <View style={styles.productPriceRow}>
-            <Text style={styles.productPrice}>{`₹${product.price}`}</Text>
+            <Text style={styles.productPrice}>{`₹${product.data.price}`}</Text>
             <Text style={styles.productDiscountedPrice}>{`₹${getDiscountedPrice(
               product,
             )}`}</Text>
           </View>
           <Text
-            style={styles.productDiscount}>{`${product.discount}% off`}</Text>
+            style={
+              styles.productDiscount
+            }>{`${product.data.discount}% off`}</Text>
         </View>
       </TouchableOpacity>
     );
   };
 
+  interface companyProps {
+    item: ICompanies;
+  }
+  const renderCompanies: React.FC<companyProps> = ({item: company}) => {
+    return (
+      <View style={styles.companyContainer}>
+        <Image
+          source={{uri: Singleton.BASE_URL + company.image}}
+          style={styles.companyImage}
+        />
+      </View>
+    );
+  };
+
+  interface categoryProps {
+    item: ICategories;
+  }
+  const renderCategories: React.FC<categoryProps> = ({item: company}) => {
+    return (
+      <View style={styles.categoryContainer}>
+        <Image
+          source={{uri: Singleton.BASE_URL + company.image}}
+          style={styles.categoryImage}
+        />
+      </View>
+    );
+  };
+
   return (
-    <View style={styles.parent}>
+    <ScrollView contentContainerStyle={styles.parent}>
       <HomeToolbar />
+      <Text style={styles.heading}>Top Brands</Text>
       <FlatList
-        style={styles.productList}
+        horizontal
+        style={styles.companyList}
         data={companiesData}
-        renderItem={({item, index}) => {
-          return (
-            <Image
-              source={{uri: Singleton.BASE_URL + item.image}}
-              style={{
-                height: 80,
-                width: 'auto',
-                aspectRatio: 1,
-              }}
-            />
-          );
-        }}
+        renderItem={renderCompanies}
       />
+      <Text style={styles.heading}>Top Categories</Text>
+      <FlatList
+        horizontal
+        style={styles.companyList}
+        data={categoriesData}
+        renderItem={renderCategories}
+      />
+      <Text style={styles.heading}>Top Picks For You</Text>
       <FlatList
         data={productsData}
-        renderItem={renderItems}
+        renderItem={renderProducts}
         horizontal
         style={styles.productList}
       />
-    </View>
+    </ScrollView>
   );
 };
 
@@ -132,8 +174,41 @@ export default Home;
 const styles = StyleSheet.create({
   parent: {
     backgroundColor: Colors.THEME_PRIMARY,
-    flex: 1,
     paddingHorizontal: 10,
+    paddingBottom: 80,
+    flexGrow: 1,
+  },
+  heading: {
+    color: Colors.PRIMARY,
+    fontSize: 18,
+    marginHorizontal: 10,
+    fontWeight: '600',
+    marginBottom: 10,
+  },
+  companyList: {flexGrow: 0, paddingHorizontal: 5, marginBottom: 30},
+  companyContainer: {
+    borderRadius: 5,
+    marginHorizontal: 5,
+    marginVertical: 5,
+    backgroundColor: Colors.WHITE,
+    elevation: 5,
+  },
+  companyImage: {
+    height: 40,
+    width: 93.8,
+    resizeMode: 'contain',
+  },
+  categoryContainer: {
+    borderRadius: 12,
+    marginHorizontal: 5,
+    marginVertical: 5,
+    backgroundColor: Colors.WHITE,
+    elevation: 5,
+  },
+  categoryImage: {
+    height: 45,
+    width: 45,
+    resizeMode: 'contain',
   },
   productList: {flexGrow: 0},
   productContainer: {
@@ -142,6 +217,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: Dimensions.get('window').width / 2 - 20,
     overflow: 'hidden',
+    elevation: 5,
   },
   productHeart: {alignSelf: 'flex-end', marginRight: 15, marginTop: 15},
   productImage: {
@@ -156,6 +232,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     marginVertical: 5,
+    flex: 1,
   },
   productName: {
     color: Colors.THEME_TEXT,

@@ -2,7 +2,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {StatusBar, StyleSheet, useColorScheme} from 'react-native';
 import TabBar from './src/routes/TabBar';
 import Home from './src/screens/Home';
@@ -10,8 +10,8 @@ import {LogBox} from 'react-native';
 import Colors from './src/utils/Colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ProductDetails from './src/screens/ProductDetails';
-import Singleton from './src/utils/Singleton';
-
+import {RecoilRoot} from 'recoil';
+import SplashScreen from './src/screens/SplashScreen';
 LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
 ]);
@@ -20,8 +20,8 @@ const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const Stack = createNativeStackNavigator();
-  const Tab = createBottomTabNavigator();
   const Drawer = createDrawerNavigator();
+  const Tab = createBottomTabNavigator();
 
   const Drawers = () => {
     return (
@@ -80,13 +80,22 @@ const App = () => {
   };
 
   return (
-    <NavigationContainer>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <Stack.Navigator screenOptions={() => ({headerShown: false})}>
-        <Stack.Screen name="Drawer" component={Drawers} />
-        <Stack.Screen name="ProductDetails" component={ProductDetails} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <RecoilRoot>
+      <NavigationContainer>
+        <StatusBar
+          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+          backgroundColor={Colors.THEME_PRIMARY}
+        />
+        <Stack.Navigator
+          screenOptions={() => ({
+            headerShown: false,
+          })}>
+          <Stack.Screen name="SplashScreen" component={SplashScreen} />
+          <Stack.Screen name="Drawer" component={Drawers} />
+          <Stack.Screen name="ProductDetails" component={ProductDetails} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </RecoilRoot>
   );
 };
 

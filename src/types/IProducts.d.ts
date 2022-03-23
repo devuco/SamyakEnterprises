@@ -1,4 +1,4 @@
-export default interface IProducts {
+interface IProducts {
   id?: string;
   name: string;
   image: string;
@@ -12,3 +12,10 @@ export default interface IProducts {
   totalRatings: number;
   stock: number;
 }
+
+interface IResponse {
+  success: boolean;
+  data: Array<IProducts>;
+}
+
+export {IResponse, IProducts};

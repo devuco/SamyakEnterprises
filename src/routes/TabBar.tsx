@@ -23,15 +23,16 @@ const TabBar = ({state, navigation}) => {
       style={{
         flexDirection: 'row',
         justifyContent: 'space-between',
-        position: 'absolute',
-        bottom: 0,
         backgroundColor: Colors.THEME_PRIMARY,
-        left: 0,
-        right: 0,
         marginHorizontal: 20,
         borderRadius: 15,
         paddingVertical: 10,
         paddingHorizontal: 10,
+        position: 'absolute',
+        alignSelf: 'center',
+        bottom: 10,
+        left: 0,
+        right: 0,
       }}>
       <Animated.View
         style={{

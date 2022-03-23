@@ -11,7 +11,7 @@ const HomeToolbar = () => {
       style={{
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginHorizontal: 20,
+        marginHorizontal: 10,
         marginVertical: 20,
       }}>
       <Icon

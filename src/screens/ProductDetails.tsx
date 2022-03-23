@@ -56,6 +56,7 @@ const ProductDetails = ({route, navigation}) => {
               width: '100%',
               aspectRatio: 1,
               alignSelf: 'center',
+              resizeMode: 'contain',
             }}
           />
         </View>
