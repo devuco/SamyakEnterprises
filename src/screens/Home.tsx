@@ -16,26 +16,20 @@ import {useRecoilValue, useSetRecoilState} from 'recoil';
 import HomeToolbar from '../components/HomeToolbar';
 import productState from '../recoil/productState';
 import {Api} from '../service/Api';
-import ICategories from '../types/ICategories';
-import ICompanies from '../types/ICompanies';
-import {IProducts, IResponse} from '../types/IProducts';
-import Colors, {isDarkMode} from '../utils/Colors';
-import Singleton from '../utils/Singleton';
+import {ICategories, ICompanies, IProducts} from '../types';
+import {Colors, isDarkMode, Singleton} from '../utils';
 
 const Home = ({navigation}) => {
   const setProductsRecoil = useSetRecoilState(productState);
-  const productsData = useRecoilValue<IProducts>(productState);
-  const [companiesData, setCompaniesData] = useState<Array<ICompanies>>([]);
-  const [categoriesData, setCategoriesData] = useState<Array<ICategories>>([]);
+  const productsData = useRecoilValue<Array<IProducts>>(productState);
+  const [companiesData, setCompaniesData] = useState<ICompanies['data']>([]);
+  const [categoriesData, setCategoriesData] = useState<ICategories['data']>([]);
   useEffect(() => {
-    console.log('h token', Singleton.token);
-
     Api.getProducts()
       .then(async res => {
         let response = res.data.data;
         await Promise.all(
           response.map(async (el: IProducts, index: number) => {
-            console.log(el);
             const image = Singleton.BASE_URL + el.image;
             const bgColor = await getBackgroundColor(image);
             response[index].bgColor = bgColor;
@@ -56,6 +50,10 @@ const Home = ({navigation}) => {
     });
   }, []);
 
+  /**
+   * @method getBackgroundColor
+   * @description Uses Image Colors Library to retrieve color of the image and return the color according to phone theme
+   */
   const getBackgroundColor = async (uri: string) => {
     const result = await ImageColors.getColors(uri, {
       fallback: '#228B22',
@@ -67,9 +65,13 @@ const Home = ({navigation}) => {
     }
   };
 
+  /**
+   * @method getDiscountedPrice
+   * @description Returns discounted price of the product. Discount % is received from response
+   */
   const getDiscountedPrice = (item: IProducts) => {
-    const discount = (item.data.price * item.data.discount) / 100;
-    return item.data.price - discount;
+    const discount = (item.price * item.discount) / 100;
+    return item.price - discount;
   };
 
   interface productProps {
@@ -85,36 +87,35 @@ const Home = ({navigation}) => {
           });
         }}
         key={index}
-        style={[
-          styles.productContainer,
-          {backgroundColor: product.data.bgColor},
-        ]}>
+        style={[styles.productContainer, {backgroundColor: product.bgColor}]}>
         <Icon
           name="favorite"
           style={styles.productHeart}
           size={25}
           color={Colors.DARK_GREY}
         />
-        <Image source={{uri: product.data.image}} style={styles.productImage} />
+        <Image source={{uri: product.image}} style={styles.productImage} />
         <View style={styles.productBottomContainer}>
-          <Text style={styles.productName}>{product.data.name}</Text>
+          <Text style={styles.productName}>{product.name}</Text>
           <View style={styles.productPriceRow}>
-            <Text style={styles.productPrice}>{`₹${product.data.price}`}</Text>
+            {product.discount !== 0 && (
+              <Text style={styles.productPrice}>{`₹${product.price}`}</Text>
+            )}
             <Text style={styles.productDiscountedPrice}>{`₹${getDiscountedPrice(
               product,
             )}`}</Text>
           </View>
-          <Text
-            style={
-              styles.productDiscount
-            }>{`${product.data.discount}% off`}</Text>
+          {product.discount !== 0 && (
+            <Text
+              style={styles.productDiscount}>{`${product.discount}% off`}</Text>
+          )}
         </View>
       </TouchableOpacity>
     );
   };
 
   interface companyProps {
-    item: ICompanies;
+    item: ICompanies['data'][0];
   }
   const renderCompanies: React.FC<companyProps> = ({item: company}) => {
     return (
@@ -128,13 +129,13 @@ const Home = ({navigation}) => {
   };
 
   interface categoryProps {
-    item: ICategories;
+    item: ICategories['data'][0];
   }
-  const renderCategories: React.FC<categoryProps> = ({item: company}) => {
+  const renderCategories: React.FC<categoryProps> = ({item: category}) => {
     return (
       <View style={styles.categoryContainer}>
         <Image
-          source={{uri: Singleton.BASE_URL + company.image}}
+          source={{uri: Singleton.BASE_URL + category.image}}
           style={styles.categoryImage}
         />
       </View>
@@ -204,10 +205,11 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     backgroundColor: Colors.WHITE,
     elevation: 5,
+    padding: 5,
   },
   categoryImage: {
-    height: 45,
-    width: 45,
+    height: 40,
+    width: 40,
     resizeMode: 'contain',
   },
   productList: {flexGrow: 0},

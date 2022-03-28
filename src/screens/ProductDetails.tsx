@@ -7,11 +7,11 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import IProducts from '../types/IProducts';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Colors from '../utils/Colors';
 import {AirbnbRating} from 'react-native-ratings';
 import SButton from '../components/SButton';
+import {IProducts} from '../types';
+import {Colors} from '../utils';
 
 const ProductDetails = ({route, navigation}) => {
   const item: IProducts = route.params.response;
