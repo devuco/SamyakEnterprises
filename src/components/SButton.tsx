@@ -2,11 +2,11 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import Colors from '../utils/Colors';
 
-interface props {
+interface Props {
   title: string;
 }
 
-const SButton = ({title}: props) => {
+const SButton: React.FC<Props> = ({title}) => {
   return (
     <Text
       style={{

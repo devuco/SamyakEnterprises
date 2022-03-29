@@ -1,4 +1,4 @@
 export default class Singleton {
-  public static BASE_URL = 'http://192.168.0.105:3000/';
+  public static BASE_URL = 'http://172.16.3.134:3000/';
   public static token = '';
 }
