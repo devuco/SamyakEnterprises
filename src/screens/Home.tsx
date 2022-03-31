@@ -143,7 +143,9 @@ const Home = ({navigation}) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.parent}>
+    <ScrollView
+      contentContainerStyle={styles.parent}
+      keyboardShouldPersistTaps="handled">
       <HomeToolbar />
       <Text style={styles.heading}>Top Brands</Text>
       <FlatList

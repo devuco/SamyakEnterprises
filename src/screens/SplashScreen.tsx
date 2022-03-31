@@ -8,7 +8,7 @@ const SplashScreen = ({navigation}) => {
     Api.getToken()
       .then(response => {
         Axios.defaults.headers.common['token'] = response.data.token;
-        navigation.navigate('Drawer');
+        navigation.replace('Drawer');
       })
       .catch(err => {
         console.log('ss error', err.response.data);

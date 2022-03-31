@@ -1,14 +1,29 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React, {useRef, useState} from 'react';
+import {StyleSheet, Alert, View, BackHandler, TextInput} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Colors from '../utils/Colors';
 import {useNavigation} from '@react-navigation/native';
-import {TextInput} from 'react-native-gesture-handler';
 
 const HomeToolbar = () => {
   const navigation = useNavigation();
   const [searchPressed, setSearchPressed] = useState(false);
   const searchRef = useRef(null);
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBack);
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', handleBack);
+  }, [searchPressed]);
+
+  const handleBack = () => {
+    if (searchPressed) {
+      setSearchPressed(false);
+      return true;
+    } else {
+      BackHandler.exitApp();
+    }
+  };
+
   return (
     <View style={styles.container}>
       {!searchPressed && (
@@ -60,6 +75,15 @@ const HomeToolbar = () => {
               flex: 1,
               height: 35,
               color: Colors.THEME_TEXT,
+            }}
+          />
+          <Icon
+            name="close"
+            size={25}
+            color={Colors.THEME_TEXT}
+            style={[styles.icon, {borderRadius: 0}]}
+            onPress={() => {
+              setSearchPressed(false);
             }}
           />
         </View>
