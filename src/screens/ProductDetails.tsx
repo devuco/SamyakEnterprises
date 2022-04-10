@@ -26,115 +26,44 @@ const ProductDetails = ({route, navigation}) => {
     return 'Available in Stock';
   };
   return (
-    <View style={{flex: 1, backgroundColor: Colors.THEME_PRIMARY}}>
+    <View style={styles.parent}>
       <ScrollView>
         <Icon
           name="arrow-back"
           color={Colors.THEME_TEXT}
-          style={{
-            zIndex: 1,
-            backgroundColor: item.bgColor,
-            paddingLeft: 10,
-            paddingTop: 20,
-          }}
+          style={[styles.backArrow, {backgroundColor: item.bgColor}]}
           size={25}
           onPress={() => navigation.goBack()}
         />
-        <View
-          style={{
-            backgroundColor: item.bgColor,
-            borderBottomRightRadius: 500,
-            borderBottomLeftRadius: 500,
-            paddingBottom: 50,
-            width: Dimensions.get('window').width + 100,
-            alignSelf: 'center',
-          }}>
-          <Image
-            source={{uri: item.image}}
-            style={{
-              height: Dimensions.get('window').height / 3,
-              width: '100%',
-              aspectRatio: 1,
-              alignSelf: 'center',
-              resizeMode: 'contain',
-            }}
-          />
+        <View style={[styles.imageBackground, {backgroundColor: item.bgColor}]}>
+          <Image source={{uri: item.image}} style={styles.image} />
         </View>
-        <View
-          style={{
-            marginHorizontal: 20,
-            marginTop: 20,
-            flex: 1,
-          }}>
-          <Text
-            style={{
-              color: Colors.THEME_TEXT,
-              fontWeight: 'bold',
-              fontSize: 18,
-            }}>
-            {item.name}
-          </Text>
-          <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+        <View style={styles.container}>
+          <Text style={styles.name}>{item.name}</Text>
+          <View style={styles.ratingContainer}>
             <AirbnbRating
               count={5}
               size={20}
               isDisabled
               defaultRating={item.avgRating || 0}
-              ratingContainerStyle={{alignSelf: 'baseline', marginTop: -15}}
+              ratingContainerStyle={styles.starsContainer}
               reviewSize={0}
               selectedColor={Colors.STAR_YELLOW}
             />
             <Text
-              style={{
-                color: Colors.THEME_TEXT,
-                marginBottom: 3,
-                marginLeft: 20,
-              }}>{`(${item.totalRatings} Reviews)`}</Text>
+              style={
+                styles.ratingText
+              }>{`(${item.totalRatings} Reviews)`}</Text>
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              width: '100%',
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{
-                color: Colors.THEME_TEXT,
-                fontSize: 24,
-                fontWeight: 'bold',
-              }}>
-              {`₹${discountedPrice}`}
+          <View style={styles.priceContainer}>
+            <Text style={styles.discountedPrice}>{`₹${discountedPrice}`}</Text>
+            <Text style={styles.price}>
+              {item.discount !== 0 && `₹${item.price}`}
             </Text>
-            <Text
-              style={{
-                color: Colors.THEME_TEXT,
-                textDecorationLine: 'line-through',
-                marginLeft: 15,
-                flex: 1,
-              }}>
-              {`₹${item.price}`}
-            </Text>
-            <Text
-              style={{
-                color: Colors.THEME_TEXT,
-                fontWeight: 'bold',
-                fontSize: 18,
-              }}>
-              {getStock(item.stock)}
-            </Text>
+            <Text style={styles.stock}>{getStock(item.stock)}</Text>
           </View>
-          <Text
-            style={{
-              color: Colors.THEME_TEXT,
-              marginTop: 30,
-              fontWeight: '600',
-              fontSize: 18,
-            }}>
-            About
-          </Text>
-          <Text style={{color: Colors.THEME_TEXT, marginTop: 14}}>
-            {item.description}
-          </Text>
+          <Text style={styles.aboutText}>About</Text>
+          <Text style={styles.description}>{item.description}</Text>
         </View>
       </ScrollView>
       <SButton title={'Add to cart'} />
@@ -144,4 +73,70 @@ const ProductDetails = ({route, navigation}) => {
 
 export default ProductDetails;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  parent: {flex: 1, backgroundColor: Colors.THEME_PRIMARY},
+  backArrow: {
+    zIndex: 1,
+    paddingLeft: 10,
+    paddingTop: 20,
+  },
+  imageBackground: {
+    borderBottomRightRadius: 500,
+    borderBottomLeftRadius: 500,
+    paddingBottom: 50,
+    width: Dimensions.get('window').width + 100,
+    alignSelf: 'center',
+  },
+  image: {
+    height: Dimensions.get('window').height / 3,
+    width: '100%',
+    aspectRatio: 1,
+    alignSelf: 'center',
+    resizeMode: 'contain',
+  },
+  container: {
+    marginHorizontal: 20,
+    marginTop: 20,
+    flex: 1,
+  },
+  name: {
+    color: Colors.THEME_TEXT,
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  ratingContainer: {flexDirection: 'row', alignItems: 'flex-end'},
+  starsContainer: {alignSelf: 'baseline', marginTop: -15},
+  ratingText: {
+    color: Colors.THEME_TEXT,
+    marginBottom: 3,
+    marginLeft: 20,
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
+  },
+  discountedPrice: {
+    color: Colors.THEME_TEXT,
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  price: {
+    color: Colors.THEME_TEXT,
+    textDecorationLine: 'line-through',
+    marginLeft: 15,
+    flex: 1,
+  },
+  stock: {
+    color: Colors.THEME_TEXT,
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  aboutText: {
+    color: Colors.THEME_TEXT,
+    marginTop: 30,
+    fontWeight: '600',
+    fontSize: 18,
+  },
+  description: {color: Colors.THEME_TEXT, marginTop: 14},
+});

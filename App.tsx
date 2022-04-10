@@ -4,7 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import {StatusBar, StyleSheet, useColorScheme} from 'react-native';
-import TabBar from './src/routes/TabBar';
+import TabBar from './src/components/TabBar';
 import Home from './src/screens/Home';
 import {LogBox} from 'react-native';
 import Colors from './src/utils/Colors';

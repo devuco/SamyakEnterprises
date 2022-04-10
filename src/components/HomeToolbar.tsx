@@ -10,60 +10,71 @@ const HomeToolbar = () => {
   const [searchPressed, setSearchPressed] = useState(false);
   const searchRef = useRef(null);
   return (
-    <View style={styles.container}>
-      {!searchPressed && (
-        <Icon
-          name="api"
-          size={25}
-          color={Colors.THEME_TEXT}
-          style={styles.icon}
-          onPress={() => {
-            navigation.openDrawer();
-          }}
-        />
-      )}
-      {!searchPressed && (
-        <Icon
-          name="search"
-          size={25}
-          color={Colors.THEME_TEXT}
-          style={styles.icon}
-          onPress={() => {
-            setSearchPressed(true);
-            setTimeout(() => {
-              searchRef.current.focus();
-            }, 100);
-          }}
-        />
-      )}
-      {searchPressed && (
-        <View
-          style={{
-            flexDirection: 'row',
-            flex: 1,
-            borderRadius: 10,
-            overflow: 'hidden',
-          }}>
+    <View>
+      <View style={styles.container}>
+        {!searchPressed && (
+          <Icon
+            name="api"
+            size={25}
+            color={Colors.THEME_TEXT}
+            style={styles.icon}
+            onPress={() => {
+              navigation.openDrawer();
+            }}
+          />
+        )}
+        {!searchPressed && (
           <Icon
             name="search"
             size={25}
             color={Colors.THEME_TEXT}
-            style={[styles.icon, {borderRadius: 0}]}
+            style={styles.icon}
             onPress={() => {
               setSearchPressed(true);
+              setTimeout(() => {
+                searchRef.current.focus();
+              }, 100);
             }}
           />
-          <TextInput
-            ref={searchRef}
+        )}
+        {searchPressed && (
+          <View
             style={{
-              backgroundColor: Colors.THEME_SECONDARY,
+              flexDirection: 'row',
               flex: 1,
-              height: 35,
-              color: Colors.THEME_TEXT,
-            }}
-          />
-        </View>
-      )}
+              borderRadius: 10,
+              overflow: 'hidden',
+            }}>
+            <Icon
+              name="search"
+              size={25}
+              color={Colors.THEME_TEXT}
+              style={[styles.icon, {borderRadius: 0}]}
+              onPress={() => {
+                setSearchPressed(true);
+              }}
+            />
+            <TextInput
+              ref={searchRef}
+              style={{
+                backgroundColor: Colors.THEME_SECONDARY,
+                flex: 1,
+                height: 35,
+                color: Colors.THEME_TEXT,
+              }}
+            />
+            <Icon
+              name="close"
+              size={25}
+              color={Colors.THEME_TEXT}
+              style={[styles.icon, {borderRadius: 0}]}
+              onPress={() => {
+                setSearchPressed(false);
+              }}
+            />
+          </View>
+        )}
+      </View>
     </View>
   );
 };
