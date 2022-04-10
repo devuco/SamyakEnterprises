@@ -1,4 +1,5 @@
 import {ICategories, ICompanies, IResponse, IToken, IUser} from '../types';
+import ISearch from '../types/ISearch';
 import Axios from './Axios';
 
 export class Api {
@@ -16,5 +17,10 @@ export class Api {
   };
   public static getProducts = () => {
     return Axios.get<IResponse>('products');
+  };
+  public static searchProducts = (searchInput: string) => {
+    console.log('params', searchInput);
+
+    return Axios.get<ISearch>(`products/search/${searchInput}`);
   };
 }

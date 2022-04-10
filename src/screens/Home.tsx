@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect} from 'react';
 import {useState} from 'react';
 import {
@@ -43,6 +44,7 @@ const Home = ({navigation}) => {
       })
       .catch(error => {
         console.log('home', error.response.data);
+        AsyncStorage.clear();
         navigation.replace('Login');
       });
 
@@ -147,14 +149,11 @@ const Home = ({navigation}) => {
   };
 
   return (
-    <View style={{backgroundColor: Colors.THEME_PRIMARY, flexGrow: 1}}>
+    <View style={styles.parent}>
       <HomeToolbar isSearch={(value: boolean) => setSearch(value)} />
-
-      {search ? (
-        <View />
-      ) : (
+      {!search && (
         <ScrollView
-          contentContainerStyle={styles.parent}
+          contentContainerStyle={styles.scrollView}
           keyboardShouldPersistTaps="handled">
           <Text style={styles.heading}>Top Brands</Text>
           <FlatList
@@ -177,18 +176,6 @@ const Home = ({navigation}) => {
             horizontal
             style={styles.productList}
           />
-          <FlatList
-            data={productsData}
-            renderItem={renderProducts}
-            horizontal
-            style={styles.productList}
-          />
-          <FlatList
-            data={productsData}
-            renderItem={renderProducts}
-            horizontal
-            style={styles.productList}
-          />
         </ScrollView>
       )}
     </View>
@@ -198,7 +185,8 @@ const Home = ({navigation}) => {
 export default Home;
 
 const styles = StyleSheet.create({
-  parent: {
+  parent: {backgroundColor: Colors.THEME_PRIMARY, flexGrow: 1},
+  scrollView: {
     backgroundColor: Colors.THEME_PRIMARY,
     paddingHorizontal: 10,
     paddingBottom: 80,

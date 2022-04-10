@@ -1,7 +1,7 @@
 import {Appearance} from 'react-native';
 
 const colorScheme = Appearance.getColorScheme();
-const isDarkMode = colorScheme === 'dark';
+const isDarkMode = colorScheme === 'light';
 const Colors = {
   PRIMARY: '#f26b27',
   SECONDARY: '#fcf0e7',

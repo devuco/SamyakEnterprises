@@ -49,6 +49,7 @@ const Login = ({navigation}) => {
         keyboardType="email-address"
         onSubmitEditing={() => passwordRef.current.focus()}
         blurOnSubmit={false}
+        autoCapitalize="none"
       />
       <TextInput
         ref={passwordRef}
