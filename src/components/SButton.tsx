@@ -1,14 +1,19 @@
-import {StyleSheet, Text, TextProps, View} from 'react-native';
+import {StyleSheet, Text, TextStyle, View} from 'react-native';
 import React from 'react';
 import Colors from '../utils/Colors';
 
 interface Props {
   title: string;
-  style?: TextProps;
+  style?: TextStyle;
+  onPress?: () => void;
 }
 
-const SButton: React.FC<Props> = ({title, style}) => {
-  return <Text style={[styles.button, style]}>{title}</Text>;
+const SButton: React.FC<Props> = ({title, style, onPress}) => {
+  return (
+    <Text style={[styles.button, style]} onPress={onPress}>
+      {title}
+    </Text>
+  );
 };
 
 export default SButton;

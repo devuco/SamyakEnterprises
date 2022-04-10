@@ -4,8 +4,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Colors from '../utils/Colors';
 import {useNavigation} from '@react-navigation/native';
 import {TextInput} from 'react-native-gesture-handler';
+import ReactNativeModal from 'react-native-modal';
 
-const HomeToolbar = () => {
+const HomeToolbar = ({isSearch}) => {
   const navigation = useNavigation();
   const [searchPressed, setSearchPressed] = useState(false);
   const searchRef = useRef(null);
@@ -34,6 +35,7 @@ const HomeToolbar = () => {
               setTimeout(() => {
                 searchRef.current.focus();
               }, 100);
+              isSearch(true);
             }}
           />
         )}
@@ -50,9 +52,6 @@ const HomeToolbar = () => {
               size={25}
               color={Colors.THEME_TEXT}
               style={[styles.icon, {borderRadius: 0}]}
-              onPress={() => {
-                setSearchPressed(true);
-              }}
             />
             <TextInput
               ref={searchRef}
@@ -70,11 +69,17 @@ const HomeToolbar = () => {
               style={[styles.icon, {borderRadius: 0}]}
               onPress={() => {
                 setSearchPressed(false);
+                isSearch(false);
               }}
             />
           </View>
         )}
       </View>
+      {searchPressed && (
+        <View style={{backgroundColor: 'red'}}>
+          <Text>Hello</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -85,7 +90,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginHorizontal: 10,
+    marginHorizontal: 20,
     marginVertical: 20,
   },
   icon: {backgroundColor: Colors.THEME_SECONDARY, borderRadius: 10, padding: 5},

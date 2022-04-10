@@ -1,7 +1,10 @@
-import {ICategories, ICompanies, IResponse, IToken} from '../types';
+import {ICategories, ICompanies, IResponse, IToken, IUser} from '../types';
 import Axios from './Axios';
 
 export class Api {
+  public static login = (body: IUser['data']) => {
+    return Axios.post<IUser>('users/login', body);
+  };
   public static getToken = () => {
     return Axios.get<IToken>('token', {headers: {deviceId: '1234'}});
   };

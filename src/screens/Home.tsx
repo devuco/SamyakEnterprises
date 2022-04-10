@@ -16,6 +16,7 @@ import {useRecoilValue, useSetRecoilState} from 'recoil';
 import HomeToolbar from '../components/HomeToolbar';
 import productState from '../recoil/productState';
 import {Api} from '../service/Api';
+import Axios from '../service/Axios';
 import {ICategories, ICompanies, IProducts} from '../types';
 import {Colors, isDarkMode, Singleton} from '../utils';
 
@@ -24,6 +25,8 @@ const Home = ({navigation}) => {
   const productsData = useRecoilValue<Array<IProducts>>(productState);
   const [companiesData, setCompaniesData] = useState<ICompanies['data']>([]);
   const [categoriesData, setCategoriesData] = useState<ICategories['data']>([]);
+  const [search, setSearch] = useState(false);
+
   useEffect(() => {
     Api.getProducts()
       .then(async res => {
@@ -40,6 +43,7 @@ const Home = ({navigation}) => {
       })
       .catch(error => {
         console.log('home', error.response.data);
+        navigation.replace('Login');
       });
 
     Api.getCompanies().then(response => {
@@ -143,32 +147,51 @@ const Home = ({navigation}) => {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.parent}
-      keyboardShouldPersistTaps="handled">
-      <HomeToolbar />
-      <Text style={styles.heading}>Top Brands</Text>
-      <FlatList
-        horizontal
-        style={styles.companyList}
-        data={companiesData}
-        renderItem={renderCompanies}
-      />
-      <Text style={styles.heading}>Top Categories</Text>
-      <FlatList
-        horizontal
-        style={styles.companyList}
-        data={categoriesData}
-        renderItem={renderCategories}
-      />
-      <Text style={styles.heading}>Top Picks For You</Text>
-      <FlatList
-        data={productsData}
-        renderItem={renderProducts}
-        horizontal
-        style={styles.productList}
-      />
-    </ScrollView>
+    <View style={{backgroundColor: Colors.THEME_PRIMARY, flexGrow: 1}}>
+      <HomeToolbar isSearch={(value: boolean) => setSearch(value)} />
+
+      {search ? (
+        <View />
+      ) : (
+        <ScrollView
+          contentContainerStyle={styles.parent}
+          keyboardShouldPersistTaps="handled">
+          <Text style={styles.heading}>Top Brands</Text>
+          <FlatList
+            horizontal
+            style={styles.companyList}
+            data={companiesData}
+            renderItem={renderCompanies}
+          />
+          <Text style={styles.heading}>Top Categories</Text>
+          <FlatList
+            horizontal
+            style={styles.companyList}
+            data={categoriesData}
+            renderItem={renderCategories}
+          />
+          <Text style={styles.heading}>Top Picks For You</Text>
+          <FlatList
+            data={productsData}
+            renderItem={renderProducts}
+            horizontal
+            style={styles.productList}
+          />
+          <FlatList
+            data={productsData}
+            renderItem={renderProducts}
+            horizontal
+            style={styles.productList}
+          />
+          <FlatList
+            data={productsData}
+            renderItem={renderProducts}
+            horizontal
+            style={styles.productList}
+          />
+        </ScrollView>
+      )}
+    </View>
   );
 };
 
