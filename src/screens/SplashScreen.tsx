@@ -7,20 +7,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SplashScreen = ({navigation}) => {
   useEffect(() => {
-    setTimeout(() => {
-      AsyncStorage.getItem('token').then(token => {
-        if (token !== null) {
-          Axios.defaults.headers.common['token'] = token;
-          navigation.replace('Drawer');
-        } else {
-          navigation.replace('Login');
-        }
-      });
-    }, 1000);
+    AsyncStorage.getItem('token').then(token => {
+      if (token !== null) {
+        Axios.defaults.headers.common['token'] = token;
+        navigation.replace('Drawer');
+      } else {
+        navigation.replace('Login');
+      }
+    });
   }, []);
   return (
     <View style={styles.parent}>
-      <Image source={Images.LOGO} style={styles.logo} />
+      {/* <Image source={Images.LOGO} style={styles.logo} /> */}
     </View>
   );
 };

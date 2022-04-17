@@ -1,9 +1,4 @@
-export default interface ICategories {
-  success: boolean;
-  data: Array<IData>;
-}
-
-interface IData {
+export default interface Categories {
   _id: String;
   name: String;
   image: String;

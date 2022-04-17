@@ -1,26 +1,34 @@
-import {ICategories, ICompanies, IResponse, IToken, IUser} from '../types';
+import {
+  ICategories,
+  ICompanies,
+  IProducts,
+  IResponse,
+  IToken,
+  IUser,
+} from '../types';
 import ISearch from '../types/ISearch';
 import Axios from './Axios';
 
 export class Api {
-  public static login = (body: IUser['data']) => {
-    return Axios.post<IUser>('users/login', body);
+  public static login = (body: IUser) => {
+    return Axios.post<IResponse<IUser>>('users/login', body);
   };
   public static getToken = () => {
     return Axios.get<IToken>('token', {headers: {deviceId: '1234'}});
   };
   public static getCategories = () => {
-    return Axios.get<ICategories>('categories');
+    return Axios.get<IResponse<Array<ICategories>>>('categories');
   };
-  public static getCompanies = async () => {
-    return Axios.get<ICompanies>('company');
+  public static getCompanies = () => {
+    return Axios.get<IResponse<Array<ICompanies>>>('company');
   };
   public static getProducts = () => {
-    return Axios.get<IResponse>('products');
+    return Axios.get<IResponse<Array<IProducts>>>('products');
+  };
+  public static getProduct = (id: string) => {
+    return Axios.get<IResponse<IProducts>>(`products/${id}`);
   };
   public static searchProducts = (searchInput: string) => {
-    console.log('params', searchInput);
-
     return Axios.get<ISearch>(`products/search/${searchInput}`);
   };
 }

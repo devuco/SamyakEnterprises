@@ -33,37 +33,23 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
   };
 
   const renderSearch = (
-    itemArray: Array<
-      IProducts | ICategories['data'][0] | ICompanies['data'][0]
-    >,
+    itemArray: Array<IProducts | ICategories | ICompanies>,
   ) => {
-    return itemArray?.map(
-      (item: IProducts | ICategories['data'][0] | ICompanies['data'][0]) => {
-        return (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              backgroundColor: Colors.THEME_PRIMARY,
-              paddingHorizontal: 20,
-              marginVertical: 0.5,
-              paddingVertical: 10,
-            }}>
-            <Image
-              source={{uri: Singleton.BASE_URL + item.image}}
-              style={{height: 75, width: 75, resizeMode: 'contain'}}
-            />
-            <Text style={{color: Colors.THEME_TEXT, marginLeft: 20}}>
-              {item.name}
-            </Text>
-          </View>
-        );
-      },
-    );
+    return itemArray?.map((item: IProducts | ICategories | ICompanies) => {
+      return (
+        <View style={styles.resultItemContainer}>
+          <Image
+            source={{uri: Singleton.BASE_URL + item.image}}
+            style={styles.resultItemImage}
+          />
+          <Text style={styles.resultItemName}>{item.name}</Text>
+        </View>
+      );
+    });
   };
 
   return (
-    <View style={{flex: searchPressed === true ? 1 : 0}}>
+    <View style={{flex: searchPressed ? 1 : 0}}>
       <View style={styles.container}>
         {!searchPressed && (
           <Icon
@@ -92,13 +78,7 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
           />
         )}
         {searchPressed && (
-          <View
-            style={{
-              flexDirection: 'row',
-              flex: 1,
-              borderRadius: 10,
-              overflow: 'hidden',
-            }}>
+          <View style={styles.searchContainer}>
             <Icon
               name="search"
               size={25}
@@ -108,12 +88,7 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
             <TextInput
               ref={searchRef}
               onChangeText={text => callAPI(text)}
-              style={{
-                backgroundColor: Colors.THEME_SECONDARY,
-                flex: 1,
-                height: 35,
-                color: Colors.THEME_TEXT,
-              }}
+              style={styles.searchInput}
             />
             <Icon
               name="close"
@@ -129,21 +104,17 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
         )}
       </View>
       {searchPressed && (
-        <ScrollView
-          style={{
-            backgroundColor: Colors.THEME_SECONDARY,
-            marginBottom: 80,
-          }}>
+        <ScrollView style={styles.searchResultContainer}>
           {data?.products.length > 0 && (
-            <Text style={styles.searchTitle}>Products</Text>
+            <Text style={styles.searchResultTitle}>Products</Text>
           )}
           {renderSearch(data?.products)}
           {data?.categories.length > 0 && (
-            <Text style={styles.searchTitle}>Categories</Text>
+            <Text style={styles.searchResultTitle}>Categories</Text>
           )}
           {renderSearch(data?.categories)}
           {data?.companies.length > 0 && (
-            <Text style={styles.searchTitle}>Brands</Text>
+            <Text style={styles.searchResultTitle}>Brands</Text>
           )}
           {renderSearch(data?.companies)}
         </ScrollView>
@@ -161,17 +132,49 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginVertical: 20,
   },
-  icon: {backgroundColor: Colors.THEME_SECONDARY, borderRadius: 10, padding: 5},
+  icon: {backgroundColor: Colors.THEME_PRIMARY, borderRadius: 10, padding: 5},
   openIcon: {
     backgroundColor: Colors.THEME_SECONDARY,
     borderRadius: 0,
     padding: 5,
   },
-  searchTitle: {
+  searchContainer: {
+    flexDirection: 'row',
+    flex: 1,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  searchInput: {
+    backgroundColor: Colors.THEME_SECONDARY,
+    flex: 1,
+    height: 35,
+    color: Colors.THEME_TEXT,
+  },
+  searchResultContainer: {
+    backgroundColor: Colors.THEME_PRIMARY,
+    marginBottom: 80,
+  },
+  searchResultTitle: {
     color: Colors.THEME_TEXT,
     fontWeight: 'bold',
     fontSize: 24,
     marginVertical: 25,
     marginHorizontal: 20,
+  },
+  resultItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.THEME_PRIMARY,
+    paddingHorizontal: 20,
+    marginVertical: 0.5,
+    paddingVertical: 10,
+  },
+  resultItemImage: {height: 75, width: 75, resizeMode: 'contain'},
+  resultItemName: {
+    color: Colors.THEME_TEXT,
+    marginLeft: 20,
+    fontWeight: 'bold',
+    fontSize: 16,
+    flexShrink: 1,
   },
 });

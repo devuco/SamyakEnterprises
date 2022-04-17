@@ -18,15 +18,18 @@ import HomeToolbar from '../components/HomeToolbar';
 import productState from '../recoil/productState';
 import {Api} from '../service/Api';
 import Axios from '../service/Axios';
-import {ICategories, ICompanies, IProducts} from '../types';
+import {ICategories, ICompanies, IProducts, IResponse} from '../types';
 import {Colors, isDarkMode, Singleton} from '../utils';
 
 const Home = ({navigation}) => {
   const setProductsRecoil = useSetRecoilState(productState);
-  const productsData = useRecoilValue<Array<IProducts>>(productState);
-  const [companiesData, setCompaniesData] = useState<ICompanies['data']>([]);
-  const [categoriesData, setCategoriesData] = useState<ICategories['data']>([]);
+  const productsData =
+    useRecoilValue<IResponse<Array<IProducts>>['data']>(productState);
+  const [companiesData, setCompaniesData] = useState<Array<ICompanies>>([]);
+  const [categoriesData, setCategoriesData] = useState<Array<ICategories>>([]);
   const [search, setSearch] = useState(false);
+
+  productsData.map(el => el);
 
   useEffect(() => {
     Api.getProducts()
@@ -89,7 +92,8 @@ const Home = ({navigation}) => {
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('ProductDetails', {
-            response: productsData[index],
+            id: product._id,
+            bgColor: product.bgColor,
           });
         }}
         key={index}
@@ -121,7 +125,7 @@ const Home = ({navigation}) => {
   };
 
   interface companyProps {
-    item: ICompanies['data'][0];
+    item: ICompanies;
   }
   const renderCompanies: React.FC<companyProps> = ({item: company}) => {
     return (
@@ -135,7 +139,7 @@ const Home = ({navigation}) => {
   };
 
   interface categoryProps {
-    item: ICategories['data'][0];
+    item: ICategories;
   }
   const renderCategories: React.FC<categoryProps> = ({item: category}) => {
     return (

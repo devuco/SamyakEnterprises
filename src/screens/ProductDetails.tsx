@@ -2,20 +2,38 @@ import {
   Dimensions,
   Image,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {AirbnbRating} from 'react-native-ratings';
 import SButton from '../components/SButton';
-import {IProducts} from '../types';
-import {Colors} from '../utils';
+import {IProducts, IResponse} from '../types';
+import {Colors, Singleton} from '../utils';
+import {Api} from '../service/Api';
 
 const ProductDetails = ({route, navigation}) => {
-  const item: IProducts = route.params.response;
-  const discountedPrice = item.price - (item.price * item.discount) / 100;
+  const id: string = route.params.id;
+  const bgColor: string = route.params.bgColor;
+  const [product, setProduct] =
+    useState<IResponse<IProducts>['data']>(undefined);
+  const discountedPrice =
+    product?.price - (product?.price * product?.discount) / 100;
+
+  useEffect(() => {
+    Api.getProduct(id)
+      .then(response => {
+        if (response.status === 200) {
+          setProduct(response.data.data);
+        }
+      })
+      .catch(err => {
+        console.log('product error ', err.response.data);
+      });
+  }, []);
 
   const getStock = (stock: number) => {
     if (stock === 0) {
@@ -27,25 +45,29 @@ const ProductDetails = ({route, navigation}) => {
   };
   return (
     <View style={styles.parent}>
+      <StatusBar backgroundColor={bgColor} />
       <ScrollView>
         <Icon
           name="arrow-back"
           color={Colors.THEME_TEXT}
-          style={[styles.backArrow, {backgroundColor: item.bgColor}]}
+          style={[styles.backArrow, {backgroundColor: bgColor}]}
           size={25}
           onPress={() => navigation.goBack()}
         />
-        <View style={[styles.imageBackground, {backgroundColor: item.bgColor}]}>
-          <Image source={{uri: item.image}} style={styles.image} />
+        <View style={[styles.imageBackground, {backgroundColor: bgColor}]}>
+          <Image
+            source={{uri: Singleton.BASE_URL + product?.image}}
+            style={styles.image}
+          />
         </View>
         <View style={styles.container}>
-          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.name}>{product?.name}</Text>
           <View style={styles.ratingContainer}>
             <AirbnbRating
               count={5}
               size={20}
               isDisabled
-              defaultRating={item.avgRating || 0}
+              defaultRating={product?.avgRating || 0}
               ratingContainerStyle={styles.starsContainer}
               reviewSize={0}
               selectedColor={Colors.STAR_YELLOW}
@@ -53,17 +75,17 @@ const ProductDetails = ({route, navigation}) => {
             <Text
               style={
                 styles.ratingText
-              }>{`(${item.totalRatings} Reviews)`}</Text>
+              }>{`(${product?.totalRatings} Reviews)`}</Text>
           </View>
           <View style={styles.priceContainer}>
             <Text style={styles.discountedPrice}>{`₹${discountedPrice}`}</Text>
             <Text style={styles.price}>
-              {item.discount !== 0 && `₹${item.price}`}
+              {product?.discount !== 0 && `₹${product?.price}`}
             </Text>
-            <Text style={styles.stock}>{getStock(item.stock)}</Text>
+            <Text style={styles.stock}>{getStock(product?.stock)}</Text>
           </View>
           <Text style={styles.aboutText}>About</Text>
-          <Text style={styles.description}>{item.description}</Text>
+          <Text style={styles.description}>{product?.description}</Text>
         </View>
       </ScrollView>
       <SButton title={'Add to cart'} />

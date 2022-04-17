@@ -13,6 +13,8 @@ import ProductDetails from './src/screens/ProductDetails';
 import {RecoilRoot} from 'recoil';
 import SplashScreen from './src/screens/SplashScreen';
 import Login from './src/screens/Login';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Axios from './src/service/Axios';
 LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
 ]);
@@ -84,7 +86,7 @@ const App = () => {
     <RecoilRoot>
       <NavigationContainer>
         <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+          barStyle={!isDarkMode ? 'light-content' : 'dark-content'}
           backgroundColor={Colors.THEME_PRIMARY}
         />
         <Stack.Navigator

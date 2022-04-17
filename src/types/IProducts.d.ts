@@ -1,5 +1,5 @@
 interface IProducts {
-  id?: string;
+  _id?: string;
   name: string;
   image: string;
   description: string;
@@ -13,9 +13,4 @@ interface IProducts {
   stock: number;
 }
 
-interface IResponse {
-  success: boolean;
-  data: Array<IProducts>;
-}
-
-export {IResponse, IProducts};
+export default IProducts;
