@@ -16,18 +16,21 @@ const Login = ({navigation}) => {
     Api.login(body)
       .then(response => {
         if (response.data.success) {
-          Api.getToken()
-            .then(response => {
-              Axios.defaults.headers.common['token'] = response.data.token;
-              AsyncStorage.setItem('token', response.data.token).then(
-                response => {
-                  navigation.replace('Drawer');
-                },
-              );
-            })
-            .catch(err => {
-              console.log('token', err.response.data);
-            });
+          Axios.defaults.headers.common['userId'] = response.data.data._id;
+          AsyncStorage.setItem('userId', response.data.data._id).then(res => {
+            Api.getToken()
+              .then(response => {
+                Axios.defaults.headers.common['token'] = response.data.token;
+                AsyncStorage.setItem('token', response.data.token).then(
+                  response => {
+                    navigation.replace('Drawer');
+                  },
+                );
+              })
+              .catch(err => {
+                console.log('token', err.response.data);
+              });
+          });
         } else {
           alert(response.data.message);
         }

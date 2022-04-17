@@ -43,6 +43,20 @@ const ProductDetails = ({route, navigation}) => {
     }
     return 'Available in Stock';
   };
+
+  const addToCart = () => {
+    let body = {product: id, quantity: 1};
+    Api.addToCart(body)
+      .then(response => {
+        if (response.data.success) {
+          alert('added');
+        }
+      })
+      .catch(err => {
+        console.log(err.response.data);
+      });
+  };
+
   return (
     <View style={styles.parent}>
       <StatusBar backgroundColor={bgColor} />
@@ -88,7 +102,7 @@ const ProductDetails = ({route, navigation}) => {
           <Text style={styles.description}>{product?.description}</Text>
         </View>
       </ScrollView>
-      <SButton title={'Add to cart'} />
+      <SButton title={'Add to cart'} onPress={addToCart} />
     </View>
   );
 };

@@ -31,4 +31,7 @@ export class Api {
   public static searchProducts = (searchInput: string) => {
     return Axios.get<ISearch>(`products/search/${searchInput}`);
   };
+  public static addToCart = (body: ICart) => {
+    return Axios.post<IResponse<any>>('/cart', body);
+  };
 }

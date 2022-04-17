@@ -35,21 +35,23 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
   const renderSearch = (
     itemArray: Array<IProducts | ICategories | ICompanies>,
   ) => {
-    return itemArray?.map((item: IProducts | ICategories | ICompanies) => {
-      return (
-        <View style={styles.resultItemContainer}>
-          <Image
-            source={{uri: Singleton.BASE_URL + item.image}}
-            style={styles.resultItemImage}
-          />
-          <Text style={styles.resultItemName}>{item.name}</Text>
-        </View>
-      );
-    });
+    return itemArray?.map(
+      (item: IProducts | ICategories | ICompanies, index) => {
+        return (
+          <View style={styles.resultItemContainer} key={index}>
+            <Image
+              source={{uri: Singleton.BASE_URL + item.image}}
+              style={styles.resultItemImage}
+            />
+            <Text style={styles.resultItemName}>{item.name}</Text>
+          </View>
+        );
+      },
+    );
   };
 
   return (
-    <View style={{flex: searchPressed ? 1 : 0}}>
+    <View style={[{flex: searchPressed ? 1 : 0}]}>
       <View style={styles.container}>
         {!searchPressed && (
           <Icon
