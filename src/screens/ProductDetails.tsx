@@ -1,6 +1,7 @@
 import {
   Dimensions,
   Image,
+  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -58,7 +59,7 @@ const ProductDetails = ({route, navigation}) => {
   };
 
   return (
-    <View style={styles.parent}>
+    <SafeAreaView style={styles.parent}>
       <StatusBar backgroundColor={bgColor} />
       <ScrollView>
         <Icon
@@ -103,7 +104,7 @@ const ProductDetails = ({route, navigation}) => {
         </View>
       </ScrollView>
       <SButton title={'Add to cart'} onPress={addToCart} />
-    </View>
+    </SafeAreaView>
   );
 };
 
