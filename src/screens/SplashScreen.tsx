@@ -1,11 +1,13 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect} from 'react';
-import {Api} from '../service/Api';
 import Axios from '../service/Axios';
-import {Colors, Images} from '../utils';
+import {Colors} from '../utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
-const SplashScreen = ({navigation}) => {
+const SplashScreen = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
   useEffect(() => {
     AsyncStorage.getItem('token').then(token => {
       if (token !== null) {

@@ -4,6 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
@@ -13,8 +14,6 @@ import {useNavigation} from '@react-navigation/native';
 import {TextInput} from 'react-native-gesture-handler';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
 import {Api} from '../service/Api';
-import ISearch from '../types/ISearch';
-import {ICategories, ICompanies, IProducts} from '../types';
 import {Singleton} from '../utils';
 
 interface Props {
@@ -23,8 +22,12 @@ interface Props {
 const HomeToolbar: React.FC<Props> = ({isSearch}) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const [searchPressed, setSearchPressed] = useState<boolean>(false);
-  const [data, setData] = useState<ISearch>(null);
-  const searchRef = useRef(null);
+  const [data, setData] = useState<ISearch>({
+    categories: [],
+    companies: [],
+    products: [],
+  });
+  const searchRef = useRef<TextInput>(null);
 
   const callAPI = (input: string) => {
     Api.searchProducts(input)
@@ -34,17 +37,23 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
 
   const renderSearch = (
     itemArray: Array<IProducts | ICategories | ICompanies>,
+    screen: 'ProductDetails' | 'CategoryDetails' | 'CompanyDetails',
   ) => {
     return itemArray?.map(
       (item: IProducts | ICategories | ICompanies, index) => {
         return (
-          <View style={styles.resultItemContainer} key={index}>
+          <TouchableOpacity
+            style={styles.resultItemContainer}
+            key={index}
+            onPress={() => {
+              navigation.navigate(screen, {id: item._id});
+            }}>
             <Image
               source={{uri: Singleton.BASE_URL + item.image}}
               style={styles.resultItemImage}
             />
             <Text style={styles.resultItemName}>{item.name}</Text>
-          </View>
+          </TouchableOpacity>
         );
       },
     );
@@ -73,7 +82,7 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
             onPress={() => {
               setSearchPressed(true);
               setTimeout(() => {
-                searchRef.current.focus();
+                searchRef.current?.focus();
               }, 100);
               isSearch(true);
             }}
@@ -106,19 +115,21 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
         )}
       </View>
       {searchPressed && (
-        <ScrollView style={styles.searchResultContainer}>
+        <ScrollView
+          style={styles.searchResultContainer}
+          keyboardShouldPersistTaps="handled">
           {data?.products.length > 0 && (
             <Text style={styles.searchResultTitle}>Products</Text>
           )}
-          {renderSearch(data?.products)}
+          {renderSearch(data?.products, 'ProductDetails')}
           {data?.categories.length > 0 && (
             <Text style={styles.searchResultTitle}>Categories</Text>
           )}
-          {renderSearch(data?.categories)}
+          {renderSearch(data?.categories, 'CategoryDetails')}
           {data?.companies.length > 0 && (
             <Text style={styles.searchResultTitle}>Brands</Text>
           )}
-          {renderSearch(data?.companies)}
+          {renderSearch(data?.companies, 'CompanyDetails')}
         </ScrollView>
       )}
     </View>

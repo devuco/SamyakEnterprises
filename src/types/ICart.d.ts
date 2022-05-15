@@ -1,4 +1,4 @@
-interface ICart {
+type ICart = {
   product: string;
   quantity: number;
-}
+};

@@ -1,4 +1,5 @@
 import {
+  Alert,
   Dimensions,
   Image,
   ScrollView,
@@ -11,17 +12,28 @@ import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {AirbnbRating} from 'react-native-ratings';
 import SButton from '../components/SButton';
-import {IProducts, IResponse} from '../types';
 import {Colors, Singleton} from '../utils';
 import {Api} from '../service/Api';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
-const ProductDetails = ({route, navigation}) => {
+const ProductDetails = () => {
+  type StackParamList = {
+    ProductDetails: {id: string; bgColor: string};
+  };
+  const route = useRoute<RouteProp<StackParamList>>();
   const id: string = route.params.id;
   const bgColor: string = route.params.bgColor;
-  const [product, setProduct] =
-    useState<IResponse<IProducts>['data']>(undefined);
+  const [product, setProduct] = useState<IProducts>({
+    price: 0,
+    discount: 0,
+    stock: 0,
+  });
+
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+
   const discountedPrice =
-    product?.price - (product?.price * product?.discount) / 100;
+    product.price - (product.price * product.discount) / 100;
 
   useEffect(() => {
     Api.getProduct(id)
@@ -49,7 +61,7 @@ const ProductDetails = ({route, navigation}) => {
     Api.addToCart(body)
       .then(response => {
         if (response.data.success) {
-          alert('added');
+          Alert.alert('added');
         }
       })
       .catch(err => {

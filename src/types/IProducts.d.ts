@@ -1,16 +1,14 @@
-interface IProducts {
+type IProducts = {
   _id?: string;
-  name: string;
-  image: string;
-  description: string;
+  name?: string;
+  image?: string;
+  description?: string;
   price: number;
-  category: string;
+  category?: string;
   bgColor?: string | undefined;
-  discount?: number | undefined;
-  avgRating: number;
-  company: string;
-  totalRatings: number;
+  discount: number;
+  avgRating?: number;
+  company?: string;
+  totalRatings?: number;
   stock: number;
-}
-
-export default IProducts;
+};

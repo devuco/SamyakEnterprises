@@ -1,4 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
 import {useState} from 'react';
 import {
@@ -13,21 +15,20 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import ImageColors from 'react-native-image-colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useRecoilValue, useSetRecoilState} from 'recoil';
 import HomeToolbar from '../components/HomeToolbar';
-import productState from '../recoil/productState';
 import {Api} from '../service/Api';
-import Axios from '../service/Axios';
-import {ICategories, ICompanies, IProducts, IResponse} from '../types';
 import {Colors, isDarkMode, Singleton} from '../utils';
 
-const Home = ({navigation}) => {
-  const setProductsRecoil = useSetRecoilState(productState);
-  const productsData =
-    useRecoilValue<IResponse<Array<IProducts>>['data']>(productState);
+const Home = () => {
+  const [productsData, setProductsData] = useState<Array<IProducts>>([]);
   const [companiesData, setCompaniesData] = useState<Array<ICompanies>>([]);
   const [categoriesData, setCategoriesData] = useState<Array<ICategories>>([]);
   const [search, setSearch] = useState(false);
+  type StackParamList = {
+    Login: undefined;
+    ProductDetails: {id?: string; bgColor?: string};
+  };
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
   productsData.map(el => el);
 
@@ -43,7 +44,7 @@ const Home = ({navigation}) => {
             response[index].image = image;
           }),
         );
-        setProductsRecoil(response);
+        setProductsData(response);
       })
       .catch(error => {
         console.log('home', error.response.data);

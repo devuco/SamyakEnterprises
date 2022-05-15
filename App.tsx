@@ -13,8 +13,7 @@ import ProductDetails from './src/screens/ProductDetails';
 import {RecoilRoot} from 'recoil';
 import SplashScreen from './src/screens/SplashScreen';
 import Login from './src/screens/Login';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Axios from './src/service/Axios';
+
 LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
 ]);
@@ -22,7 +21,7 @@ LogBox.ignoreLogs([
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const Stack = createNativeStackNavigator();
+  const Stack = createNativeStackNavigator<StackParamList>();
   const Drawer = createDrawerNavigator();
   const Tab = createBottomTabNavigator();
 

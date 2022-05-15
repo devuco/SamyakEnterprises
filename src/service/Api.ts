@@ -1,16 +1,7 @@
-import {
-  ICategories,
-  ICompanies,
-  IProducts,
-  IResponse,
-  IToken,
-  IUser,
-} from '../types';
-import ISearch from '../types/ISearch';
 import Axios from './Axios';
 
 export class Api {
-  public static login = (body: IUser) => {
+  public static login = (body: {email: string; password: string}) => {
     return Axios.post<IResponse<IUser>>('users/login', body);
   };
   public static getToken = () => {
@@ -32,6 +23,6 @@ export class Api {
     return Axios.get<ISearch>(`products/search/${searchInput}`);
   };
   public static addToCart = (body: ICart) => {
-    return Axios.post<IResponse<any>>('/cart', body);
+    return Axios.post<IResponse<string>>('/cart', body);
   };
 }

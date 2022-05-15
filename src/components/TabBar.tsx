@@ -1,15 +1,18 @@
+import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Colors from '../utils/Colors';
 
-const TabBar = ({state, navigation}) => {
+const TabBar = ({state}: any) => {
   const [selected, setSelected] = useState('Home');
   const {routes} = state;
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const [y, setY] = useState(0);
   const [transAnimation] = useState(new Animated.Value(0));
+
+  const navigation = useNavigation();
 
   const animate = (x: number) => {
     Animated.spring(transAnimation, {

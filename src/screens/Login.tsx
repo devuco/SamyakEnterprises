@@ -1,15 +1,27 @@
-import {Image, StyleSheet, Text, TextInput, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputProps,
+  View,
+} from 'react-native';
 import React, {useRef, useState} from 'react';
 import {Colors, Images} from '../utils';
 import SButton from '../components/SButton';
 import {Api} from '../service/Api';
 import Axios from '../service/Axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
-const Login = ({navigation}) => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const passwordRef = useRef(null);
+  const passwordRef = useRef<TextInput>(null);
+
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
   const callAPI = () => {
     const body = {email, password};
@@ -32,7 +44,7 @@ const Login = ({navigation}) => {
               });
           });
         } else {
-          alert(response.data.message);
+          Alert.alert(response.data.message);
         }
       })
       .catch(err => {
@@ -50,7 +62,7 @@ const Login = ({navigation}) => {
         style={styles.input}
         placeholderTextColor={Colors.THEME_TEXT}
         keyboardType="email-address"
-        onSubmitEditing={() => passwordRef.current.focus()}
+        onSubmitEditing={() => passwordRef.current?.focus()}
         blurOnSubmit={false}
         autoCapitalize="none"
       />

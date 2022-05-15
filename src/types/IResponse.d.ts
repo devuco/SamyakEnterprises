@@ -1,5 +1,5 @@
-export default interface IResponse<T> {
+type IResponse<T> = {
   success: boolean;
   data: T;
   message: string;
-}
+};
