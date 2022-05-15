@@ -7,6 +7,7 @@ import {
   Dimensions,
   FlatList,
   Image,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -72,6 +73,8 @@ const Home = () => {
     });
     if (result?.platform === 'android') {
       return isDarkMode ? result.darkVibrant : result.lightVibrant;
+    } else if (result?.platform === 'ios') {
+      return isDarkMode ? result.detail : result.background;
     }
   };
 
@@ -154,7 +157,7 @@ const Home = () => {
   };
 
   return (
-    <View style={styles.parent}>
+    <SafeAreaView style={styles.parent}>
       <HomeToolbar isSearch={(value: boolean) => setSearch(value)} />
       {!search && (
         <ScrollView
@@ -183,7 +186,7 @@ const Home = () => {
           />
         </ScrollView>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 

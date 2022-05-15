@@ -2,6 +2,7 @@ import {
   Alert,
   Dimensions,
   Image,
+  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -70,7 +71,7 @@ const ProductDetails = () => {
   };
 
   return (
-    <View style={styles.parent}>
+    <SafeAreaView style={styles.parent}>
       <StatusBar backgroundColor={bgColor} />
       <ScrollView>
         <Icon
@@ -115,7 +116,7 @@ const ProductDetails = () => {
         </View>
       </ScrollView>
       <SButton title={'Add to cart'} onPress={addToCart} />
-    </View>
+    </SafeAreaView>
   );
 };
 

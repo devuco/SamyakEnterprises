@@ -7,7 +7,7 @@ import {StatusBar, StyleSheet, useColorScheme} from 'react-native';
 import TabBar from './src/components/TabBar';
 import Home from './src/screens/Home';
 import {LogBox} from 'react-native';
-import Colors from './src/utils/Colors';
+import Colors, {isDarkMode} from './src/utils/Colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ProductDetails from './src/screens/ProductDetails';
 import {RecoilRoot} from 'recoil';
@@ -85,7 +85,7 @@ const App = () => {
     <RecoilRoot>
       <NavigationContainer>
         <StatusBar
-          barStyle={!isDarkMode ? 'light-content' : 'dark-content'}
+          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
           backgroundColor={Colors.THEME_PRIMARY}
         />
         <Stack.Navigator

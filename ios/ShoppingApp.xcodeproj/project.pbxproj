@@ -14,6 +14,11 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-ShoppingApp-ShoppingAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-ShoppingApp-ShoppingAppTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+<<<<<<< HEAD:ios/ShoppingApp.xcodeproj/project.pbxproj
+=======
+		9194CC6B7ECC8108FC6AB244 /* libPods-SamyakEnterprises.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3771684F0AD2F76C03C55092 /* libPods-SamyakEnterprises.a */; };
+		9B806699C60B92327421B043 /* libPods-SamyakEnterprises-SamyakEnterprisesTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0448542719AC17C2F84370A7 /* libPods-SamyakEnterprises-SamyakEnterprisesTests.a */; };
+>>>>>>> bcc8ba42a9c361da281f482c66606993bba0f0ad:ios/SamyakEnterprises.xcodeproj/project.pbxproj
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +34,7 @@
 /* Begin PBXFileReference section */
 		00E356EE1AD99517003FC87E /* ShoppingAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShoppingAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+<<<<<<< HEAD:ios/ShoppingApp.xcodeproj/project.pbxproj
 		00E356F21AD99517003FC87E /* ShoppingAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShoppingAppTests.m; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* ShoppingApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShoppingApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ShoppingApp/AppDelegate.h; sourceTree = "<group>"; };
@@ -43,6 +49,21 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-ShoppingApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ShoppingApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ShoppingApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-ShoppingApp-ShoppingAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingApp-ShoppingAppTests.release.xcconfig"; path = "Target Support Files/Pods-ShoppingApp-ShoppingAppTests/Pods-ShoppingApp-ShoppingAppTests.release.xcconfig"; sourceTree = "<group>"; };
+=======
+		00E356F21AD99517003FC87E /* SamyakEnterprisesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SamyakEnterprisesTests.m; sourceTree = "<group>"; };
+		0448542719AC17C2F84370A7 /* libPods-SamyakEnterprises-SamyakEnterprisesTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SamyakEnterprises-SamyakEnterprisesTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* SamyakEnterprises.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SamyakEnterprises.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = SamyakEnterprises/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = SamyakEnterprises/AppDelegate.m; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = SamyakEnterprises/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = SamyakEnterprises/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = SamyakEnterprises/main.m; sourceTree = "<group>"; };
+		34093977565543B53833B466 /* Pods-SamyakEnterprises.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SamyakEnterprises.debug.xcconfig"; path = "Target Support Files/Pods-SamyakEnterprises/Pods-SamyakEnterprises.debug.xcconfig"; sourceTree = "<group>"; };
+		3771684F0AD2F76C03C55092 /* libPods-SamyakEnterprises.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SamyakEnterprises.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7AB179CA54DB55EB2602A1D2 /* Pods-SamyakEnterprises-SamyakEnterprisesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SamyakEnterprises-SamyakEnterprisesTests.debug.xcconfig"; path = "Target Support Files/Pods-SamyakEnterprises-SamyakEnterprisesTests/Pods-SamyakEnterprises-SamyakEnterprisesTests.debug.xcconfig"; sourceTree = "<group>"; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = SamyakEnterprises/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8E3731F0F7E59AC6E888B9CE /* Pods-SamyakEnterprises.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SamyakEnterprises.release.xcconfig"; path = "Target Support Files/Pods-SamyakEnterprises/Pods-SamyakEnterprises.release.xcconfig"; sourceTree = "<group>"; };
+>>>>>>> bcc8ba42a9c361da281f482c66606993bba0f0ad:ios/SamyakEnterprises.xcodeproj/project.pbxproj
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -140,10 +161,13 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
+<<<<<<< HEAD:ios/ShoppingApp.xcodeproj/project.pbxproj
 				3B4392A12AC88292D35C810B /* Pods-ShoppingApp.debug.xcconfig */,
 				5709B34CF0A7D63546082F79 /* Pods-ShoppingApp.release.xcconfig */,
 				5B7EB9410499542E8C5724F5 /* Pods-ShoppingApp-ShoppingAppTests.debug.xcconfig */,
 				89C6BE57DB24E9ADA2F236DE /* Pods-ShoppingApp-ShoppingAppTests.release.xcconfig */,
+=======
+>>>>>>> bcc8ba42a9c361da281f482c66606993bba0f0ad:ios/SamyakEnterprises.xcodeproj/project.pbxproj
 			);
 			path = Pods;
 			sourceTree = "<group>";
