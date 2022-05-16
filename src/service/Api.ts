@@ -1,7 +1,7 @@
 import Axios from './Axios';
 
 export class Api {
-  public static login = (body: {email: string; password: string}) => {
+  public static login = (body: Partial<IUser>) => {
     return Axios.post<IResponse<IUser>>('users/login', body);
   };
   public static getToken = () => {

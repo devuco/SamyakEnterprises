@@ -24,7 +24,7 @@ const Login = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
   const callAPI = () => {
-    const body = {email, password};
+    const body: Partial<IUser> = {email, password};
     Api.login(body)
       .then(response => {
         if (response.data.success) {
