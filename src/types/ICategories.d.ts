@@ -1,5 +1,5 @@
 type ICategories = {
-  _id: String;
-  name: String;
-  image: String;
+  _id: string;
+  name: string;
+  image: string;
 };

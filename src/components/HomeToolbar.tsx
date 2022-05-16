@@ -1,5 +1,4 @@
 import {
-  FlatList,
   Image,
   ScrollView,
   StyleSheet,
@@ -15,12 +14,15 @@ import {TextInput} from 'react-native-gesture-handler';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
 import {Api} from '../service/Api';
 import {Singleton} from '../utils';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 interface Props {
   isSearch: CallableFunction;
 }
 const HomeToolbar: React.FC<Props> = ({isSearch}) => {
-  const navigation = useNavigation<DrawerNavigationProp<any>>();
+  const drawerNavigation =
+    useNavigation<DrawerNavigationProp<DrawerParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
   const [searchPressed, setSearchPressed] = useState<boolean>(false);
   const [data, setData] = useState<ISearch>({
     categories: [],
@@ -46,7 +48,7 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
             style={styles.resultItemContainer}
             key={index}
             onPress={() => {
-              navigation.navigate(screen, {id: item._id});
+              navigation.navigate(screen, {id: item._id, bgColor: ''});
             }}>
             <Image
               source={{uri: Singleton.BASE_URL + item.image}}
@@ -69,7 +71,7 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
             color={Colors.THEME_TEXT}
             style={styles.icon}
             onPress={() => {
-              navigation.openDrawer();
+              drawerNavigation.openDrawer();
             }}
           />
         )}

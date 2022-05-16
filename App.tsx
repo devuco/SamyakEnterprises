@@ -3,7 +3,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import {StatusBar, StyleSheet, useColorScheme} from 'react-native';
+import {StatusBar, StyleSheet} from 'react-native';
 import TabBar from './src/components/TabBar';
 import Home from './src/screens/Home';
 import {LogBox} from 'react-native';
@@ -19,11 +19,9 @@ LogBox.ignoreLogs([
 ]);
 
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
   const Stack = createNativeStackNavigator<StackParamList>();
-  const Drawer = createDrawerNavigator();
-  const Tab = createBottomTabNavigator();
+  const Drawer = createDrawerNavigator<DrawerParamList>();
+  const Tab = createBottomTabNavigator<TabsParamList>();
 
   const Drawers = () => {
     return (
@@ -39,7 +37,7 @@ const App = () => {
           component={Tabs}
           options={{
             title: 'Home',
-            drawerIcon: ({focused}) => (
+            drawerIcon: () => (
               <Icon name="home" color={Colors.PRIMARY} size={25} />
             ),
           }}

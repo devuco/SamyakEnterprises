@@ -25,10 +25,6 @@ const Home = () => {
   const [companiesData, setCompaniesData] = useState<Array<ICompanies>>([]);
   const [categoriesData, setCategoriesData] = useState<Array<ICategories>>([]);
   const [search, setSearch] = useState(false);
-  type StackParamList = {
-    Login: undefined;
-    ProductDetails: {id?: string; bgColor?: string};
-  };
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
   productsData.map(el => el);
@@ -179,9 +175,9 @@ const Home = () => {
           />
           <Text style={styles.heading}>Top Picks For You</Text>
           <FlatList
+            horizontal
             data={productsData}
             renderItem={renderProducts}
-            horizontal
             style={styles.productList}
           />
         </ScrollView>

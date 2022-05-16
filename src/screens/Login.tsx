@@ -1,12 +1,4 @@
-import {
-  Alert,
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
-  TextInputProps,
-  View,
-} from 'react-native';
+import {Alert, Image, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useRef, useState} from 'react';
 import {Colors, Images} from '../utils';
 import SButton from '../components/SButton';
@@ -33,11 +25,9 @@ const Login = () => {
             Api.getToken()
               .then(response => {
                 Axios.defaults.headers.common['token'] = response.data.token;
-                AsyncStorage.setItem('token', response.data.token).then(
-                  response => {
-                    navigation.replace('Drawer');
-                  },
-                );
+                AsyncStorage.setItem('token', response.data.token).then(() => {
+                  navigation.replace('Drawer');
+                });
               })
               .catch(err => {
                 console.log('token', err.response.data);
