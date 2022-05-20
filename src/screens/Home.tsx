@@ -33,14 +33,14 @@ const Home = () => {
     Api.getProducts()
       .then(async res => {
         let response = res.data.data;
-        await Promise.all(
-          response.map(async (el: IProducts, index: number) => {
-            const image = Singleton.BASE_URL + el.image;
-            const bgColor = await getBackgroundColor(image);
-            response[index].bgColor = bgColor;
-            response[index].image = image;
-          }),
-        );
+        // await Promise.all(
+        //   response.map(async (el: IProducts, index: number) => {
+        //     const image = Singleton.BASE_URL + el.image;
+        //     const bgColor = await getBackgroundColor(image);
+        //     response[index].bgColor = bgColor;
+        //     response[index].image = image;
+        //   }),
+        // );
         setProductsData(response);
       })
       .catch(error => {
@@ -61,18 +61,18 @@ const Home = () => {
    * @method getBackgroundColor
    * @description Uses Image Colors Library to retrieve color of the image and return the color according to phone theme
    */
-  const getBackgroundColor = async (uri: string) => {
-    const result = await ImageColors.getColors(uri, {
-      fallback: '#228B22',
-      cache: false,
-      key: Math.random().toString(),
-    });
-    if (result?.platform === 'android') {
-      return isDarkMode ? result.darkVibrant : result.lightVibrant;
-    } else if (result?.platform === 'ios') {
-      return isDarkMode ? result.detail : result.background;
-    }
-  };
+  // const getBackgroundColor = async (uri: string) => {
+  //   const result = await ImageColors.getColors(uri, {
+  //     fallback: '#228B22',
+  //     cache: false,
+  //     key: Math.random().toString(),
+  //   });
+  //   if (result?.platform === 'android') {
+  //     return isDarkMode ? result.darkVibrant : result.lightVibrant;
+  //   } else if (result?.platform === 'ios') {
+  //     return isDarkMode ? result.detail : result.background;
+  //   }
+  // };
 
   /**
    * @method getDiscountedPrice
@@ -93,18 +93,20 @@ const Home = () => {
         onPress={() => {
           navigation.navigate('ProductDetails', {
             id: product._id,
-            bgColor: product.bgColor,
           });
         }}
         key={index}
-        style={[styles.productContainer, {backgroundColor: product.bgColor}]}>
+        style={[styles.productContainer, {backgroundColor: product.color}]}>
         <Icon
           name="favorite"
           style={styles.productHeart}
           size={25}
           color={Colors.DARK_GREY}
         />
-        <Image source={{uri: product.image}} style={styles.productImage} />
+        <Image
+          source={{uri: Singleton.BASE_URL + product.image}}
+          style={styles.productImage}
+        />
         <View style={styles.productBottomContainer}>
           <Text style={styles.productName}>{product.name}</Text>
           <View style={styles.productPriceRow}>

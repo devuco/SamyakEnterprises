@@ -11,4 +11,5 @@ type IProducts = {
   company?: string;
   totalRatings?: number;
   stock: number;
+  color?: string;
 };

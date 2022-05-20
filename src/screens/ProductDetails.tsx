@@ -13,7 +13,7 @@ import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {AirbnbRating} from 'react-native-ratings';
 import SButton from '../components/SButton';
-import {Colors, Singleton} from '../utils';
+import {Colors, Singleton, Toast} from '../utils';
 import {Api} from '../service/Api';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -24,16 +24,16 @@ const ProductDetails = () => {
   };
   const route = useRoute<RouteProp<StackParamList>>();
   const id: string = route.params.id;
-  const bgColor: string = route.params.bgColor;
   const [product, setProduct] = useState<IProducts>({
     price: 0,
     discount: 0,
     stock: 0,
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
-  const discountedPrice =
+  const getDiscountedPrice = () =>
     product.price - (product.price * product.discount) / 100;
 
   useEffect(() => {
@@ -58,30 +58,38 @@ const ProductDetails = () => {
   };
 
   const addToCart = () => {
+    setIsLoading(true);
     let body = {product: id, quantity: 1};
     Api.addToCart(body)
       .then(response => {
         if (response.data.success) {
-          Alert.alert('added');
+          Toast.showSuccess('Added Successfully');
+        } else {
+          Toast.showError();
         }
       })
       .catch(err => {
         console.log(err.response.data);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
   return (
     <SafeAreaView style={styles.parent}>
-      <StatusBar backgroundColor={bgColor} />
+      <StatusBar backgroundColor={product.color} />
       <ScrollView>
         <Icon
           name="arrow-back"
           color={Colors.THEME_TEXT}
-          style={[styles.backArrow, {backgroundColor: bgColor}]}
+          style={[styles.backArrow, {backgroundColor: product.color}]}
           size={25}
           onPress={() => navigation.goBack()}
         />
-        <View style={[styles.imageBackground, {backgroundColor: bgColor}]}>
+        {console.log(product)}
+        <View
+          style={[styles.imageBackground, {backgroundColor: product.color}]}>
           <Image
             source={{uri: Singleton.BASE_URL + product?.image}}
             style={styles.image}
@@ -105,7 +113,8 @@ const ProductDetails = () => {
               }>{`(${product?.totalRatings} Reviews)`}</Text>
           </View>
           <View style={styles.priceContainer}>
-            <Text style={styles.discountedPrice}>{`₹${discountedPrice}`}</Text>
+            <Text
+              style={styles.discountedPrice}>{`₹${getDiscountedPrice()}`}</Text>
             <Text style={styles.price}>
               {product?.discount !== 0 && `₹${product?.price}`}
             </Text>
@@ -115,7 +124,12 @@ const ProductDetails = () => {
           <Text style={styles.description}>{product?.description}</Text>
         </View>
       </ScrollView>
-      <SButton title={'Add to cart'} onPress={addToCart} />
+      <SButton
+        title={'Add to cart'}
+        onPress={addToCart}
+        isLoading={isLoading}
+        loadingText="Please Wait..."
+      />
     </SafeAreaView>
   );
 };

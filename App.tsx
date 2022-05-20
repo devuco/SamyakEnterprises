@@ -10,7 +10,6 @@ import {LogBox} from 'react-native';
 import Colors, {isDarkMode} from './src/utils/Colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ProductDetails from './src/screens/ProductDetails';
-import {RecoilRoot} from 'recoil';
 import SplashScreen from './src/screens/SplashScreen';
 import Login from './src/screens/Login';
 
@@ -80,23 +79,21 @@ const App = () => {
   };
 
   return (
-    <RecoilRoot>
-      <NavigationContainer>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={Colors.THEME_PRIMARY}
-        />
-        <Stack.Navigator
-          screenOptions={() => ({
-            headerShown: false,
-          })}>
-          <Stack.Screen name="SplashScreen" component={SplashScreen} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Drawer" component={Drawers} />
-          <Stack.Screen name="ProductDetails" component={ProductDetails} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </RecoilRoot>
+    <NavigationContainer>
+      <StatusBar
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        backgroundColor={Colors.THEME_PRIMARY}
+      />
+      <Stack.Navigator
+        screenOptions={() => ({
+          headerShown: false,
+        })}>
+        <Stack.Screen name="SplashScreen" component={SplashScreen} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Drawer" component={Drawers} />
+        <Stack.Screen name="ProductDetails" component={ProductDetails} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 

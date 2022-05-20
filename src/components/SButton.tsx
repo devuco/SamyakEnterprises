@@ -1,17 +1,25 @@
-import {StyleSheet, Text, TextStyle, View} from 'react-native';
+import {StyleSheet, Text, TextStyle, ActivityIndicator} from 'react-native';
 import React from 'react';
 import Colors from '../utils/Colors';
 
-interface Props {
+type Props = {
   title: string;
   style?: TextStyle;
   onPress?: () => void;
-}
+  isLoading?: boolean;
+  loadingText?: string;
+};
 
-const SButton: React.FC<Props> = ({title, style, onPress}) => {
+const SButton: React.FC<Props> = ({
+  title,
+  style,
+  onPress,
+  isLoading,
+  loadingText,
+}) => {
   return (
     <Text style={[styles.button, style]} onPress={onPress}>
-      {title}
+      {isLoading ? loadingText : title}
     </Text>
   );
 };
