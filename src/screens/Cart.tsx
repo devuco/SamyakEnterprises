@@ -1,11 +1,21 @@
-import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Api} from '../service/Api';
 import {Colors, Singleton, Toast} from '../utils';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toolbar from '../components/Toolbar';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 const Cart = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
   const [products, setProducts] = useState<ICart['products']>([]);
   useEffect(() => {
     getCart();
@@ -41,7 +51,11 @@ const Cart = () => {
         data={products}
         renderItem={({item}) => {
           return (
-            <View style={styles.itemContainer}>
+            <TouchableOpacity
+              style={styles.itemContainer}
+              onPress={() =>
+                navigation.navigate('ProductDetails', {id: item.product._id})
+              }>
               <Image
                 source={{uri: Singleton.BASE_URL + item.product.image}}
                 style={[
@@ -67,7 +81,7 @@ const Cart = () => {
                     flexDirection: 'row',
                   }}>
                   <Text style={{color: Colors.DARK_GREY}}>
-                    Rs.{item.product.price}
+                    Rs.{item.product.discountedPrice}
                   </Text>
                 </View>
               </View>
@@ -89,7 +103,7 @@ const Cart = () => {
                   onPress={() => removeProduct(item._id)}
                 />
               </View>
-            </View>
+            </TouchableOpacity>
           );
         }}
         ListEmptyComponent={() => {

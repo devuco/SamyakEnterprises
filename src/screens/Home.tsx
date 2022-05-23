@@ -80,7 +80,6 @@ const Home = () => {
                 styles.productDiscountedPrice
               }>{`₹${product.discountedPrice}`}</Text>
           </View>
-          {console.log('product', JSON.stringify(product, null, 2))}
           {product.discount !== 0 && (
             <Text
               style={styles.productDiscount}>{`${product.discount}% off`}</Text>
