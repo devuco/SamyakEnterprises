@@ -19,22 +19,12 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 const ProductDetails = () => {
-  type StackParamList = {
-    ProductDetails: {id: string; bgColor: string};
-  };
-  const route = useRoute<RouteProp<StackParamList>>();
-  const id: string = route.params.id;
-  const [product, setProduct] = useState<IProducts>({
-    price: 0,
-    discount: 0,
-    stock: 0,
-  });
+  const route = useRoute<RouteProp<StackParamList, 'ProductDetails'>>();
+  const id = route.params.id;
+  const [product, setProduct] = useState<IProducts>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
-
-  const getDiscountedPrice = () =>
-    product.price - (product.price * product.discount) / 100;
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
   useEffect(() => {
     Api.getProduct(id)
@@ -61,15 +51,12 @@ const ProductDetails = () => {
     setIsLoading(true);
     let body = {product: id, quantity: 1};
     Api.addToCart(body)
-      .then(response => {
-        if (response.data.success) {
-          Toast.showSuccess('Added Successfully');
-        } else {
-          Toast.showError();
-        }
+      .then(() => {
+        Toast.showSuccess('Added Successfully');
       })
       .catch(err => {
         console.log(err.response.data);
+        Toast.showError();
       })
       .finally(() => {
         setIsLoading(false);
@@ -80,14 +67,20 @@ const ProductDetails = () => {
     <SafeAreaView style={styles.parent}>
       <StatusBar backgroundColor={product.color} />
       <ScrollView>
-        <Icon
-          name="arrow-back"
-          color={Colors.THEME_TEXT}
-          style={[styles.backArrow, {backgroundColor: product.color}]}
-          size={25}
-          onPress={() => navigation.goBack()}
-        />
-        {console.log(product)}
+        <View style={[styles.header, {backgroundColor: product.color}]}>
+          <Icon
+            name="arrow-back"
+            color={Colors.THEME_TEXT}
+            size={25}
+            onPress={() => navigation.goBack()}
+          />
+          <Icon
+            name="shopping-cart"
+            color={Colors.THEME_TEXT}
+            size={25}
+            onPress={() => navigation.navigate('Cart')}
+          />
+        </View>
         <View
           style={[styles.imageBackground, {backgroundColor: product.color}]}>
           <Image
@@ -114,11 +107,13 @@ const ProductDetails = () => {
           </View>
           <View style={styles.priceContainer}>
             <Text
-              style={styles.discountedPrice}>{`₹${getDiscountedPrice()}`}</Text>
+              style={
+                styles.discountedPrice
+              }>{`₹${product?.discountedPrice}`}</Text>
             <Text style={styles.price}>
               {product?.discount !== 0 && `₹${product?.price}`}
             </Text>
-            <Text style={styles.stock}>{getStock(product?.stock)}</Text>
+            <Text style={styles.stock}>{getStock(product?.stock ?? 0)}</Text>
           </View>
           <Text style={styles.aboutText}>About</Text>
           <Text style={styles.description}>{product?.description}</Text>
@@ -138,9 +133,10 @@ export default ProductDetails;
 
 const styles = StyleSheet.create({
   parent: {flex: 1, backgroundColor: Colors.THEME_PRIMARY},
-  backArrow: {
-    zIndex: 1,
-    paddingLeft: 10,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
     paddingTop: 20,
   },
   imageBackground: {

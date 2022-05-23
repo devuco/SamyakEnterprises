@@ -48,7 +48,7 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
             style={styles.resultItemContainer}
             key={index}
             onPress={() => {
-              navigation.navigate(screen, {id: item._id, bgColor: ''});
+              navigation.navigate(screen, {id: item._id});
             }}>
             <Image
               source={{uri: Singleton.BASE_URL + item.image}}

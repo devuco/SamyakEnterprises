@@ -14,11 +14,10 @@ import {
   View,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import ImageColors from 'react-native-image-colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import HomeToolbar from '../components/HomeToolbar';
 import {Api} from '../service/Api';
-import {Colors, isDarkMode, Singleton} from '../utils';
+import {Colors, Singleton} from '../utils';
 
 const Home = () => {
   const [productsData, setProductsData] = useState<Array<IProducts>>([]);
@@ -33,14 +32,6 @@ const Home = () => {
     Api.getProducts()
       .then(async res => {
         let response = res.data.data;
-        // await Promise.all(
-        //   response.map(async (el: IProducts, index: number) => {
-        //     const image = Singleton.BASE_URL + el.image;
-        //     const bgColor = await getBackgroundColor(image);
-        //     response[index].bgColor = bgColor;
-        //     response[index].image = image;
-        //   }),
-        // );
         setProductsData(response);
       })
       .catch(error => {
@@ -56,33 +47,6 @@ const Home = () => {
       setCategoriesData(response.data.data);
     });
   }, []);
-
-  /**
-   * @method getBackgroundColor
-   * @description Uses Image Colors Library to retrieve color of the image and return the color according to phone theme
-   */
-  // const getBackgroundColor = async (uri: string) => {
-  //   const result = await ImageColors.getColors(uri, {
-  //     fallback: '#228B22',
-  //     cache: false,
-  //     key: Math.random().toString(),
-  //   });
-  //   if (result?.platform === 'android') {
-  //     return isDarkMode ? result.darkVibrant : result.lightVibrant;
-  //   } else if (result?.platform === 'ios') {
-  //     return isDarkMode ? result.detail : result.background;
-  //   }
-  // };
-
-  /**
-   * @method getDiscountedPrice
-   * @description Returns discounted price of the product. Discount % is received from response
-   */
-  const getDiscountedPrice = (item: IProducts) => {
-    const discount = (item.price * item.discount) / 100;
-    return item.price - discount;
-  };
-
   interface productProps {
     item: IProducts;
     index: number;
@@ -91,9 +55,7 @@ const Home = () => {
     return (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('ProductDetails', {
-            id: product._id,
-          });
+          navigation.navigate('ProductDetails', {id: product._id});
         }}
         key={index}
         style={[styles.productContainer, {backgroundColor: product.color}]}>
@@ -113,10 +75,12 @@ const Home = () => {
             {product.discount !== 0 && (
               <Text style={styles.productPrice}>{`₹${product.price}`}</Text>
             )}
-            <Text style={styles.productDiscountedPrice}>{`₹${getDiscountedPrice(
-              product,
-            )}`}</Text>
+            <Text
+              style={
+                styles.productDiscountedPrice
+              }>{`₹${product.discountedPrice}`}</Text>
           </View>
+          {console.log('product', JSON.stringify(product, null, 2))}
           {product.discount !== 0 && (
             <Text
               style={styles.productDiscount}>{`${product.discount}% off`}</Text>
@@ -184,6 +148,11 @@ const Home = () => {
           />
         </ScrollView>
       )}
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => navigation.navigate('Cart')}>
+        <Icon name="shopping-cart" size={25} color={Colors.THEME_TEXT} />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -195,7 +164,7 @@ const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: Colors.THEME_PRIMARY,
     paddingHorizontal: 10,
-    paddingBottom: 80,
+    paddingBottom: 150,
     flexGrow: 1,
   },
   heading: {
@@ -285,5 +254,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontSize: 16,
     fontWeight: '500',
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 105,
+    right: 25,
+    backgroundColor: Colors.PRIMARY,
+    borderRadius: 100,
+    padding: 15,
   },
 });

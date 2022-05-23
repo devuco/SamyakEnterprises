@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import ProductDetails from './src/screens/ProductDetails';
 import SplashScreen from './src/screens/SplashScreen';
 import Login from './src/screens/Login';
+import Cart from './src/screens/Cart';
 
 LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
@@ -70,9 +71,9 @@ const App = () => {
           initialParams={{icon: 'bookmark'}}
         />
         <Tab.Screen
-          name="Service"
+          name="Account"
           component={Home}
-          initialParams={{icon: 'handyman'}}
+          initialParams={{icon: 'person'}}
         />
       </Tab.Navigator>
     );
@@ -92,6 +93,7 @@ const App = () => {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Drawer" component={Drawers} />
         <Stack.Screen name="ProductDetails" component={ProductDetails} />
+        <Stack.Screen name="Cart" component={Cart} />
       </Stack.Navigator>
     </NavigationContainer>
   );

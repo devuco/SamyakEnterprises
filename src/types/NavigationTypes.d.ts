@@ -2,9 +2,10 @@ type StackParamList = {
   SplashScreen: undefined;
   Drawer?: DrawerParamList;
   Login: undefined;
-  ProductDetails: {id?: string; bgColor?: string};
-  CategoryDetails: {id?: string; bgColor?: string};
-  CompanyDetails: {id?: string; bgColor?: string};
+  ProductDetails: {id?: string};
+  CategoryDetails: {id?: string};
+  CompanyDetails: {id?: string};
+  Cart: undefined;
 };
 
 type DrawerParamList = {
@@ -15,5 +16,5 @@ type TabsParamList = {
   Home: {icon: 'home'};
   Categories: {icon: 'category'};
   Whishlist: {icon: 'bookmark'};
-  Service: {icon: 'handyman'};
+  Account: {icon: 'person'};
 };

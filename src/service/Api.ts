@@ -1,28 +1,29 @@
 import Axios from './Axios';
 
-export class Api {
-  public static login = (body: Partial<IUser>) => {
-    return Axios.post<IResponse<IUser>>('users/login', body);
-  };
-  public static getToken = () => {
-    return Axios.get<IToken>('token', {headers: {deviceId: '1234'}});
-  };
-  public static getCategories = () => {
-    return Axios.get<IResponse<Array<ICategories>>>('categories');
-  };
-  public static getCompanies = () => {
-    return Axios.get<IResponse<Array<ICompanies>>>('company');
-  };
-  public static getProducts = () => {
-    return Axios.get<IResponse<Array<IProducts>>>('products');
-  };
-  public static getProduct = (id: string) => {
-    return Axios.get<IResponse<IProducts>>(`products/${id}`);
-  };
-  public static searchProducts = (searchInput: string) => {
-    return Axios.get<ISearch>(`products/search/${searchInput}`);
-  };
-  public static addToCart = (body: ICart) => {
-    return Axios.post<IResponse<string>>('/cart', body);
-  };
-}
+const Api = {
+  login: (body: Partial<IUser>) =>
+    Axios.post<IResponse<IUser>>('users/login', body),
+
+  getToken: () => Axios.get<IToken>('token', {headers: {deviceId: '1234'}}),
+
+  getCategories: () => Axios.get<IResponse<Array<ICategories>>>('categories'),
+
+  getCompanies: () => Axios.get<IResponse<Array<ICompanies>>>('company'),
+
+  getProducts: () => Axios.get<IResponse<Array<IProducts>>>('products'),
+
+  getProduct: (id: IProducts['_id']) =>
+    Axios.get<IResponse<IProducts>>(`products/${id}`),
+
+  searchProducts: (searchInput: string) =>
+    Axios.get<ISearch>(`products/search/${searchInput}`),
+
+  addToCart: (body: {product?: string; quantity: number}) =>
+    Axios.post<IResponse<string>>('/cart', body),
+
+  getCart: () => Axios.get<IResponse<ICart>>('/cart'),
+
+  deleteFromCart: (id: string) =>
+    Axios.delete<IResponse<string>>(`/cart/${id}`),
+};
+export {Api};

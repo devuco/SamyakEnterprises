@@ -3,13 +3,13 @@ type IProducts = {
   name?: string;
   image?: string;
   description?: string;
-  price: number;
+  price?: number;
   category?: string;
-  bgColor?: string | undefined;
-  discount: number;
+  discount?: number;
+  discountedPrice?: number;
   avgRating?: number;
   company?: string;
   totalRatings?: number;
-  stock: number;
+  stock?: number;
   color?: string;
 };
