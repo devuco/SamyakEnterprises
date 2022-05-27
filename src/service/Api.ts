@@ -1,5 +1,14 @@
+import {Toast} from '../utils';
 import Axios from './Axios';
 
+Axios.interceptors.response.use(
+  response => response,
+  error => {
+    Toast.showError();
+    console.log('error', error.response.data);
+    return Promise.reject(error);
+  },
+);
 const Api = {
   login: (body: Partial<IUser>) =>
     Axios.post<IResponse<IUser>>('users/login', body),
@@ -26,4 +35,4 @@ const Api = {
   deleteFromCart: (id: string) =>
     Axios.delete<IResponse<string>>(`/cart/${id}`),
 };
-export {Api};
+export default Api;

@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {Api} from '../service/Api';
+import Api from '../service/Api';
 import {Colors, Singleton, Toast} from '../utils';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toolbar from '../components/Toolbar';
@@ -22,26 +22,16 @@ const Cart = () => {
   }, []);
 
   const getCart = () => {
-    Api.getCart()
-      .then(response => {
-        setProducts(response.data.data.products);
-      })
-      .catch(err => {
-        console.log(err);
-
-        Toast.showError();
-      });
+    Api.getCart().then(response => {
+      setProducts(response.data.data.products);
+    });
   };
 
   const removeProduct = (id: string) => {
-    Api.deleteFromCart(id)
-      .then(() => {
-        Toast.showSuccess('Removed from cart');
-        getCart();
-      })
-      .catch(err => {
-        Toast.showError();
-      });
+    Api.deleteFromCart(id).then(() => {
+      Toast.showSuccess('Removed from cart');
+      getCart();
+    });
   };
 
   return (

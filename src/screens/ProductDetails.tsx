@@ -1,5 +1,4 @@
 import {
-  Alert,
   Dimensions,
   Image,
   SafeAreaView,
@@ -14,7 +13,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {AirbnbRating} from 'react-native-ratings';
 import SButton from '../components/SButton';
 import {Colors, Singleton, Toast} from '../utils';
-import {Api} from '../service/Api';
+import Api from '../service/Api';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
@@ -27,16 +26,12 @@ const ProductDetails = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
   useEffect(() => {
-    Api.getProduct(id)
-      .then(response => {
-        if (response.status === 200) {
-          setProduct(response.data.data);
-        }
-      })
-      .catch(err => {
-        console.log('product error ', err.response.data);
-      });
-  }, []);
+    Api.getProduct(id).then(response => {
+      if (response.status === 200) {
+        setProduct(response.data.data);
+      }
+    });
+  }, [id]);
 
   const getStock = (stock: number) => {
     if (stock === 0) {
@@ -53,10 +48,6 @@ const ProductDetails = () => {
     Api.addToCart(body)
       .then(() => {
         Toast.showSuccess('Added Successfully');
-      })
-      .catch(err => {
-        console.log(err.response.data);
-        Toast.showError();
       })
       .finally(() => {
         setIsLoading(false);

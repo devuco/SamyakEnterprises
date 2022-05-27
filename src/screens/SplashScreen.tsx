@@ -1,4 +1,4 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React, {useEffect} from 'react';
 import Axios from '../service/Axios';
 import {Colors} from '../utils';
@@ -11,10 +11,10 @@ const SplashScreen = () => {
   useEffect(() => {
     AsyncStorage.getItem('token').then(token => {
       if (token !== null) {
-        Axios.defaults.headers.common['token'] = token;
+        Axios.defaults.headers.common.token = token;
         AsyncStorage.getItem('userId').then(userID => {
           if (userID !== null) {
-            Axios.defaults.headers.common['userId'] = userID;
+            Axios.defaults.headers.common.userId = userID;
             navigation.replace('Drawer');
           }
         });
@@ -22,7 +22,7 @@ const SplashScreen = () => {
         navigation.replace('Login');
       }
     });
-  }, []);
+  }, [navigation]);
   return (
     <View style={styles.parent}>
       {/* <Image source={Images.LOGO} style={styles.logo} /> */}

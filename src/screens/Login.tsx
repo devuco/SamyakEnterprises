@@ -2,7 +2,7 @@ import {Alert, Image, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useRef, useState} from 'react';
 import {Colors, Images} from '../utils';
 import SButton from '../components/SButton';
-import {Api} from '../service/Api';
+import Api from '../service/Api';
 import Axios from '../service/Axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
@@ -17,29 +17,21 @@ const Login = () => {
 
   const callAPI = () => {
     const body: Partial<IUser> = {email, password};
-    Api.login(body)
-      .then(response => {
-        if (response.data.success) {
-          Axios.defaults.headers.common['userId'] = response.data.data._id;
-          AsyncStorage.setItem('userId', response.data.data._id).then(res => {
-            Api.getToken()
-              .then(response => {
-                Axios.defaults.headers.common['token'] = response.data.token;
-                AsyncStorage.setItem('token', response.data.token).then(() => {
-                  navigation.replace('Drawer');
-                });
-              })
-              .catch(err => {
-                console.log('token', err.response.data);
-              });
+    Api.login(body).then(response => {
+      if (response.data.success) {
+        Axios.defaults.headers.common.userId = response.data.data._id;
+        AsyncStorage.setItem('userId', response.data.data._id).then(() => {
+          Api.getToken().then(res => {
+            Axios.defaults.headers.common.token = res.data.token;
+            AsyncStorage.setItem('token', res.data.token).then(() => {
+              navigation.replace('Drawer');
+            });
           });
-        } else {
-          Alert.alert(response.data.message);
-        }
-      })
-      .catch(err => {
-        console.log('login error', err.response.data);
-      });
+        });
+      } else {
+        Alert.alert(response.data.message);
+      }
+    });
   };
 
   return (

@@ -16,7 +16,7 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import HomeToolbar from '../components/HomeToolbar';
-import {Api} from '../service/Api';
+import Api from '../service/Api';
 import {Colors, Singleton} from '../utils';
 
 const Home = () => {
@@ -46,7 +46,7 @@ const Home = () => {
     Api.getCategories().then(response => {
       setCategoriesData(response.data.data);
     });
-  }, []);
+  }, [navigation]);
   interface productProps {
     item: IProducts;
     index: number;

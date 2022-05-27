@@ -12,7 +12,7 @@ import Colors from '../utils/Colors';
 import {useNavigation} from '@react-navigation/native';
 import {TextInput} from 'react-native-gesture-handler';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
-import {Api} from '../service/Api';
+import Api from '../service/Api';
 import {Singleton} from '../utils';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
@@ -32,9 +32,7 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
   const searchRef = useRef<TextInput>(null);
 
   const callAPI = (input: string) => {
-    Api.searchProducts(input)
-      .then(response => setData(response.data))
-      .catch(err => console.log('search err', err.response.data));
+    Api.searchProducts(input).then(response => setData(response.data));
   };
 
   const renderSearch = (
@@ -61,8 +59,10 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
     );
   };
 
+  const CONDITIONAL_FLEX = searchPressed ? 1 : 0;
+
   return (
-    <View style={[{flex: searchPressed ? 1 : 0}]}>
+    <View style={[{flex: CONDITIONAL_FLEX}]}>
       <View style={styles.container}>
         {!searchPressed && (
           <Icon
