@@ -1,7 +1,7 @@
 type ICart = {
   _id?: string;
   userId?: string;
-  products?: Array<ICartProduct>;
+  products: Array<ICartProduct>;
 };
 
 type ICartProduct = {

@@ -26,7 +26,7 @@ const Home = () => {
   const [search, setSearch] = useState(false);
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
-  productsData.map(el => el);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     Api.getProducts()

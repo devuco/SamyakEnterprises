@@ -32,7 +32,9 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
   const searchRef = useRef<TextInput>(null);
 
   const callAPI = (input: string) => {
-    Api.searchProducts(input).then(response => setData(response.data));
+    if (input.trim()) {
+      Api.searchProducts(input).then(response => setData(response.data));
+    }
   };
 
   const renderSearch = (

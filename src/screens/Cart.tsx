@@ -9,14 +9,13 @@ import {
 import React, {useEffect, useState} from 'react';
 import Api from '../service/Api';
 import {Colors, Singleton, Toast} from '../utils';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toolbar from '../components/Toolbar';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 const Cart = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
-  const [products, setProducts] = useState<ICart['products']>([]);
+  const [products, setProducts] = useState<Array<ICartProduct>>([]);
   useEffect(() => {
     getCart();
   }, []);
@@ -25,6 +24,14 @@ const Cart = () => {
     Api.getCart().then(response => {
       setProducts(response.data.data.products);
     });
+  };
+
+  const addToCart = () => {
+    let body = {product: id, quantity: 1};
+    Api.addToCart(body)
+      .then(() => {
+        Toast.showSuccess('Added Successfully');
+      })
   };
 
   const removeProduct = (id: string) => {
@@ -66,32 +73,62 @@ const Cart = () => {
                   }}>
                   {item.product.name}
                 </Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                  }}>
-                  <Text style={{color: Colors.DARK_GREY}}>
-                    Rs.{item.product.discountedPrice}
-                  </Text>
-                </View>
+                <Text style={{color: Colors.DARK_GREY}}>
+                  ₹{item.product.discountedPrice}
+                </Text>
               </View>
               <View
                 style={{
-                  justifyContent: 'space-evenly',
+                  marginVertical: 5,
+                  justifyContent: 'space-between',
+                  marginRight: 5,
                 }}>
-                <Icon
-                  name="edit"
-                  color={Colors.THEME_TEXT}
-                  size={25}
-                  style={{padding: 5}}
-                />
-                <Icon
+                {/* <Icon
                   name="delete"
                   color={Colors.THEME_TEXT}
                   size={25}
-                  style={{padding: 5}}
+                  style={{alignSelf: 'flex-end', flex: 1}}
                   onPress={() => removeProduct(item._id)}
-                />
+                /> */}
+                <Text
+                  style={{
+                    color: Colors.THEME_TEXT,
+                    alignSelf: 'flex-end',
+                    fontWeight: 'bold',
+                    fontSize: 18,
+                  }}>
+                  ₹{item.total}
+                </Text>
+                <View style={{flexDirection: 'row'}}>
+                  <Text
+                    onPress={() => }
+                    style={{
+                      backgroundColor: Colors.PRIMARY,
+                      borderRadius: 100,
+                      height: 20,
+                      width: 20,
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                    }}>
+                    -
+                  </Text>
+                  <Text
+                    style={{color: Colors.THEME_TEXT, marginHorizontal: 10}}>
+                    {item.quantity}
+                  </Text>
+                  <Text
+                    onPress={() => setQuantity(quantity + 1)}
+                    style={{
+                      backgroundColor: Colors.PRIMARY,
+                      borderRadius: 100,
+                      height: 20,
+                      width: 20,
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                    }}>
+                    +
+                  </Text>
+                </View>
               </View>
             </TouchableOpacity>
           );
