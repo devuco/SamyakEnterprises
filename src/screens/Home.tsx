@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     color: Colors.THEME_TEXT,
   },
   productDiscount: {
-    color: 'green',
+    color: Colors.DISCOUNT_GREEN,
     alignSelf: 'center',
     marginBottom: 5,
     fontSize: 16,

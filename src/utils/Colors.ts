@@ -11,6 +11,7 @@ const Colors = {
   STAR_YELLOW: '#ffc827',
   WHITE: '#FFFFFF',
   DARK_GREY: '#808080',
+  DISCOUNT_GREEN: '#00b300',
 };
 export default Colors;
 export {isDarkMode};

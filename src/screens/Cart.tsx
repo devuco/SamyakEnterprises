@@ -24,18 +24,24 @@ const Cart = () => {
   };
 
   const updateProduct = (id: string, quantity: number) => {
-    let body = {product: id, quantity};
-    Api.updateCart(body).then(response => {
-      setProducts(prevProducts => {
-        let index = prevProducts.findIndex(
-          product => product.product._id === response.data.data._id,
-        );
-        prevProducts[index].quantity = response.data.data.quantity;
-        prevProducts[index].total = response.data.data.total;
-        return [...prevProducts];
+    if (quantity === 0) {
+      Api.deleteFromCart(id).then(() => {
+        getCart();
       });
-      setNetTotal(response.data.data.netTotal);
-    });
+    } else {
+      let body = {product: id, quantity};
+      Api.updateCart(body).then(response => {
+        setProducts(prevProducts => {
+          let index = prevProducts.findIndex(
+            product => product.product._id === response.data.data._id,
+          );
+          prevProducts[index].quantity = response.data.data.quantity;
+          prevProducts[index].total = response.data.data.total;
+          return [...prevProducts];
+        });
+        setNetTotal(response.data.data.netTotal);
+      });
+    }
   };
 
   return (
@@ -53,28 +59,19 @@ const Cart = () => {
                   {backgroundColor: item.product.color},
                 ]}
               />
-              <View
-                style={{
-                  flex: 1,
-                  marginHorizontal: 8,
-                  justifyContent: 'space-evenly',
-                }}>
+              <View style={styles.itemColumn2}>
+                <Text style={styles.itemName}>{item.product.name}</Text>
+                <View style={styles.itemPriceContainer}>
+                  <Text style={styles.itemDiscountedPrice}>
+                    ₹{item.product.discountedPrice}
+                  </Text>
+                  <Text style={styles.itemPrice}>₹{item.product.price}</Text>
+                  <Text style={styles.itemDiscount}>
+                    {item.product.discount}%off
+                  </Text>
+                </View>
                 <Text
-                  style={{
-                    color: Colors.THEME_TEXT,
-                    fontWeight: 'bold',
-                  }}>
-                  {item.product.name}
-                </Text>
-                <Text style={{color: Colors.DARK_GREY}}>
-                  ₹{item.product.discountedPrice}
-                </Text>
-                <Text
-                  style={{
-                    color: Colors.PRIMARY,
-                    textDecorationLine: 'underline',
-                    fontWeight: 'bold',
-                  }}
+                  style={styles.itemViewProduct}
                   onPress={() =>
                     navigation.navigate('ProductDetails', {
                       id: item.product._id,
@@ -83,59 +80,22 @@ const Cart = () => {
                   View Product
                 </Text>
               </View>
-              <View
-                style={{
-                  marginVertical: 5,
-                  justifyContent: 'space-between',
-                  marginRight: 5,
-                }}>
-                {/* <Icon
-                  name="delete"
-                  color={Colors.THEME_TEXT}
-                  size={25}
-                  style={{alignSelf: 'flex-end', flex: 1}}
-                  onPress={() => removeProduct(item._id)}
-                /> */}
-                <Text
-                  style={{
-                    color: Colors.THEME_TEXT,
-                    alignSelf: 'flex-end',
-                    fontWeight: 'bold',
-                    fontSize: 18,
-                  }}>
-                  ₹{item.total}
-                </Text>
-                <View style={{flexDirection: 'row'}}>
+              <View style={styles.itemColumn3}>
+                <Text style={styles.itemTotal}>₹{item.total}</Text>
+                <View style={styles.itemQuantityContainer}>
                   <Text
                     onPress={() =>
                       updateProduct(item.product._id, item.quantity - 1)
                     }
-                    style={{
-                      backgroundColor: Colors.PRIMARY,
-                      borderRadius: 100,
-                      height: 20,
-                      width: 20,
-                      fontWeight: 'bold',
-                      textAlign: 'center',
-                    }}>
+                    style={styles.itemQuantityButton}>
                     -
                   </Text>
-                  <Text
-                    style={{color: Colors.THEME_TEXT, marginHorizontal: 10}}>
-                    {item.quantity}
-                  </Text>
+                  <Text style={styles.itemQuantity}>{item.quantity}</Text>
                   <Text
                     onPress={() =>
                       updateProduct(item.product._id, item.quantity + 1)
                     }
-                    style={{
-                      backgroundColor: Colors.PRIMARY,
-                      borderRadius: 100,
-                      height: 20,
-                      width: 20,
-                      fontWeight: 'bold',
-                      textAlign: 'center',
-                    }}>
+                    style={styles.itemQuantityButton}>
                     +
                   </Text>
                 </View>
@@ -147,14 +107,34 @@ const Cart = () => {
           return <Text style={{color: 'black'}}>NO DATA</Text>;
         }}
       />
-      <Text
-        style={{
-          color: Colors.THEME_TEXT,
-          fontWeight: 'bold',
-          alignSelf: 'center',
-        }}>
-        {netTotal}
-      </Text>
+      <View style={styles.bottomContainer}>
+        <Text
+          style={{
+            color: Colors.THEME_PRIMARY,
+            textAlign: 'center',
+            fontSize: 18,
+            fontWeight: 'bold',
+            flex: 1,
+          }}>
+          ₹{netTotal}
+        </Text>
+        <View
+          style={{
+            backgroundColor: Colors.THEME_PRIMARY,
+            borderRadius: 50,
+            flex: 1,
+            margin: 10,
+          }}>
+          <Text
+            style={{
+              color: Colors.THEME_TEXT,
+              textAlign: 'center',
+              padding: 10,
+            }}>
+            Place Order
+          </Text>
+        </View>
+      </View>
     </View>
   );
 };
@@ -173,7 +153,67 @@ const styles = StyleSheet.create({
   itemImage: {
     height: 100,
     width: 100,
-
     borderRadius: 12,
+  },
+  itemColumn2: {
+    flex: 1,
+    marginHorizontal: 8,
+    justifyContent: 'space-evenly',
+  },
+  itemName: {
+    color: Colors.THEME_TEXT,
+    fontWeight: 'bold',
+  },
+  itemPriceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  itemDiscountedPrice: {
+    color: Colors.THEME_TEXT,
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginRight: 5,
+  },
+  itemPrice: {
+    color: Colors.DARK_GREY,
+    textDecorationLine: 'line-through',
+    marginRight: 5,
+  },
+  itemDiscount: {
+    color: Colors.DISCOUNT_GREEN,
+    marginRight: 5,
+    fontWeight: 'bold',
+  },
+  itemViewProduct: {
+    color: Colors.PRIMARY,
+    textDecorationLine: 'underline',
+    fontWeight: 'bold',
+  },
+  itemColumn3: {
+    marginVertical: 5,
+    justifyContent: 'space-between',
+    marginRight: 5,
+  },
+  itemTotal: {
+    color: Colors.THEME_TEXT,
+    alignSelf: 'flex-end',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  itemQuantityContainer: {flexDirection: 'row'},
+  itemQuantityButton: {
+    backgroundColor: Colors.PRIMARY,
+    borderRadius: 100,
+    height: 20,
+    width: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  itemQuantity: {color: Colors.THEME_TEXT, marginHorizontal: 10},
+  bottomContainer: {
+    flexDirection: 'row',
+    backgroundColor: Colors.PRIMARY,
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
   },
 });
