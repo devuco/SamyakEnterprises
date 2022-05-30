@@ -28,9 +28,12 @@ const Api = {
     Axios.get<ISearch>(`products/search/${searchInput}`),
 
   addToCart: (body: {product?: string; quantity: number}) =>
-    Axios.post<IResponse<string>>('/cart', body),
+    Axios.post<IResponse<ICartProduct>>('/cart', body),
 
   getCart: () => Axios.get<IResponse<ICart>>('/cart'),
+
+  updateCart: (body: {product?: string; quantity: number}) =>
+    Axios.put<IResponse<ICartProduct>>('/cart', body),
 
   deleteFromCart: (id: string) =>
     Axios.delete<IResponse<string>>(`/cart/${id}`),

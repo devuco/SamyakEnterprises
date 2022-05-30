@@ -20,7 +20,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 const ProductDetails = () => {
   const route = useRoute<RouteProp<StackParamList, 'ProductDetails'>>();
   const id = route.params.id;
-  const [product, setProduct] = useState<IProducts>({});
+  const [product, setProduct] = useState<IProducts>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
@@ -56,9 +56,9 @@ const ProductDetails = () => {
 
   return (
     <SafeAreaView style={styles.parent}>
-      <StatusBar backgroundColor={product.color} />
+      <StatusBar backgroundColor={product?.color} />
       <ScrollView>
-        <View style={[styles.header, {backgroundColor: product.color}]}>
+        <View style={[styles.header, {backgroundColor: product?.color}]}>
           <Icon
             name="arrow-back"
             color={Colors.THEME_TEXT}
@@ -73,7 +73,7 @@ const ProductDetails = () => {
           />
         </View>
         <View
-          style={[styles.imageBackground, {backgroundColor: product.color}]}>
+          style={[styles.imageBackground, {backgroundColor: product?.color}]}>
           <Image
             source={{uri: Singleton.BASE_URL + product?.image}}
             style={styles.image}

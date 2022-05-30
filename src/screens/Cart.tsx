@@ -1,14 +1,7 @@
-import {
-  FlatList,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Api from '../service/Api';
-import {Colors, Singleton, Toast} from '../utils';
+import {Colors, Singleton} from '../utils';
 import Toolbar from '../components/Toolbar';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -16,6 +9,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 const Cart = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
   const [products, setProducts] = useState<Array<ICartProduct>>([]);
+  const [netTotal, setNetTotal] = useState(0);
   useEffect(() => {
     getCart();
   }, []);
@@ -23,21 +17,24 @@ const Cart = () => {
   const getCart = () => {
     Api.getCart().then(response => {
       setProducts(response.data.data.products);
+      setNetTotal(response.data.data.netTotal);
+      return true;
     });
+    return false;
   };
 
-  const addToCart = () => {
-    let body = {product: id, quantity: 1};
-    Api.addToCart(body)
-      .then(() => {
-        Toast.showSuccess('Added Successfully');
-      })
-  };
-
-  const removeProduct = (id: string) => {
-    Api.deleteFromCart(id).then(() => {
-      Toast.showSuccess('Removed from cart');
-      getCart();
+  const updateProduct = (id: string, quantity: number) => {
+    let body = {product: id, quantity};
+    Api.updateCart(body).then(response => {
+      setProducts(prevProducts => {
+        let index = prevProducts.findIndex(
+          product => product.product._id === response.data.data._id,
+        );
+        prevProducts[index].quantity = response.data.data.quantity;
+        prevProducts[index].total = response.data.data.total;
+        return [...prevProducts];
+      });
+      setNetTotal(response.data.data.netTotal);
     });
   };
 
@@ -48,11 +45,7 @@ const Cart = () => {
         data={products}
         renderItem={({item}) => {
           return (
-            <TouchableOpacity
-              style={styles.itemContainer}
-              onPress={() =>
-                navigation.navigate('ProductDetails', {id: item.product._id})
-              }>
+            <View style={styles.itemContainer}>
               <Image
                 source={{uri: Singleton.BASE_URL + item.product.image}}
                 style={[
@@ -75,6 +68,19 @@ const Cart = () => {
                 </Text>
                 <Text style={{color: Colors.DARK_GREY}}>
                   ₹{item.product.discountedPrice}
+                </Text>
+                <Text
+                  style={{
+                    color: Colors.PRIMARY,
+                    textDecorationLine: 'underline',
+                    fontWeight: 'bold',
+                  }}
+                  onPress={() =>
+                    navigation.navigate('ProductDetails', {
+                      id: item.product._id,
+                    })
+                  }>
+                  View Product
                 </Text>
               </View>
               <View
@@ -101,7 +107,9 @@ const Cart = () => {
                 </Text>
                 <View style={{flexDirection: 'row'}}>
                   <Text
-                    onPress={() => }
+                    onPress={() =>
+                      updateProduct(item.product._id, item.quantity - 1)
+                    }
                     style={{
                       backgroundColor: Colors.PRIMARY,
                       borderRadius: 100,
@@ -117,7 +125,9 @@ const Cart = () => {
                     {item.quantity}
                   </Text>
                   <Text
-                    onPress={() => setQuantity(quantity + 1)}
+                    onPress={() =>
+                      updateProduct(item.product._id, item.quantity + 1)
+                    }
                     style={{
                       backgroundColor: Colors.PRIMARY,
                       borderRadius: 100,
@@ -130,13 +140,21 @@ const Cart = () => {
                   </Text>
                 </View>
               </View>
-            </TouchableOpacity>
+            </View>
           );
         }}
         ListEmptyComponent={() => {
           return <Text style={{color: 'black'}}>NO DATA</Text>;
         }}
       />
+      <Text
+        style={{
+          color: Colors.THEME_TEXT,
+          fontWeight: 'bold',
+          alignSelf: 'center',
+        }}>
+        {netTotal}
+      </Text>
     </View>
   );
 };

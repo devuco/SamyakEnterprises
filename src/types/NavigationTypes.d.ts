@@ -2,9 +2,9 @@ type StackParamList = {
   SplashScreen: undefined;
   Drawer?: DrawerParamList;
   Login: undefined;
-  ProductDetails: {id?: string};
-  CategoryDetails: {id?: string};
-  CompanyDetails: {id?: string};
+  ProductDetails: {id: string};
+  CategoryDetails: {id: string};
+  CompanyDetails: {id: string};
   Cart: undefined;
 };
 
