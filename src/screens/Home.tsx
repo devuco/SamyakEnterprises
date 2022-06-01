@@ -150,7 +150,7 @@ const Home = () => {
       <TouchableOpacity
         style={styles.fab}
         onPress={() => navigation.navigate('Cart')}>
-        <Icon name="shopping-cart" size={25} color={Colors.THEME_TEXT} />
+        <Icon name="shopping-cart" size={25} color={Colors.SECONDARY} />
       </TouchableOpacity>
     </SafeAreaView>
   );

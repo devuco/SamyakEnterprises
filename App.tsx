@@ -3,7 +3,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import {StatusBar, StyleSheet} from 'react-native';
+import {StatusBar} from 'react-native';
 import TabBar from './src/components/TabBar';
 import Home from './src/screens/Home';
 import {LogBox} from 'react-native';
@@ -13,6 +13,7 @@ import ProductDetails from './src/screens/ProductDetails';
 import SplashScreen from './src/screens/SplashScreen';
 import Login from './src/screens/Login';
 import Cart from './src/screens/Cart';
+import Checkout from './src/screens/Checkout';
 
 LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
@@ -94,11 +95,12 @@ const App = () => {
         <Stack.Screen name="Drawer" component={Drawers} />
         <Stack.Screen name="ProductDetails" component={ProductDetails} />
         <Stack.Screen name="Cart" component={Cart} />
+        <Stack.Screen name="Checkout" component={Checkout} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
 
-const styles = StyleSheet.create({});
+// const styles = StyleSheet.create({});
 
 export default App;

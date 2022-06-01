@@ -1,10 +1,9 @@
-import {Toast} from '../utils';
+// import {Toast} from '../utils';
 import Axios from './Axios';
 
 Axios.interceptors.response.use(
   response => response,
   error => {
-    Toast.showError();
     console.log('error', error.response.data);
     return Promise.reject(error);
   },

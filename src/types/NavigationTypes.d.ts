@@ -6,6 +6,7 @@ type StackParamList = {
   CategoryDetails: {id: string};
   CompanyDetails: {id: string};
   Cart: undefined;
+  Checkout: undefined;
 };
 
 type DrawerParamList = {

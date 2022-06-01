@@ -22,30 +22,16 @@ const TabBar = ({state}: any) => {
   };
 
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        backgroundColor: Colors.THEME_PRIMARY,
-        marginHorizontal: 20,
-        borderRadius: 15,
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        position: 'absolute',
-        alignSelf: 'center',
-        bottom: 10,
-        left: 0,
-        right: 0,
-      }}>
+    <View style={styles.parent}>
       <Animated.View
-        style={{
-          backgroundColor: Colors.SECONDARY,
-          borderRadius: 15,
-          width: width,
-          height: height,
-          position: 'absolute',
-          transform: [{translateX: transAnimation}, {translateY: y}],
-        }}
+        style={[
+          styles.container,
+          {
+            width: width,
+            height: height,
+            transform: [{translateX: transAnimation}, {translateY: y}],
+          },
+        ]}
       />
       {routes.map((item: any, index: number) => {
         return (
@@ -59,16 +45,12 @@ const TabBar = ({state}: any) => {
                 setY(params.y);
               }
             }}
-            style={{
-              flexDirection: 'row',
-              borderRadius: 15,
-              alignItems: 'center',
-              paddingVertical: 10,
-              paddingHorizontal: 15,
-            }}
+            style={styles.tab}
             onPress={() => {
               setSelected(item.name);
-              if (state.index !== index) navigation.navigate(item.name);
+              if (state.index !== index) {
+                navigation.navigate(item.name);
+              }
             }}
             key={item.key}>
             <Icon
@@ -77,14 +59,7 @@ const TabBar = ({state}: any) => {
               size={25}
             />
             {item.name === selected && (
-              <Text
-                style={{
-                  color: Colors.PRIMARY,
-                  marginLeft: 5,
-                  fontWeight: '700',
-                }}>
-                {item.name}
-              </Text>
+              <Text style={styles.text}>{item.name}</Text>
             )}
           </TouchableOpacity>
         );
@@ -95,4 +70,36 @@ const TabBar = ({state}: any) => {
 
 export default TabBar;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  parent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: Colors.THEME_PRIMARY,
+    marginHorizontal: 20,
+    borderRadius: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    position: 'absolute',
+    alignSelf: 'center',
+    bottom: 10,
+    left: 0,
+    right: 0,
+  },
+  container: {
+    backgroundColor: Colors.SECONDARY,
+    borderRadius: 15,
+    position: 'absolute',
+  },
+  tab: {
+    flexDirection: 'row',
+    borderRadius: 15,
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  text: {
+    color: Colors.PRIMARY,
+    marginLeft: 5,
+    fontWeight: '700',
+  },
+});

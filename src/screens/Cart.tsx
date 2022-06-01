@@ -1,29 +1,51 @@
-import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Api from '../service/Api';
 import {Colors, Singleton} from '../utils';
 import Toolbar from '../components/Toolbar';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import Loader from '../components/Loader';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Cart = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
   const [products, setProducts] = useState<Array<ICartProduct>>([]);
   const [netTotal, setNetTotal] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     getCart();
   }, []);
 
+  /**
+   * @method getCart
+   * @description get cart products
+   */
   const getCart = () => {
     Api.getCart().then(response => {
       setProducts(response.data.data.products);
       setNetTotal(response.data.data.netTotal);
+      setIsLoading(false);
       return true;
     });
     return false;
   };
 
+  /**
+   * @method updateProduct
+   * @description Update product quantity, if quantity is 0 then delete product from cart.
+   * Update object of selected product and net total.
+   */
   const updateProduct = (id: string, quantity: number) => {
+    setIsLoading(true);
     if (quantity === 0) {
       Api.deleteFromCart(id).then(() => {
         getCart();
@@ -40,6 +62,7 @@ const Cart = () => {
           return [...prevProducts];
         });
         setNetTotal(response.data.data.netTotal);
+        setIsLoading(false);
       });
     }
   };
@@ -59,6 +82,8 @@ const Cart = () => {
                   {backgroundColor: item.product.color},
                 ]}
               />
+
+              {/* Column 2 contains name price discount and viewText */}
               <View style={styles.itemColumn2}>
                 <Text style={styles.itemName}>{item.product.name}</Text>
                 <View style={styles.itemPriceContainer}>
@@ -80,6 +105,8 @@ const Cart = () => {
                   View Product
                 </Text>
               </View>
+
+              {/* Column 3 contains Quanity Button and Total Text */}
               <View style={styles.itemColumn3}>
                 <Text style={styles.itemTotal}>₹{item.total}</Text>
                 <View style={styles.itemQuantityContainer}>
@@ -104,37 +131,17 @@ const Cart = () => {
           );
         }}
         ListEmptyComponent={() => {
-          return <Text style={{color: 'black'}}>NO DATA</Text>;
+          return <Text style={{color: Colors.THEME_TEXT}}>NO DATA</Text>;
         }}
       />
-      <View style={styles.bottomContainer}>
-        <Text
-          style={{
-            color: Colors.THEME_PRIMARY,
-            textAlign: 'center',
-            fontSize: 18,
-            fontWeight: 'bold',
-            flex: 1,
-          }}>
-          ₹{netTotal}
-        </Text>
-        <View
-          style={{
-            backgroundColor: Colors.THEME_PRIMARY,
-            borderRadius: 50,
-            flex: 1,
-            margin: 10,
-          }}>
-          <Text
-            style={{
-              color: Colors.THEME_TEXT,
-              textAlign: 'center',
-              padding: 10,
-            }}>
-            Place Order
-          </Text>
-        </View>
-      </View>
+      <TouchableOpacity
+        style={styles.bottomContainer}
+        onPress={() => navigation.navigate('Checkout')}>
+        <Text style={styles.proceed}>Proceed to Checkout</Text>
+        <Text style={styles.netTotal}>₹{netTotal}</Text>
+        <Icon name="arrow-forward-ios" size={20} color={Colors.PRIMARY} />
+      </TouchableOpacity>
+      <Loader isLoading={isLoading} />
     </View>
   );
 };
@@ -212,8 +219,27 @@ const styles = StyleSheet.create({
   itemQuantity: {color: Colors.THEME_TEXT, marginHorizontal: 10},
   bottomContainer: {
     flexDirection: 'row',
-    backgroundColor: Colors.PRIMARY,
+    backgroundColor: Colors.SECONDARY,
+    marginHorizontal: 15,
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginBottom: 20,
+    borderRadius: 14,
+  },
+  proceed: {
+    color: Colors.PRIMARY,
+    fontWeight: '700',
+    fontSize: 16,
+    padding: 12,
+    backgroundColor: Colors.SECONDARY,
+    borderRadius: 10,
+    flex: 1,
+  },
+  netTotal: {
+    color: Colors.PRIMARY,
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginRight: 10,
   },
 });
