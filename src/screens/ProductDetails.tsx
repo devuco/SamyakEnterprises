@@ -49,6 +49,9 @@ const ProductDetails = () => {
       .then(() => {
         Toast.showSuccess('Added Successfully');
       })
+      .catch(err => {
+        Toast.showError(err.response.data.message);
+      })
       .finally(() => {
         setIsLoading(false);
       });
@@ -61,13 +64,13 @@ const ProductDetails = () => {
         <View style={[styles.header, {backgroundColor: product?.color}]}>
           <Icon
             name="arrow-back"
-            color={Colors.THEME_TEXT}
+            color={Colors.BLACK}
             size={25}
             onPress={() => navigation.goBack()}
           />
           <Icon
             name="shopping-cart"
-            color={Colors.THEME_TEXT}
+            color={Colors.BLACK}
             size={25}
             onPress={() => navigation.navigate('Cart')}
           />

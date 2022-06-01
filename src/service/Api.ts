@@ -9,8 +9,7 @@ Axios.interceptors.response.use(
   },
 );
 const Api = {
-  login: (body: Partial<IUser>) =>
-    Axios.post<IResponse<IUser>>('users/login', body),
+  login: (body: Partial<IUser>) => Axios.post<IResponse<IUser>>('login', body),
 
   getToken: () => Axios.get<IToken>('token', {headers: {deviceId: '1234'}}),
 

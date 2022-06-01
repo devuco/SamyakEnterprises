@@ -1,11 +1,4 @@
-import {
-  FlatList,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Api from '../service/Api';
 import {Colors, Singleton} from '../utils';
@@ -13,7 +6,7 @@ import Toolbar from '../components/Toolbar';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Loader from '../components/Loader';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import SNextButton from '../components/SNextButton';
 
 const Cart = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
@@ -30,12 +23,15 @@ const Cart = () => {
    * @description get cart products
    */
   const getCart = () => {
-    Api.getCart().then(response => {
-      setProducts(response.data.data.products);
-      setNetTotal(response.data.data.netTotal);
-      setIsLoading(false);
-      return true;
-    });
+    Api.getCart()
+      .then(response => {
+        console.log(response.data);
+
+        setProducts(response.data.data.products);
+        setNetTotal(response.data.data.netTotal);
+        return true;
+      })
+      .finally(() => setIsLoading(false));
     return false;
   };
 
@@ -52,18 +48,19 @@ const Cart = () => {
       });
     } else {
       let body = {product: id, quantity};
-      Api.updateCart(body).then(response => {
-        setProducts(prevProducts => {
-          let index = prevProducts.findIndex(
-            product => product.product._id === response.data.data._id,
-          );
-          prevProducts[index].quantity = response.data.data.quantity;
-          prevProducts[index].total = response.data.data.total;
-          return [...prevProducts];
-        });
-        setNetTotal(response.data.data.netTotal);
-        setIsLoading(false);
-      });
+      Api.updateCart(body)
+        .then(response => {
+          setProducts(prevProducts => {
+            let index = prevProducts.findIndex(
+              product => product.product._id === response.data.data._id,
+            );
+            prevProducts[index].quantity = response.data.data.quantity;
+            prevProducts[index].total = response.data.data.total;
+            return [...prevProducts];
+          });
+          setNetTotal(response.data.data.netTotal);
+        })
+        .finally(() => setIsLoading(false));
     }
   };
 
@@ -130,17 +127,20 @@ const Cart = () => {
             </View>
           );
         }}
-        ListEmptyComponent={() => {
-          return <Text style={{color: Colors.THEME_TEXT}}>NO DATA</Text>;
-        }}
+        ListEmptyComponent={() => (
+          <Text style={{color: Colors.THEME_TEXT}}>NO DATA</Text>
+        )}
       />
-      <TouchableOpacity
-        style={styles.bottomContainer}
-        onPress={() => navigation.navigate('Checkout')}>
-        <Text style={styles.proceed}>Proceed to Checkout</Text>
-        <Text style={styles.netTotal}>₹{netTotal}</Text>
-        <Icon name="arrow-forward-ios" size={20} color={Colors.PRIMARY} />
-      </TouchableOpacity>
+      <View style={styles.totalContainer}>
+        <Text style={styles.totalText}>Total</Text>
+        <Text style={styles.totalPrice}>₹{netTotal}</Text>
+      </View>
+      {products && products.length !== 0 && (
+        <SNextButton
+          leftText="Proceed to Checkout"
+          onPress={() => navigation.navigate('Checkout')}
+        />
+      )}
       <Loader isLoading={isLoading} />
     </View>
   );
@@ -217,29 +217,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   itemQuantity: {color: Colors.THEME_TEXT, marginHorizontal: 10},
-  bottomContainer: {
+  totalContainer: {
     flexDirection: 'row',
-    backgroundColor: Colors.SECONDARY,
-    marginHorizontal: 15,
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    borderRadius: 12,
+    marginHorizontal: 20,
     marginBottom: 20,
-    borderRadius: 14,
   },
-  proceed: {
-    color: Colors.PRIMARY,
-    fontWeight: '700',
-    fontSize: 16,
-    padding: 12,
-    backgroundColor: Colors.SECONDARY,
-    borderRadius: 10,
-    flex: 1,
-  },
-  netTotal: {
-    color: Colors.PRIMARY,
+  totalText: {
+    color: Colors.THEME_TEXT,
     fontWeight: 'bold',
-    fontSize: 16,
-    marginRight: 10,
+    fontSize: 18,
+  },
+  totalPrice: {
+    color: Colors.THEME_TEXT,
+    fontWeight: 'bold',
+    fontSize: 18,
   },
 });

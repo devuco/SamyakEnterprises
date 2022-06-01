@@ -7,6 +7,7 @@ import {
   Dimensions,
   FlatList,
   Image,
+  ListRenderItem,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -47,11 +48,11 @@ const Home = () => {
       setCategoriesData(response.data.data);
     });
   }, [navigation]);
-  interface productProps {
-    item: IProducts;
-    index: number;
-  }
-  const renderProducts: React.FC<productProps> = ({item: product, index}) => {
+
+  const renderProducts: ListRenderItem<IProducts> = ({
+    item: product,
+    index,
+  }) => {
     return (
       <TouchableOpacity
         onPress={() => {
@@ -89,10 +90,7 @@ const Home = () => {
     );
   };
 
-  interface companyProps {
-    item: ICompanies;
-  }
-  const renderCompanies: React.FC<companyProps> = ({item: company}) => {
+  const renderCompanies: ListRenderItem<ICompanies> = ({item: company}) => {
     return (
       <View style={styles.companyContainer}>
         <Image
@@ -103,10 +101,7 @@ const Home = () => {
     );
   };
 
-  interface categoryProps {
-    item: ICategories;
-  }
-  const renderCategories: React.FC<categoryProps> = ({item: category}) => {
+  const renderCategories: ListRenderItem<ICategories> = ({item: category}) => {
     return (
       <View style={styles.categoryContainer}>
         <Image
