@@ -1,4 +1,11 @@
-import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Api from '../service/Api';
 import {Colors, Singleton} from '../utils';
@@ -7,6 +14,7 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Loader from '../components/Loader';
 import SNextButton from '../components/SNextButton';
+import TextRow from '../components/TextRow';
 
 const Cart = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
@@ -65,7 +73,7 @@ const Cart = () => {
   };
 
   return (
-    <View style={styles.parent}>
+    <SafeAreaView style={styles.parent}>
       <Toolbar color={Colors.THEME_PRIMARY} title="Cart" />
       <FlatList
         data={products}
@@ -95,7 +103,7 @@ const Cart = () => {
                 <Text
                   style={styles.itemViewProduct}
                   onPress={() =>
-                    navigation.navigate('ProductDetails', {
+                    navigation.push('ProductDetails', {
                       id: item.product._id,
                     })
                   }>
@@ -131,18 +139,15 @@ const Cart = () => {
           <Text style={{color: Colors.THEME_TEXT}}>NO DATA</Text>
         )}
       />
-      <View style={styles.totalContainer}>
-        <Text style={styles.totalText}>Total</Text>
-        <Text style={styles.totalPrice}>₹{netTotal}</Text>
-      </View>
+      <TextRow texts={['Total', `₹${netTotal}`]} />
       {products && products.length !== 0 && (
         <SNextButton
           leftText="Proceed to Checkout"
-          onPress={() => navigation.navigate('Checkout')}
+          onPress={() => navigation.navigate('Checkout', {total: netTotal})}
         />
       )}
       <Loader isLoading={isLoading} />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -210,29 +215,12 @@ const styles = StyleSheet.create({
   itemQuantityContainer: {flexDirection: 'row'},
   itemQuantityButton: {
     backgroundColor: Colors.PRIMARY,
-    borderRadius: 100,
+    borderRadius: 10,
     height: 20,
     width: 20,
     fontWeight: 'bold',
     textAlign: 'center',
+    overflow: 'hidden',
   },
   itemQuantity: {color: Colors.THEME_TEXT, marginHorizontal: 10},
-  totalContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    borderRadius: 12,
-    marginHorizontal: 20,
-    marginBottom: 20,
-  },
-  totalText: {
-    color: Colors.THEME_TEXT,
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
-  totalPrice: {
-    color: Colors.THEME_TEXT,
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
 });

@@ -28,7 +28,7 @@ export default SButton;
 
 const styles = StyleSheet.create({
   button: {
-    color: Colors.WHITE,
+    color: Colors.THEME_PRIMARY,
     backgroundColor: Colors.PRIMARY,
     marginBottom: 20,
     textAlign: 'center',
@@ -37,5 +37,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     fontSize: 16,
     fontWeight: '500',
+    overflow: 'hidden',
   },
 });

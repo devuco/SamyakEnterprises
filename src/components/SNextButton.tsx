@@ -23,7 +23,7 @@ const SNextButton: React.FC<Props> = ({
       onPress={onPress}>
       <Text style={styles.leftText}>{leftText}</Text>
       <Text style={styles.rightText}>{rightText}</Text>
-      <Icon name="arrow-forward-ios" size={20} color={Colors.WHITE} />
+      <Icon name="arrow-forward-ios" size={20} color={Colors.THEME_PRIMARY} />
     </TouchableOpacity>
   );
 };
@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 16,
     padding: 8,
-    borderRadius: 10,
     flex: 1,
   },
   rightText: {

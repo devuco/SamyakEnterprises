@@ -1,13 +1,17 @@
 import React from 'react';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, TextInput, View} from 'react-native';
 import {Colors} from '../utils';
 // import {useNavigation} from '@react-navigation/native';
 // import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Toolbar from '../components/Toolbar';
 import SNextButton from '../components/SNextButton';
+import TextRow from '../components/TextRow';
+import {RouteProp, useRoute} from '@react-navigation/native';
 
 const Checkout = () => {
   //   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
+  const route = useRoute<RouteProp<StackParamList, 'Checkout'>>();
+  const {total} = route.params;
 
   interface AddressInputProps {
     label: string;
@@ -33,10 +37,12 @@ const Checkout = () => {
     );
   };
   return (
-    <View style={styles.primary}>
+    <SafeAreaView style={styles.parent}>
       <Toolbar color={Colors.THEME_PRIMARY} title={'Checkout'} />
       <View style={styles.addressContainer}>
-        <Text style={styles.addressText}>Deliver To</Text>
+        <View
+          style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}></View>
+        <Text style={styles.addressHeading}>Deliver To</Text>
         <AddressInput
           label={'Name'}
           input={'Samyak Agrawal'}
@@ -47,7 +53,7 @@ const Checkout = () => {
           input={'samyakagrawal13@gmail.com'}
           onChangeText={() => {}}
         />
-        <Text style={styles.addressText}>Address</Text>
+        <Text style={styles.addressHeading}>Address</Text>
         <AddressInput label={'House No.'} input={'5'} onChangeText={() => {}} />
         <AddressInput
           label={'Street'}
@@ -66,20 +72,23 @@ const Checkout = () => {
           onChangeText={() => {}}
         />
       </View>
+      <View style={{flex: 1}}></View>
+      <TextRow texts={['Total', `₹${total}`]} />
       <SNextButton onPress={() => {}} leftText="Proceed to Pay" />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  primary: {flex: 1, backgroundColor: Colors.THEME_PRIMARY},
+  parent: {flex: 1, backgroundColor: Colors.THEME_PRIMARY},
   addressContainer: {
     borderColor: Colors.THEME_SECONDARY,
     borderWidth: 2,
     borderRadius: 12,
     marginHorizontal: 18,
+    padding: 10,
   },
-  addressText: {
+  addressHeading: {
     fontSize: 18,
     color: Colors.DARK_GREY,
     padding: 10,
