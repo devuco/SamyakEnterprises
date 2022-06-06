@@ -33,8 +33,6 @@ const Cart = () => {
   const getCart = () => {
     Api.getCart()
       .then(response => {
-        console.log(response.data);
-
         setProducts(response.data.data.products);
         setNetTotal(response.data.data.netTotal);
         return true;
@@ -135,11 +133,11 @@ const Cart = () => {
             </View>
           );
         }}
-        ListEmptyComponent={() => (
-          <Text style={{color: Colors.THEME_TEXT}}>NO DATA</Text>
-        )}
+        // ListEmptyComponent={() => (
+        //   <Text style={{color: Colors.THEME_TEXT}}>NO DATA</Text>
+        // )}
       />
-      <TextRow texts={['Total', `₹${netTotal}`]} />
+      {netTotal !== undefined && <TextRow texts={['Total', `₹${netTotal}`]} />}
       {products && products.length !== 0 && (
         <SNextButton
           leftText="Proceed to Checkout"

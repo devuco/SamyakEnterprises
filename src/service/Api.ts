@@ -35,5 +35,17 @@ const Api = {
 
   deleteFromCart: (id: string) =>
     Axios.delete<IResponse<string>>(`/cart/${id}`),
+
+  updateAddress: (body: IUserAddress) =>
+    Axios.put<IResponse<IUserAddress>>('/checkout/address', body),
+
+  getAddress: () => Axios.get<IResponse<IUserAddress>>('/checkout/address'),
+
+  createOrder: (amount: number) =>
+    Axios.post<IResponse<{id: string}>>('/checkout/order/create', {amount}),
+
+  placeOrder: (body: {orderId: string; amount: number}) =>
+    Axios.post<IResponse<{message: string}>>('/checkout/order/place', body),
 };
+
 export default Api;
