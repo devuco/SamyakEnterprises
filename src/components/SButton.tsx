@@ -5,7 +5,7 @@ import Colors from '../utils/Colors';
 type Props = {
   title: string;
   style?: TextStyle;
-  onPress?: () => void;
+  onPress: () => void;
   isLoading?: boolean;
   loadingText?: string;
 };
