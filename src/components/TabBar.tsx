@@ -18,6 +18,7 @@ const TabBar = ({state}: any) => {
     Animated.spring(transAnimation, {
       toValue: x,
       useNativeDriver: true,
+      friction: 4,
     }).start();
   };
 
