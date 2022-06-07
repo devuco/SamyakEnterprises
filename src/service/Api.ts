@@ -4,7 +4,8 @@ import Axios from './Axios';
 Axios.interceptors.response.use(
   response => response,
   error => {
-    console.log('error', error.response.data);
+    console.log('error Api', error.response.data);
+    console.log('error Axios', error);
     return Promise.reject(error);
   },
 );
@@ -19,8 +20,7 @@ const Api = {
 
   getProducts: () => Axios.get<IResponse<Array<IProducts>>>('products'),
 
-  getProduct: (id: IProducts['_id']) =>
-    Axios.get<IResponse<IProducts>>(`products/${id}`),
+  getProduct: (id: string) => Axios.get<IResponse<IProducts>>(`products/${id}`),
 
   searchProducts: (searchInput: string) =>
     Axios.get<ISearch>(`products/search/${searchInput}`),
@@ -46,6 +46,9 @@ const Api = {
 
   placeOrder: (body: {orderId: string; amount: number}) =>
     Axios.post<IResponse<{message: string}>>('/checkout/order/place', body),
+
+  getOrder: (orderId: string) =>
+    Axios.get<IResponse<IOrder>>(`/checkout/order/${orderId}`),
 };
 
 export default Api;

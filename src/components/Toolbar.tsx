@@ -9,23 +9,33 @@ interface Props {
   color: string;
   title: string;
   statusBarColor?: string;
+  canGoBack?: boolean;
 }
-const Toolbar: React.FC<Props> = ({color, title, statusBarColor}) => {
+const Toolbar: React.FC<Props> = ({
+  color,
+  title,
+  statusBarColor,
+  canGoBack = true,
+}) => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
-
+  const TEXT_PADDING = canGoBack ? 10 : 0;
   return (
     <View style={[styles.container, {backgroundColor: color}]}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={statusBarColor || color}
       />
-      <Icon
-        name="arrow-back"
-        color={Colors.THEME_TEXT}
-        size={25}
-        onPress={() => navigation.goBack()}
-      />
-      <Text style={styles.title}>{title}</Text>
+      {canGoBack && (
+        <Icon
+          name="arrow-back"
+          color={Colors.THEME_TEXT}
+          size={25}
+          onPress={() => navigation.goBack()}
+        />
+      )}
+      <Text style={[styles.title, {paddingHorizontal: TEXT_PADDING}]}>
+        {title}
+      </Text>
     </View>
   );
 };
@@ -39,7 +49,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   title: {
-    paddingHorizontal: 10,
     color: Colors.THEME_TEXT,
     fontSize: 18,
     fontWeight: 'bold',

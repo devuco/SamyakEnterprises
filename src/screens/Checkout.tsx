@@ -1,13 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {Colors, Toast} from '../utils';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -20,6 +12,8 @@ import SButton from '../components/SButton';
 import Api from '../service/Api';
 import Loader from '../components/Loader';
 import RazorpayCheckout from 'react-native-razorpay';
+import LabelledTextInput from '../components/LabelledTextInput';
+import Box from '../components/Box';
 
 const Checkout = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
@@ -49,9 +43,14 @@ const Checkout = () => {
     Api.updateAddress(address)
       .then(() => {
         Toast.showSuccess('Address updated successfully');
+        setEditing(false);
       })
-      .finally(() => setIsLoading(false));
-    setEditing(false);
+      .catch(err => {
+        Toast.showError(err.response.data.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   const cancelAddress = () => {
@@ -87,101 +86,106 @@ const Checkout = () => {
             })
               .then(() => {
                 navigation.popToTop();
+                navigation.navigate('OrderPlaced', {orderId});
               })
               .finally(() => setIsLoading(false));
           })
-          .catch((error: any) =>
-            console.log('error', JSON.stringify(error, null, 2)),
+          .catch(
+            (error: any) =>
+              console.log('error', JSON.stringify(error, null, 2)),
+            setIsLoading(false),
           );
       })
-      .finally(() => setIsLoading(false));
+      .catch(() => setIsLoading(false));
   };
 
   return (
     <SafeAreaView style={styles.parent}>
       <Toolbar color={Colors.THEME_PRIMARY} title={'Checkout'} />
-      <View>
-        <ScrollView
-          style={styles.addressContainer}
-          keyboardShouldPersistTaps="always">
-          <View style={styles.addressHeadingRow}>
-            <Text style={styles.addressHeading}>Deliver To</Text>
-            {Object.keys(address).length > 0 && !editing && (
-              <Icon
-                name="edit"
-                size={20}
-                color={Colors.DARK_GREY}
-                onPress={() => setEditing(prevState => !prevState)}
-              />
+      <ScrollView
+        contentContainerStyle={styles.addressContainer}
+        keyboardShouldPersistTaps="always">
+        <View style={styles.addressHeadingRow}>
+          <Text style={styles.addressHeading}>Deliver To</Text>
+          {Object.keys(address).length > 0 && !editing && (
+            <Icon
+              name="edit"
+              size={20}
+              color={Colors.DARK_GREY}
+              onPress={() => setEditing(prevState => !prevState)}
+            />
+          )}
+        </View>
+        <LabelledTextInput
+          label={'Name'}
+          input={'Samyak Agrawal'}
+          onChangeText={() => {}}
+        />
+        <LabelledTextInput
+          label={'Phone'}
+          input={'9524658201'}
+          onChangeText={() => {}}
+        />
+        {Object.keys(address).length === 0 && !editing && (
+          <SButton
+            title="Add New Address"
+            onPress={() => setEditing(true)}
+            style={styles.addAddressButton}
+          />
+        )}
+        {(Object.keys(address).length > 0 || editing) && (
+          <View>
+            <Text style={styles.addressHeading}>Address</Text>
+            <LabelledTextInput
+              label={'House No.'}
+              input={address.houseNo}
+              onChangeText={text => setAddress({...address, houseNo: text})}
+              editable={editing}
+              keyboardType="numeric"
+            />
+            <LabelledTextInput
+              label={'Street'}
+              input={address.street}
+              onChangeText={text => setAddress({...address, street: text})}
+              editable={editing}
+            />
+            <LabelledTextInput
+              label={'City'}
+              input={address.city}
+              onChangeText={text => setAddress({...address, city: text})}
+              editable={editing}
+            />
+            <LabelledTextInput
+              label={'State'}
+              input={address.state}
+              onChangeText={text => setAddress({...address, state: text})}
+              editable={editing}
+            />
+            <LabelledTextInput
+              label={'Pincode'}
+              input={address.pincode}
+              onChangeText={text => setAddress({...address, pincode: text})}
+              editable={editing}
+              keyboardType="numeric"
+            />
+            {editing && (
+              <View style={styles.saveCancelButtonRow}>
+                <SButton
+                  title="Cancel"
+                  onPress={cancelAddress}
+                  style={styles.cancelButton}
+                />
+                <SButton
+                  title="Save"
+                  onPress={saveAddress}
+                  style={styles.saveButton}
+                />
+              </View>
             )}
           </View>
-          <AddressInput
-            label={'Name'}
-            input={'Samyak Agrawal'}
-            onChangeText={() => {}}
-          />
-          <AddressInput
-            label={'Email'}
-            input={'samyakagrawal13@gmail.com'}
-            onChangeText={() => {}}
-          />
-          {Object.keys(address).length === 0 && !editing && (
-            <SButton title="Add New Address" onPress={() => setEditing(true)} />
-          )}
-          {(Object.keys(address).length > 0 || editing) && (
-            <View>
-              <Text style={styles.addressHeading}>Address</Text>
-              <AddressInput
-                label={'House No.'}
-                input={address.houseNo}
-                onChangeText={text => setAddress({...address, houseNo: text})}
-                editable={editing}
-                keyboardType="numeric"
-              />
-              <AddressInput
-                label={'Street'}
-                input={address.street}
-                onChangeText={text => setAddress({...address, street: text})}
-                editable={editing}
-              />
-              <AddressInput
-                label={'City'}
-                input={address.city}
-                onChangeText={text => setAddress({...address, city: text})}
-                editable={editing}
-              />
-              <AddressInput
-                label={'State'}
-                input={address.state}
-                onChangeText={text => setAddress({...address, state: text})}
-                editable={editing}
-              />
-              <AddressInput
-                label={'Pincode'}
-                input={address.pincode}
-                onChangeText={text => setAddress({...address, pincode: text})}
-                editable={editing}
-                keyboardType="numeric"
-              />
-              {editing && (
-                <View style={styles.saveCancelButtonRow}>
-                  <SButton
-                    title="Cancel"
-                    onPress={cancelAddress}
-                    style={styles.cancelButton}
-                  />
-                  <SButton
-                    title="Save"
-                    onPress={saveAddress}
-                    style={styles.saveButton}
-                  />
-                </View>
-              )}
-            </View>
-          )}
-        </ScrollView>
-      </View>
-      <View style={styles.box} />
+        )}
+      </ScrollView>
+      <Box />
       {!editing && <TextRow texts={['Total', `₹${total}`]} />}
       {Object.keys(address).length > 0 && !editing && (
         <SNextButton onPress={proceedToPayment} leftText="Proceed to Pay" />
@@ -211,25 +215,7 @@ const styles = StyleSheet.create({
     padding: 10,
     fontWeight: 'bold',
   },
-  addressInputContainer: {
-    flexDirection: 'row',
-  },
-  addressInputLabel: {
-    fontSize: 16,
-    color: Colors.THEME_TEXT,
-    fontWeight: 'bold',
-    flex: 1,
-    paddingHorizontal: 10,
-  },
-  addressInputTextInput: {
-    color: Colors.THEME_TEXT,
-    flex: 2,
-    paddingVertical: Platform.OS === 'android' ? 0 : 10,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-    borderRadius: 5,
-    textAlignVertical: 'center',
-  },
+  addAddressButton: {marginBottom: 15, marginTop: 10, marginHorizontal: 5},
   saveCancelButtonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -251,38 +237,3 @@ const styles = StyleSheet.create({
 });
 
 export default Checkout;
-interface AddressInputProps {
-  label: string;
-  input: string | undefined;
-  onChangeText: (text: string) => void;
-  editable?: boolean;
-  keyboardType?: 'default' | 'numeric';
-}
-const AddressInput: React.FC<AddressInputProps> = ({
-  label,
-  input,
-  onChangeText,
-  editable = false,
-  keyboardType,
-}) => {
-  const BORDER_WIDTH = 1;
-  return (
-    <View style={styles.addressInputContainer}>
-      <Text style={styles.addressInputLabel}>{label}</Text>
-      <TextInput
-        value={input}
-        onChangeText={onChangeText}
-        style={[
-          styles.addressInputTextInput,
-          editable && {
-            borderColor: Colors.DARK_GREY,
-            borderWidth: BORDER_WIDTH,
-          },
-        ]}
-        editable={editable}
-        multiline
-        keyboardType={keyboardType}
-      />
-    </View>
-  );
-};

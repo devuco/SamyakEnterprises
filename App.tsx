@@ -14,6 +14,7 @@ import SplashScreen from './src/screens/SplashScreen';
 import Login from './src/screens/Login';
 import Cart from './src/screens/Cart';
 import Checkout from './src/screens/Checkout';
+import OrderPlaced from './src/screens/OrderPlaced';
 
 LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
@@ -96,6 +97,7 @@ const App = () => {
         <Stack.Screen name="ProductDetails" component={ProductDetails} />
         <Stack.Screen name="Cart" component={Cart} />
         <Stack.Screen name="Checkout" component={Checkout} />
+        <Stack.Screen name="OrderPlaced" component={OrderPlaced} />
       </Stack.Navigator>
     </NavigationContainer>
   );

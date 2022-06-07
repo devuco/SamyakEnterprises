@@ -7,6 +7,7 @@ type StackParamList = {
   CompanyDetails: {id: string};
   Cart: undefined;
   Checkout: {total: number};
+  OrderPlaced: {orderId: string};
 };
 
 type DrawerParamList = {
