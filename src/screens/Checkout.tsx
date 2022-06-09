@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import SButton from '../components/SButton';
 import Api from '../service/Api';
 import Loader from '../components/Loader';
-import RazorpayCheckout from 'react-native-razorpay';
+// import RazorpayCheckout from 'react-native-razorpay';
 import LabelledTextInput from '../components/LabelledTextInput';
 import Box from '../components/Box';
 
@@ -63,38 +63,37 @@ const Checkout = () => {
     Api.createOrder(total)
       .then(response => {
         const orderId = response.data.data.id;
-        const options = {
-          description: 'Credits towards consultation',
-          image: 'https://i.imgur.com/3g7nmJC.png',
-          currency: 'INR',
-          key: 'rzp_test_GfxJZDSYJvQ0Gf',
-          amount: total * 100,
-          name: 'Shopping App',
-          order_id: orderId,
-          prefill: {
-            email: 'gaurav.kumar@example.com',
-            contact: '9191919191',
-            name: 'Gaurav Kumar',
-          },
-          theme: {color: Colors.PRIMARY},
-        };
-        RazorpayCheckout.open(options)
-          .then((data: any) => {
-            Api.placeOrder({
-              orderId: data.razorpay_order_id,
-              amount: total,
-            })
-              .then(() => {
-                navigation.popToTop();
-                navigation.navigate('OrderPlaced', {orderId});
-              })
-              .finally(() => setIsLoading(false));
+        // const options = {
+        //   description: 'Credits towards consultation',
+        //   image: 'https://i.imgur.com/3g7nmJC.png',
+        //   currency: 'INR',
+        //   key: 'rzp_test_GfxJZDSYJvQ0Gf',
+        //   amount: total * 100,
+        //   name: 'Shopping App',
+        //   order_id: orderId,
+        //   prefill: {
+        //     email: 'gaurav.kumar@example.com',
+        //     contact: '9191919191',
+        //     name: 'Gaurav Kumar',
+        //   },
+        //   theme: {color: Colors.PRIMARY},
+        // };
+        // RazorpayCheckout.open(options).then((data: any) => {
+        Api.placeOrder({
+          orderId: orderId,
+          amount: total,
+        })
+          .then(() => {
+            navigation.popToTop();
+            navigation.navigate('OrderPlaced', {orderId});
           })
-          .catch(
-            (error: any) =>
-              console.log('error', JSON.stringify(error, null, 2)),
-            setIsLoading(false),
-          );
+          .finally(() => setIsLoading(false));
+        // });
+        // .catch(
+        //   (error: any) =>
+        //     console.log('error', JSON.stringify(error, null, 2)),
+        //   setIsLoading(false),
+        // );
       })
       .catch(() => setIsLoading(false));
   };
@@ -116,6 +115,9 @@ const Checkout = () => {
             />
           )}
         </View>
+        {/**
+         * //TODO Get Name and Phone from api and save in Constant
+         */}
         <LabelledTextInput
           label={'Name'}
           input={'Samyak Agrawal'}

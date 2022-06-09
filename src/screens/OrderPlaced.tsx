@@ -49,6 +49,7 @@ const OrderPlaced = () => {
             }}
           />
           <Box />
+          <Text style={styles.invoiceText}>Check Invoice</Text>
           <TextRow texts={['Total', `₹${netTotal}`]} />
         </View>
       )}
@@ -65,4 +66,13 @@ export default OrderPlaced;
 const styles = StyleSheet.create({
   parent: {backgroundColor: Colors.THEME_PRIMARY, flex: 1},
   date: {color: Colors.THEME_TEXT, marginHorizontal: 10},
+  invoiceText: {
+    color: Colors.PRIMARY,
+    fontSize: 16,
+    alignSelf: 'flex-end',
+    marginRight: 10,
+    marginBottom: 10,
+    textDecorationLine: 'underline',
+    fontWeight: 'bold',
+  },
 });

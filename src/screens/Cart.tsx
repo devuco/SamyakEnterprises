@@ -1,7 +1,7 @@
 import {FlatList, SafeAreaView, StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Api from '../service/Api';
-import {Colors} from '../utils';
+import {Colors, Images} from '../utils';
 import Toolbar from '../components/Toolbar';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -9,6 +9,7 @@ import Loader from '../components/Loader';
 import SNextButton from '../components/SNextButton';
 import TextRow from '../components/TextRow';
 import ProductCard from '../components/ProductCard';
+import NoData from '../components/NoData';
 
 const Cart = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
@@ -64,6 +65,16 @@ const Cart = () => {
     }
   };
 
+  const listEmptyComponent = () => {
+    return !isLoading ? (
+      <NoData
+        image={Images.CART_EMPTY}
+        heading="Your Cart Is Empty!"
+        description="It's time to go shopping "
+      />
+    ) : null;
+  };
+
   return (
     <SafeAreaView style={styles.parent}>
       <Toolbar color={Colors.THEME_PRIMARY} title="Cart" />
@@ -83,8 +94,12 @@ const Cart = () => {
             />
           );
         }}
+        ListEmptyComponent={listEmptyComponent}
       />
-      {netTotal !== undefined && <TextRow texts={['Total', `₹${netTotal}`]} />}
+
+      {products && products.length !== 0 && (
+        <TextRow texts={['Total', `₹${netTotal}`]} />
+      )}
       {products && products.length !== 0 && (
         <SNextButton
           leftText="Proceed to Checkout"

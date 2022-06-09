@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
+//TODO user validation UI
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
