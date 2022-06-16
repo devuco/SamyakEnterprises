@@ -12,6 +12,7 @@ type StackParamList = {
 
 type DrawerParamList = {
   Tabs: TabsParamList;
+  PastOrders: undefined;
 };
 
 type TabsParamList = {

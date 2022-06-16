@@ -63,6 +63,7 @@ const Checkout = () => {
     Api.createOrder(total)
       .then(response => {
         const orderId = response.data.data.id;
+
         // const options = {
         //   description: 'Credits towards consultation',
         //   image: 'https://i.imgur.com/3g7nmJC.png',
@@ -78,7 +79,8 @@ const Checkout = () => {
         //   },
         //   theme: {color: Colors.PRIMARY},
         // };
-        // RazorpayCheckout.open(options).then((data: any) => {
+        // RazorpayCheckout.open(options)
+        //   .then((data: any) => {
         Api.placeOrder({
           orderId: orderId,
           amount: total,
@@ -88,13 +90,13 @@ const Checkout = () => {
             navigation.navigate('OrderPlaced', {orderId});
           })
           .finally(() => setIsLoading(false));
-        // });
-        // .catch(
-        //   (error: any) =>
-        //     console.log('error', JSON.stringify(error, null, 2)),
-        //   setIsLoading(false),
-        // );
       })
+      //     .catch(
+      //       (error: any) =>
+      //         console.log('error', JSON.stringify(error, null, 2)),
+      //       setIsLoading(false),
+      //     );
+      // })
       .catch(() => setIsLoading(false));
   };
 

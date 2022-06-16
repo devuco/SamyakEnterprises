@@ -1,4 +1,4 @@
-import {StyleSheet, Text, TextStyle} from 'react-native';
+import {Pressable, StyleSheet, Text, TextStyle} from 'react-native';
 import React from 'react';
 import Colors from '../utils/Colors';
 
@@ -18,9 +18,11 @@ const SButton: React.FC<Props> = ({
   loadingText,
 }) => {
   return (
-    <Text style={[styles.button, style]} onPress={onPress}>
-      {isLoading ? loadingText : title}
-    </Text>
+    <Pressable onPress={onPress}>
+      <Text style={[styles.button, style]}>
+        {isLoading ? loadingText : title}
+      </Text>
+    </Pressable>
   );
 };
 

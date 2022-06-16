@@ -15,6 +15,7 @@ import Login from './src/screens/Login';
 import Cart from './src/screens/Cart';
 import Checkout from './src/screens/Checkout';
 import OrderPlaced from './src/screens/OrderPlaced';
+import PastOrders from './src/screens/PastOrders';
 
 LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
@@ -29,18 +30,39 @@ const App = () => {
     return (
       <Drawer.Navigator
         screenOptions={{
+          drawerInactiveTintColor: Colors.THEME_TEXT,
           drawerActiveBackgroundColor: Colors.SECONDARY,
           drawerActiveTintColor: Colors.PRIMARY,
           headerShown: false,
-          drawerStyle: {backgroundColor: Colors.THEME_PRIMARY},
+          drawerStyle: {
+            backgroundColor: Colors.THEME_PRIMARY,
+          },
         }}>
         <Drawer.Screen
           name="Tabs"
           component={Tabs}
           options={{
             title: 'Home',
-            drawerIcon: () => (
-              <Icon name="home" color={Colors.PRIMARY} size={25} />
+            drawerIcon: ({focused}) => (
+              <Icon
+                name="home"
+                color={!focused ? Colors.THEME_TEXT : Colors.PRIMARY}
+                size={25}
+              />
+            ),
+          }}
+        />
+        <Drawer.Screen
+          name="PastOrders"
+          component={PastOrders}
+          options={{
+            title: 'My Orders',
+            drawerIcon: ({focused}) => (
+              <Icon
+                name="local-shipping"
+                color={!focused ? Colors.THEME_TEXT : Colors.PRIMARY}
+                size={25}
+              />
             ),
           }}
         />
