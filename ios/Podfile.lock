@@ -298,7 +298,7 @@ PODS:
     - ReactCommon/turbomodule/core
   - react-native-secure-api (0.1.0):
     - React-Core
-  - react-native-webview (11.22.0):
+  - react-native-webview (11.22.2):
     - React-Core
   - React-perflogger (0.68.2)
   - React-RCTActionSheet (0.68.2):
@@ -615,7 +615,7 @@ SPEC CHECKSUMS:
   react-native-razorpay: 6d613f3464a509e3a4bb5b9ca43b70013b3d96d4
   react-native-safe-area-context: 6c12e3859b6f27b25de4fee8201cfb858432d8de
   react-native-secure-api: 5fc4f86bd85af6950716ec75721108d3480844a7
-  react-native-webview: 49df03ea0ff30d2d27b2d0cdd4ea930308e39b86
+  react-native-webview: 159034a856a6e95995f5bf2eed40d70b103d6572
   React-perflogger: a18b4f0bd933b8b24ecf9f3c54f9bf65180f3fe6
   React-RCTActionSheet: 547fe42fdb4b6089598d79f8e1d855d7c23e2162
   React-RCTAnimation: bc9440a1c37b06ae9ebbb532d244f607805c6034
