@@ -73,7 +73,7 @@ const OrderPlaced = () => {
         <SuccessTick onPress={() => setShowSuccess(false)} />
       </Modal>
       <Modal visible={showInvoice} animationType="fade">
-        <SafeAreaView style={{flex: 1, backgroundColor: '#999'}}>
+        <SafeAreaView style={{flex: 1}}>
           <WebView
             onLoadEnd={() => setIsLoading(false)}
             source={{
@@ -83,11 +83,10 @@ const OrderPlaced = () => {
                 userid: Axios.defaults.headers.common.userId,
               },
             }}
-            style={{backgroundColor: '#999'}}
           />
           <Icon
             name="cancel"
-            size={36}
+            size={30}
             color={Colors.BLACK}
             onPress={() => setShowInvoice(false)}
             style={styles.cancelIcon}
@@ -113,5 +112,5 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     fontWeight: 'bold',
   },
-  cancelIcon: {zIndex: 10, position: 'absolute', right: 5, top: 50},
+  cancelIcon: {zIndex: 10, position: 'absolute', right: 0, top: 25},
 });
