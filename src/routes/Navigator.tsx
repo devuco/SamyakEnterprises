@@ -14,6 +14,8 @@ import DrawerNavigator from './DrawerNavigator';
 import Axios from '../service/Axios';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MyOrders from '../screens/MyOrders';
+import OrderedProducts from '../screens/OrderedProducts';
 
 type Props = {
   navigationRef: NavigationContainerRef<StackParamList>;
@@ -78,21 +80,19 @@ const Navigator: React.FC<Props> = ({navigationRef}) => {
         <Stack.Screen
           name="Login"
           component={Login}
-          options={() => ({
-            animation: 'fade',
-          })}
+          options={() => ({animation: 'fade'})}
         />
         <Stack.Screen
           name="Drawer"
           component={DrawerNavigator}
-          options={() => ({
-            animation: 'fade',
-          })}
+          options={() => ({animation: 'fade'})}
         />
         <Stack.Screen name="ProductDetails" component={ProductDetails} />
         <Stack.Screen name="Cart" component={Cart} />
         <Stack.Screen name="Checkout" component={Checkout} />
         <Stack.Screen name="OrderPlaced" component={OrderPlaced} />
+        <Stack.Screen name="MyOrders" component={MyOrders} />
+        <Stack.Screen name="OrderedProducts" component={OrderedProducts} />
       </Stack.Navigator>
       <NetworkModal
         isVisible={showNetworkModal}

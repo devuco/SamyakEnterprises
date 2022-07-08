@@ -8,11 +8,12 @@ type StackParamList = {
   Cart: undefined;
   Checkout: {total: number};
   OrderPlaced: {orderId: string};
+  MyOrders: undefined;
+  OrderedProducts: {orderId: string};
 };
 
 type DrawerParamList = {
   Tabs: TabsParamList;
-  PastOrders: undefined;
 };
 
 type TabsParamList = {

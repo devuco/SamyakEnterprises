@@ -43,6 +43,8 @@ const Api = {
 
   getInvoice: (orderId: string) =>
     Axios.get(`/checkout/order/${orderId}/invoice`),
+
+  getOrders: () => Axios.get<IResponse<Array<IOrder>>>('/orders'),
 };
 
 export default Api;

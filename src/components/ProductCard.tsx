@@ -1,4 +1,4 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {Colors, Singleton} from '../utils';
 import {useNavigation} from '@react-navigation/native';
@@ -19,7 +19,14 @@ const ProductCard: React.FC<Props> = ({
 }) => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
   return (
-    <View style={styles.itemContainer}>
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() =>
+        navigation.push('ProductDetails', {
+          id: item.product._id,
+        })
+      }
+      disabled={canUpdateQuantity}>
       <Image
         source={{uri: Singleton.BASE_URL + item.product.image}}
         style={[styles.itemImage, {backgroundColor: item.product.color}]}
@@ -35,15 +42,17 @@ const ProductCard: React.FC<Props> = ({
           <Text style={styles.itemPrice}>₹{item.product.price}</Text>
           <Text style={styles.itemDiscount}>{item.product.discount}%off</Text>
         </View>
-        <Text
-          style={styles.itemViewProduct}
-          onPress={() =>
-            navigation.push('ProductDetails', {
-              id: item.product._id,
-            })
-          }>
-          View Product
-        </Text>
+        {canUpdateQuantity && (
+          <Text
+            style={styles.itemViewProduct}
+            onPress={() =>
+              navigation.push('ProductDetails', {
+                id: item.product._id,
+              })
+            }>
+            View Product
+          </Text>
+        )}
       </View>
 
       {/* Column 3 contains Quanity Button and Total Text */}
@@ -66,7 +75,7 @@ const ProductCard: React.FC<Props> = ({
           )}
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -121,7 +130,7 @@ const styles = StyleSheet.create({
   },
   itemColumn3: {
     marginVertical: 5,
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     marginRight: 5,
   },
   itemTotal: {

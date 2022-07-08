@@ -3,6 +3,6 @@ type IOrder = {
   orderId?: string;
   userId?: string;
   orderDate?: Date;
-  products?: Array<ICartProduct>;
+  products: Array<ICartProduct>;
   netTotal?: number;
 };

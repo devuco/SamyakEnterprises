@@ -30,7 +30,7 @@ const OrderPlaced = () => {
   const route = useRoute<RouteProp<StackParamList, 'OrderPlaced'>>();
   const {orderId} = route.params;
 
-  const [data, setData] = useState<IOrder>({});
+  const [data, setData] = useState<IOrder>({products: []});
   const [showSuccess, setShowSuccess] = useState<boolean>(true);
   const [showInvoice, setShowInvoice] = useState<boolean>(false);
   const [isParentLoading, setIsParentLoading] = useState<boolean>(true);
