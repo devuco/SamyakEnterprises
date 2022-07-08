@@ -1,4 +1,4 @@
-package com.shoppingapp.newarchitecture;
+package com.devco.shoppingapp.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.shoppingapp.BuildConfig;
-import com.shoppingapp.newarchitecture.components.MainComponentsRegistry;
-import com.shoppingapp.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.devco.shoppingapp.BuildConfig;
+import com.devco.shoppingapp.newarchitecture.components.MainComponentsRegistry;
+import com.devco.shoppingapp.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

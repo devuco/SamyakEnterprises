@@ -1,6 +1,9 @@
 import Axios from './Axios';
 
 const Api = {
+  register: (body: Partial<IUser>) =>
+    Axios.post<IResponse<IUser>>('login/register', body),
+
   login: (body: Partial<IUser>) => Axios.post<IResponse<IUser>>('login', body),
 
   getToken: () => Axios.get<IToken>('token', {headers: {deviceId: '1234'}}),
@@ -39,7 +42,7 @@ const Api = {
     Axios.post<IResponse<{message: string}>>('/checkout/order/place', body),
 
   getOrder: (orderId: string) =>
-    Axios.get<IResponse<IOrder>>(`/checkout/order/${orderId}`),
+    Axios.get<IResponse<IOrder>>(`/orders/${orderId}`),
 
   getInvoice: (orderId: string) =>
     Axios.get(`/checkout/order/${orderId}/invoice`),

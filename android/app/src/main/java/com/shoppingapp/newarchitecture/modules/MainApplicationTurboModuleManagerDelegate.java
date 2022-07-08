@@ -1,4 +1,4 @@
-package com.shoppingapp.newarchitecture.modules;
+package com.devco.shoppingapp.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

@@ -16,7 +16,7 @@ import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MyOrders from '../screens/MyOrders';
 import OrderedProducts from '../screens/OrderedProducts';
-
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 type Props = {
   navigationRef: NavigationContainerRef<StackParamList>;
 };
@@ -42,13 +42,18 @@ const Navigator: React.FC<Props> = ({navigationRef}) => {
           setIsScreenAnimation(true);
           return response;
         },
-        error => {
+        async error => {
           console.log('error Api', error.response.data);
           console.log('error Axios', error);
 
           if (error.response.status === 401) {
             AsyncStorage.clear();
+            const googleSignedIn = await GoogleSignin.isSignedIn();
+            if (googleSignedIn) {
+              await GoogleSignin.signOut();
+            }
             navigationRef.dispatch(StackActions.replace('Login'));
+            return Promise.reject(error);
           }
 
           NetInfo.fetch().then(
