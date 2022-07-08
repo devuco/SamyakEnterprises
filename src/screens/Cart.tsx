@@ -10,12 +10,15 @@ import SNextButton from '../components/SNextButton';
 import TextRow from '../components/TextRow';
 import ProductCard from '../components/ProductCard';
 import NoData from '../components/NoData';
+import ParentView from '../components/ParentView';
 
 const Cart = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
+
   const [products, setProducts] = useState<Array<ICartProduct>>([]);
-  const [netTotal, setNetTotal] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [netTotal, setNetTotal] = useState<number>(0);
+  const [isParentLoading, setIsParentLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     getCart();
@@ -30,10 +33,8 @@ const Cart = () => {
       .then(response => {
         setProducts(response.data.data.products);
         setNetTotal(response.data.data.netTotal);
-        return true;
       })
-      .finally(() => setIsLoading(false));
-    return false;
+      .finally(() => setIsParentLoading(false));
   };
 
   /**
@@ -44,9 +45,9 @@ const Cart = () => {
   const updateProduct = (id: string, quantity: number) => {
     setIsLoading(true);
     if (quantity === 0) {
-      Api.deleteFromCart(id).then(() => {
-        getCart();
-      });
+      Api.deleteFromCart(id)
+        .then(() => getCart())
+        .finally(() => setIsLoading(false));
     } else {
       let body = {product: id, quantity};
       Api.updateCart(body)
@@ -66,7 +67,7 @@ const Cart = () => {
   };
 
   const listEmptyComponent = () => {
-    return !isLoading ? (
+    return !isParentLoading ? (
       <NoData
         image={Images.CART_EMPTY}
         heading="Your Cart Is Empty!"
@@ -78,34 +79,36 @@ const Cart = () => {
   return (
     <SafeAreaView style={styles.parent}>
       <Toolbar color={Colors.THEME_PRIMARY} title="Cart" />
-      <FlatList
-        data={products}
-        renderItem={({item}) => {
-          return (
-            <ProductCard
-              item={item}
-              onAddProduct={() =>
-                updateProduct(item.product._id, item.quantity - 1)
-              }
-              onSubtractProduct={() =>
-                updateProduct(item.product._id, item.quantity + 1)
-              }
-              canUpdateQuantity
-            />
-          );
-        }}
-        ListEmptyComponent={listEmptyComponent}
-      />
-
-      {products && products.length !== 0 && (
-        <TextRow texts={['Total', `₹${netTotal}`]} />
-      )}
-      {products && products.length !== 0 && (
-        <SNextButton
-          leftText="Proceed to Checkout"
-          onPress={() => navigation.navigate('Checkout', {total: netTotal})}
+      <ParentView isLoading={isParentLoading}>
+        <FlatList
+          data={products}
+          renderItem={({item}) => {
+            return (
+              <ProductCard
+                item={item}
+                onAddProduct={() =>
+                  updateProduct(item.product._id, item.quantity - 1)
+                }
+                onSubtractProduct={() =>
+                  updateProduct(item.product._id, item.quantity + 1)
+                }
+                canUpdateQuantity
+              />
+            );
+          }}
+          ListEmptyComponent={listEmptyComponent}
         />
-      )}
+
+        {products && products.length !== 0 && (
+          <TextRow texts={['Total', `₹${netTotal}`]} />
+        )}
+        {products && products.length !== 0 && (
+          <SNextButton
+            leftText="Proceed to Checkout"
+            onPress={() => navigation.navigate('Checkout', {total: netTotal})}
+          />
+        )}
+      </ParentView>
       <Loader isLoading={isLoading} />
     </SafeAreaView>
   );

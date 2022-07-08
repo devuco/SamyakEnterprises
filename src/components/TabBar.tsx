@@ -1,10 +1,14 @@
+import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {Animated, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Colors from '../utils/Colors';
 
-const TabBar = ({state}: any) => {
+type Props = {
+  state: BottomTabBarProps['state'];
+};
+const TabBar: React.FC<Props> = ({state}) => {
   const [selected, setSelected] = useState('Home');
   const {routes} = state;
   const [width, setWidth] = useState(0);
@@ -18,7 +22,7 @@ const TabBar = ({state}: any) => {
     Animated.spring(transAnimation, {
       toValue: x,
       useNativeDriver: true,
-      friction: 4,
+      friction: 6,
     }).start();
   };
 
@@ -34,7 +38,7 @@ const TabBar = ({state}: any) => {
           },
         ]}
       />
-      {routes.map((item: any, index: number) => {
+      {routes.map((item: any, index) => {
         return (
           <TouchableOpacity
             onLayout={event => {

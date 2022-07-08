@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
@@ -17,37 +16,26 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import HomeToolbar from '../components/HomeToolbar';
+import ParentView from '../components/ParentView';
 import Api from '../service/Api';
 import {Colors, Singleton} from '../utils';
 
 const Home = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
+
   const [productsData, setProductsData] = useState<Array<IProducts>>([]);
   const [companiesData, setCompaniesData] = useState<Array<ICompanies>>([]);
   const [categoriesData, setCategoriesData] = useState<Array<ICategories>>([]);
-  const [search, setSearch] = useState(false);
-  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
-
-  useEffect(() => {}, []);
+  const [search, setSearch] = useState<boolean>(false);
+  const [isParentLoading, setIsParentLoading] = useState<boolean>(true);
 
   useEffect(() => {
     Api.getProducts()
-      .then(async res => {
-        let response = res.data.data;
-        setProductsData(response);
-      })
-      .catch(error => {
-        console.log('home', error.response.data);
-        AsyncStorage.clear();
-        navigation.replace('Login');
-      });
-
-    Api.getCompanies().then(response => {
-      setCompaniesData(response.data.data);
-    });
-    Api.getCategories().then(response => {
-      setCategoriesData(response.data.data);
-    });
-  }, [navigation]);
+      .then(response => setProductsData(response.data.data))
+      .finally(() => setIsParentLoading(false));
+    Api.getCompanies().then(response => setCompaniesData(response.data.data));
+    Api.getCategories().then(response => setCategoriesData(response.data.data));
+  }, []);
 
   const renderProducts: ListRenderItem<IProducts> = ({
     item: product,
@@ -55,9 +43,7 @@ const Home = () => {
   }) => {
     return (
       <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('ProductDetails', {id: product._id});
-        }}
+        onPress={() => navigation.navigate('ProductDetails', {id: product._id})}
         key={index}
         style={[styles.productContainer, {backgroundColor: product.color}]}>
         <Icon
@@ -114,39 +100,41 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.parent}>
-      <HomeToolbar isSearch={(value: boolean) => setSearch(value)} />
-      {!search && (
-        <ScrollView
-          contentContainerStyle={styles.scrollView}
-          keyboardShouldPersistTaps="handled">
-          <Text style={styles.heading}>Top Brands</Text>
-          <FlatList
-            horizontal
-            style={styles.companyList}
-            data={companiesData}
-            renderItem={renderCompanies}
-          />
-          <Text style={styles.heading}>Top Categories</Text>
-          <FlatList
-            horizontal
-            style={styles.companyList}
-            data={categoriesData}
-            renderItem={renderCategories}
-          />
-          <Text style={styles.heading}>Top Picks For You</Text>
-          <FlatList
-            horizontal
-            data={productsData}
-            renderItem={renderProducts}
-            style={styles.productList}
-          />
-        </ScrollView>
-      )}
-      <TouchableOpacity
-        style={styles.fab}
-        onPress={() => navigation.navigate('Cart')}>
-        <Icon name="shopping-cart" size={25} color={Colors.SECONDARY} />
-      </TouchableOpacity>
+      <ParentView isLoading={isParentLoading}>
+        <HomeToolbar isSearch={setSearch} />
+        {!search && (
+          <ScrollView
+            contentContainerStyle={styles.scrollView}
+            keyboardShouldPersistTaps="handled">
+            <Text style={styles.heading}>Top Brands</Text>
+            <FlatList
+              horizontal
+              style={styles.companyList}
+              data={companiesData}
+              renderItem={renderCompanies}
+            />
+            <Text style={styles.heading}>Top Categories</Text>
+            <FlatList
+              horizontal
+              style={styles.companyList}
+              data={categoriesData}
+              renderItem={renderCategories}
+            />
+            <Text style={styles.heading}>Top Picks For You</Text>
+            <FlatList
+              horizontal
+              data={productsData}
+              renderItem={renderProducts}
+              style={styles.productList}
+            />
+          </ScrollView>
+        )}
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={() => navigation.navigate('Cart')}>
+          <Icon name="shopping-cart" size={25} color={Colors.SECONDARY} />
+        </TouchableOpacity>
+      </ParentView>
     </SafeAreaView>
   );
 };

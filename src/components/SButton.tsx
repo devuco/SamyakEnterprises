@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingVertical: 12,
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: 'bold',
     overflow: 'hidden',
   },
 });

@@ -17,18 +17,20 @@ import {Singleton} from '../utils';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 interface Props {
-  isSearch: CallableFunction;
+  isSearch: (value: boolean) => void;
 }
 const HomeToolbar: React.FC<Props> = ({isSearch}) => {
   const drawerNavigation =
     useNavigation<DrawerNavigationProp<DrawerParamList>>();
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
+
   const [searchPressed, setSearchPressed] = useState<boolean>(false);
   const [data, setData] = useState<ISearch>({
     categories: [],
     companies: [],
     products: [],
   });
+
   const searchRef = useRef<TextInput>(null);
 
   const callAPI = (input: string) => {
@@ -41,30 +43,26 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
     itemArray: Array<IProducts | ICategories | ICompanies>,
     screen: 'ProductDetails' | 'CategoryDetails' | 'CompanyDetails',
   ) => {
-    return itemArray?.map(
-      (item: IProducts | ICategories | ICompanies, index) => {
-        return (
-          <TouchableOpacity
-            style={styles.resultItemContainer}
-            key={index}
-            onPress={() => {
-              navigation.navigate(screen, {id: item._id});
-            }}>
-            <Image
-              source={{uri: Singleton.BASE_URL + item.image}}
-              style={styles.resultItemImage}
-            />
-            <Text style={styles.resultItemName}>{item.name}</Text>
-          </TouchableOpacity>
-        );
-      },
-    );
+    return itemArray?.map((item, index) => {
+      return (
+        <TouchableOpacity
+          style={styles.resultItemContainer}
+          key={index}
+          onPress={() => navigation.navigate(screen, {id: item._id})}>
+          <Image
+            source={{uri: Singleton.BASE_URL + item.image}}
+            style={styles.resultItemImage}
+          />
+          <Text style={styles.resultItemName}>{item.name}</Text>
+        </TouchableOpacity>
+      );
+    });
   };
 
   const CONDITIONAL_FLEX = searchPressed ? 1 : 0;
 
   return (
-    <View style={[{flex: CONDITIONAL_FLEX}]}>
+    <View style={{flex: CONDITIONAL_FLEX}}>
       <View style={styles.container}>
         {!searchPressed && (
           <Icon
@@ -72,9 +70,7 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
             size={25}
             color={Colors.THEME_TEXT}
             style={styles.icon}
-            onPress={() => {
-              drawerNavigation.openDrawer();
-            }}
+            onPress={() => drawerNavigation.openDrawer()}
           />
         )}
         {!searchPressed && (
@@ -85,9 +81,7 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
             style={styles.icon}
             onPress={() => {
               setSearchPressed(true);
-              setTimeout(() => {
-                searchRef.current?.focus();
-              }, 100);
+              setTimeout(() => searchRef.current?.focus(), 100);
               isSearch(true);
             }}
           />
@@ -102,7 +96,7 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
             />
             <TextInput
               ref={searchRef}
-              onChangeText={text => callAPI(text)}
+              onChangeText={callAPI}
               style={styles.searchInput}
             />
             <Icon

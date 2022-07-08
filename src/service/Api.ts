@@ -1,14 +1,5 @@
-// import {Toast} from '../utils';
 import Axios from './Axios';
 
-Axios.interceptors.response.use(
-  response => response,
-  error => {
-    console.log('error Api', error.response.data);
-    console.log('error Axios', error);
-    return Promise.reject(error);
-  },
-);
 const Api = {
   login: (body: Partial<IUser>) => Axios.post<IResponse<IUser>>('login', body),
 

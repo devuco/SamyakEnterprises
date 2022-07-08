@@ -32,7 +32,7 @@ const SuccessTick: React.FC<Props> = ({onPress}) => {
       useNativeDriver: true,
       delay: 1200,
     }).start();
-  }, [tickAnimation, textAnimation, buttonAnimation, onPress]);
+  }, [tickAnimation, textAnimation, buttonAnimation]);
 
   return (
     <View style={styles.parent}>

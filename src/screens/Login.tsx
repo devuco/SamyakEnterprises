@@ -10,36 +10,34 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 //TODO user validation UI
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const passwordRef = useRef<TextInput>(null);
 
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
   const callAPI = () => {
-    const body: Partial<IUser> = {email, password};
-    Api.login(body).then(response => {
-      if (response.data.success) {
+    const body = {email, password};
+    Api.login(body)
+      .then(response => {
         Axios.defaults.headers.common.userId = response.data.data._id;
         AsyncStorage.setItem('userId', response.data.data._id).then(() => {
           Api.getToken().then(res => {
             Axios.defaults.headers.common.token = res.data.token;
-            AsyncStorage.setItem('token', res.data.token).then(() => {
-              navigation.replace('Drawer');
-            });
+            AsyncStorage.setItem('token', res.data.token).then(() =>
+              navigation.replace('Drawer'),
+            );
           });
         });
-      } else {
-        Alert.alert(response.data.message);
-      }
-    });
+      })
+      .catch(err => Alert.alert(err.response.data.message));
   };
 
   return (
     <View style={styles.parent}>
       <Image source={Images.LOGO} style={styles.image} />
       <TextInput
-        onChangeText={text => setEmail(text)}
+        onChangeText={setEmail}
         value={email}
         placeholder="Email"
         style={styles.input}
@@ -51,7 +49,7 @@ const Login = () => {
       />
       <TextInput
         ref={passwordRef}
-        onChangeText={text => setPassword(text)}
+        onChangeText={setPassword}
         value={password}
         placeholder="Password"
         style={styles.input}

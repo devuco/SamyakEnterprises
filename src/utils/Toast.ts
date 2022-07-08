@@ -1,6 +1,6 @@
 import {ToastAndroid} from 'react-native';
 
-const Toast = {
+export default {
   showSuccess: (message: string) => {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   },
@@ -9,5 +9,3 @@ const Toast = {
     ToastAndroid.show(message || 'Something went wrong', ToastAndroid.SHORT);
   },
 };
-
-export default Toast;

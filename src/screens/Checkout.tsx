@@ -14,14 +14,17 @@ import Loader from '../components/Loader';
 // import RazorpayCheckout from 'react-native-razorpay';
 import LabelledTextInput from '../components/LabelledTextInput';
 import Box from '../components/Box';
+import ParentView from '../components/ParentView';
 
 const Checkout = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
   const route = useRoute<RouteProp<StackParamList, 'Checkout'>>();
   const {total} = route.params;
+
   const [editing, setEditing] = useState<boolean>(false);
   const [address, setAddress] = useState<IUserAddress>({});
-  const [isLoading, setIsLoading] = useState(true);
+  const [isParentLoading, setIsParentLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     getAddress();
@@ -29,10 +32,9 @@ const Checkout = () => {
 
   const getAddress = () => {
     Api.getAddress()
-      .then(response => {
-        setAddress(response.data.data);
-      })
+      .then(response => setAddress(response.data.data))
       .finally(() => {
+        setIsParentLoading(false);
         setIsLoading(false);
         setEditing(false);
       });
@@ -45,12 +47,8 @@ const Checkout = () => {
         Toast.showSuccess('Address updated successfully');
         setEditing(false);
       })
-      .catch(err => {
-        Toast.showError(err.response.data.message);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .catch(err => Toast.showError(err.response.data.message))
+      .finally(() => setIsLoading(false));
   };
 
   const cancelAddress = () => {
@@ -103,97 +101,100 @@ const Checkout = () => {
   return (
     <SafeAreaView style={styles.parent}>
       <Toolbar color={Colors.THEME_PRIMARY} title={'Checkout'} />
-      <ScrollView
-        contentContainerStyle={styles.addressContainer}
-        keyboardShouldPersistTaps="always">
-        <View style={styles.addressHeadingRow}>
-          <Text style={styles.addressHeading}>Deliver To</Text>
-          {Object.keys(address).length > 0 && !editing && (
-            <Icon
-              name="edit"
-              size={20}
-              color={Colors.DARK_GREY}
-              onPress={() => setEditing(prevState => !prevState)}
-            />
-          )}
-        </View>
-        {/**
-         * //TODO Get Name and Phone from api and save in Constant
-         */}
-        <LabelledTextInput
-          label={'Name'}
-          input={'Samyak Agrawal'}
-          onChangeText={() => {}}
-        />
-        <LabelledTextInput
-          label={'Phone'}
-          input={'9524658201'}
-          onChangeText={() => {}}
-        />
-        {Object.keys(address).length === 0 && !editing && (
-          <SButton
-            title="Add New Address"
-            onPress={() => setEditing(true)}
-            style={styles.addAddressButton}
-          />
-        )}
-        {(Object.keys(address).length > 0 || editing) && (
-          <View>
-            <Text style={styles.addressHeading}>Address</Text>
-            <LabelledTextInput
-              label={'House No.'}
-              input={address.houseNo}
-              onChangeText={text => setAddress({...address, houseNo: text})}
-              editable={editing}
-              keyboardType="numeric"
-            />
-            <LabelledTextInput
-              label={'Street'}
-              input={address.street}
-              onChangeText={text => setAddress({...address, street: text})}
-              editable={editing}
-            />
-            <LabelledTextInput
-              label={'City'}
-              input={address.city}
-              onChangeText={text => setAddress({...address, city: text})}
-              editable={editing}
-            />
-            <LabelledTextInput
-              label={'State'}
-              input={address.state}
-              onChangeText={text => setAddress({...address, state: text})}
-              editable={editing}
-            />
-            <LabelledTextInput
-              label={'Pincode'}
-              input={address.pincode}
-              onChangeText={text => setAddress({...address, pincode: text})}
-              editable={editing}
-              keyboardType="numeric"
-            />
-            {editing && (
-              <View style={styles.saveCancelButtonRow}>
-                <SButton
-                  title="Cancel"
-                  onPress={cancelAddress}
-                  style={styles.cancelButton}
-                />
-                <SButton
-                  title="Save"
-                  onPress={saveAddress}
-                  style={styles.saveButton}
-                />
-              </View>
+      <ParentView isLoading={isParentLoading}>
+        <ScrollView
+          contentContainerStyle={styles.addressContainer}
+          keyboardShouldPersistTaps="always">
+          <View style={styles.addressHeadingRow}>
+            <Text style={styles.addressHeading}>Deliver To</Text>
+            {Object.keys(address).length > 0 && !editing && (
+              <Icon
+                name="edit"
+                size={20}
+                color={Colors.DARK_GREY}
+                onPress={() => setEditing(prevState => !prevState)}
+              />
             )}
           </View>
+          {/**
+           * //TODO Get Name and Phone from api and save in Constant
+           */}
+          <LabelledTextInput
+            label={'Name'}
+            input={'Samyak Agrawal'}
+            onChangeText={() => {}}
+          />
+          <LabelledTextInput
+            label={'Phone'}
+            input={'9524658201'}
+            onChangeText={() => {}}
+          />
+          {Object.keys(address).length === 0 && !editing && (
+            <SButton
+              title="Add New Address"
+              onPress={() => setEditing(true)}
+              style={styles.addAddressButton}
+            />
+          )}
+          {(Object.keys(address).length > 0 || editing) && (
+            <View>
+              <Text style={styles.addressHeading}>Address</Text>
+              <LabelledTextInput
+                label={'House No.'}
+                input={address.houseNo}
+                onChangeText={text => setAddress({...address, houseNo: text})}
+                editable={editing}
+                keyboardType="numeric"
+              />
+              <LabelledTextInput
+                label={'Street'}
+                input={address.street}
+                onChangeText={text => setAddress({...address, street: text})}
+                editable={editing}
+              />
+              <LabelledTextInput
+                label={'City'}
+                input={address.city}
+                onChangeText={text => setAddress({...address, city: text})}
+                editable={editing}
+              />
+              <LabelledTextInput
+                label={'State'}
+                input={address.state}
+                onChangeText={text => setAddress({...address, state: text})}
+                editable={editing}
+              />
+              <LabelledTextInput
+                label={'Pincode'}
+                input={address.pincode}
+                onChangeText={text => setAddress({...address, pincode: text})}
+                editable={editing}
+                keyboardType="numeric"
+              />
+              {editing && (
+                <View style={styles.saveCancelButtonRow}>
+                  <SButton
+                    title="Cancel"
+                    onPress={cancelAddress}
+                    style={styles.cancelButton}
+                  />
+                  <SButton
+                    title="Save"
+                    onPress={saveAddress}
+                    style={styles.saveButton}
+                  />
+                </View>
+              )}
+            </View>
+          )}
+        </ScrollView>
+
+        <Box />
+        {!editing && <TextRow texts={['Total', `₹${total}`]} />}
+        {Object.keys(address).length > 0 && !editing && (
+          <SNextButton onPress={proceedToPayment} leftText="Proceed to Pay" />
         )}
-      </ScrollView>
-      <Box />
-      {!editing && <TextRow texts={['Total', `₹${total}`]} />}
-      {Object.keys(address).length > 0 && !editing && (
-        <SNextButton onPress={proceedToPayment} leftText="Proceed to Pay" />
-      )}
+      </ParentView>
       <Loader isLoading={isLoading} />
     </SafeAreaView>
   );

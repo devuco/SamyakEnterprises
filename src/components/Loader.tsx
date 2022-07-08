@@ -4,13 +4,21 @@ import {Colors} from '../utils';
 
 interface Props {
   isLoading: boolean;
+  backgroundColor?: string;
 }
-const Loader: React.FC<Props> = ({isLoading}) =>
+const Loader: React.FC<Props> = ({isLoading, backgroundColor}) =>
   isLoading ? (
     <ActivityIndicator
       size="large"
       color={Colors.PRIMARY}
-      style={styles.loader}
+      style={[
+        styles.loader,
+        {
+          backgroundColor: backgroundColor
+            ? backgroundColor
+            : Colors.TRANSLUCENT_GREY,
+        },
+      ]}
     />
   ) : null;
 

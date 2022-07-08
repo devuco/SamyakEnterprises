@@ -7,7 +7,6 @@ interface Props {
   leftText?: string;
   rightText?: string;
   onPress: () => void;
-  nextIcon?: boolean;
   style?: ViewStyle;
 }
 const SNextButton: React.FC<Props> = ({
