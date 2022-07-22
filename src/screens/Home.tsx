@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Box from '../components/Box';
 import HomeToolbar from '../components/HomeToolbar';
 import ParentView from '../components/ParentView';
 import Api from '../service/Api';
@@ -46,12 +47,23 @@ const Home = () => {
         onPress={() => navigation.navigate('ProductDetails', {id: product._id})}
         key={index}
         style={[styles.productContainer, {backgroundColor: product.color}]}>
-        <Icon
-          name="favorite"
-          style={styles.productHeart}
-          size={25}
-          color={Colors.DARK_GREY}
-        />
+        <View style={styles.productTopRow}>
+          {product.discount !== 0 && (
+            <View style={styles.productDiscountContainer}>
+              <Text
+                style={
+                  styles.productDiscount
+                }>{`${product.discount}% off`}</Text>
+            </View>
+          )}
+          <Box />
+          <Icon
+            name="favorite"
+            style={styles.productHeart}
+            size={25}
+            color={Colors.DARK_GREY}
+          />
+        </View>
         <Image
           source={{uri: Singleton.BASE_URL + product.image}}
           style={styles.productImage}
@@ -67,10 +79,6 @@ const Home = () => {
                 styles.productDiscountedPrice
               }>{`₹${product.discountedPrice}`}</Text>
           </View>
-          {product.discount !== 0 && (
-            <Text
-              style={styles.productDiscount}>{`${product.discount}% off`}</Text>
-          )}
         </View>
       </TouchableOpacity>
     );
@@ -125,7 +133,6 @@ const Home = () => {
               horizontal
               data={productsData}
               renderItem={renderProducts}
-              style={styles.productList}
             />
           </ScrollView>
         )}
@@ -182,7 +189,6 @@ const styles = StyleSheet.create({
     width: 40,
     resizeMode: 'contain',
   },
-  productList: {flexGrow: 0},
   productContainer: {
     alignItems: 'center',
     margin: 5,
@@ -191,7 +197,20 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     elevation: 5,
   },
-  productHeart: {alignSelf: 'flex-end', marginRight: 15, marginTop: 15},
+  productTopRow: {
+    flexDirection: 'row',
+    alignSelf: 'stretch',
+    marginHorizontal: 10,
+    marginVertical: 10,
+  },
+  productDiscountContainer: {
+    backgroundColor: Colors.WHITE,
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    marginRight: 5,
+  },
+  productHeart: {marginTop: 5, marginRight: 5},
   productImage: {
     height: 'auto',
     width: Dimensions.get('window').width / 2,
@@ -200,11 +219,13 @@ const styles = StyleSheet.create({
   },
   productBottomContainer: {
     backgroundColor: Colors.THEME_PRIMARY,
-    width: '95%',
+    alignSelf: 'stretch',
+    marginHorizontal: 5,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     marginVertical: 5,
     flex: 1,
+    justifyContent: 'center',
   },
   productName: {
     color: Colors.THEME_TEXT,

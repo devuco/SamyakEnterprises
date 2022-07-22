@@ -33,9 +33,7 @@ const OrderedProducts = () => {
             <ProductCard item={item} canUpdateQuantity={false} />
           )}
         />
-        {products.length > 0 && (
-          <TextRow texts={['Total:', `${data.netTotal}`]} />
-        )}
+        <TextRow texts={['Total:', `₹${data.netTotal}`]} />
       </ParentView>
     </SafeAreaView>
   );

@@ -6,8 +6,6 @@ const Api = {
 
   login: (body: Partial<IUser>) => Axios.post<IResponse<IUser>>('login', body),
 
-  getToken: () => Axios.get<IToken>('token', {headers: {deviceId: '1234'}}),
-
   getCategories: () => Axios.get<IResponse<Array<ICategories>>>('categories'),
 
   getCompanies: () => Axios.get<IResponse<Array<ICompanies>>>('company'),
@@ -47,7 +45,8 @@ const Api = {
   getInvoice: (orderId: string) =>
     Axios.get(`/checkout/order/${orderId}/invoice`),
 
-  getOrders: () => Axios.get<IResponse<Array<IOrder>>>('/orders'),
+  getOrders: (page: number) =>
+    Axios.get<IResponse<Array<IOrder>>>(`/orders?page=${page}`),
 };
 
 export default Api;

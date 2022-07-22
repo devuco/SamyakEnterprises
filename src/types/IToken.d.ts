@@ -1,3 +1,0 @@
-type IToken = {
-  token: string;
-};

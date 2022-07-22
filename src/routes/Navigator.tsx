@@ -1,6 +1,10 @@
 import {StatusBar} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {NavigationContainerRef, StackActions} from '@react-navigation/native';
+import {
+  NavigationContainerRef,
+  StackActions,
+  CommonActions,
+} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import NetworkModal from '../components/NetworkModal';
 import Cart from '../screens/Cart';
@@ -17,12 +21,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import MyOrders from '../screens/MyOrders';
 import OrderedProducts from '../screens/OrderedProducts';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import SessionExpiredModal from '../components/SessionExpiredModal';
+
 type Props = {
   navigationRef: NavigationContainerRef<StackParamList>;
 };
 const Navigator: React.FC<Props> = ({navigationRef}) => {
   const [showNetworkModal, setShowNetworkModal] = useState<boolean>(false);
   const [isScreenAnimation, setIsScreenAnimation] = useState(true);
+  const [isSessionExpiredModalVisible, setIsSessionExpiredModalVisible] =
+    useState(false);
 
   const Stack = createNativeStackNavigator<StackParamList>();
 
@@ -52,7 +60,7 @@ const Navigator: React.FC<Props> = ({navigationRef}) => {
             if (googleSignedIn) {
               await GoogleSignin.signOut();
             }
-            navigationRef.dispatch(StackActions.replace('Login'));
+            setIsSessionExpiredModalVisible(true);
             return Promise.reject(error);
           }
 
@@ -66,9 +74,18 @@ const Navigator: React.FC<Props> = ({navigationRef}) => {
     [navigationRef],
   );
 
-  useEffect(() => {
-    checkNetwork(false);
-  }, [checkNetwork]);
+  useEffect(() => checkNetwork(false), [checkNetwork]);
+
+  const onSessionExpiredPress = () => {
+    setIsSessionExpiredModalVisible(false);
+
+    navigationRef.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'Login'}],
+      }),
+    );
+  };
 
   return (
     <>
@@ -103,6 +120,10 @@ const Navigator: React.FC<Props> = ({navigationRef}) => {
         isVisible={showNetworkModal}
         onCancel={() => setShowNetworkModal(false)}
         onRetry={() => checkNetwork(true)}
+      />
+      <SessionExpiredModal
+        onPress={onSessionExpiredPress}
+        isVisible={isSessionExpiredModalVisible}
       />
     </>
   );

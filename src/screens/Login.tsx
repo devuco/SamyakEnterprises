@@ -23,7 +23,7 @@ const Login = () => {
   const callAPI = () => {
     const body = {email, password};
     Api.login(body)
-      .then(response => loginUser(response.data))
+      .then(res => loginUser(res.data, '', email))
       .catch(err => Alert.alert(err.response.data.message));
   };
 
@@ -33,22 +33,15 @@ const Login = () => {
     Singleton.NAME = name;
     Singleton.EMAIL = gmail;
     let body = {name: name ?? '', email: gmail, password: id};
-    console.log(body);
-
-    Api.register(body).then(res => {
-      loginUser(res.data);
-    });
+    Api.register(body).then(res => loginUser(res.data, name ?? '', gmail));
   };
 
-  const loginUser = (res: IResponse<IUser>) => {
-    Axios.defaults.headers.common.userId = res.data._id;
-    AsyncStorage.setItem('userId', res.data._id).then(() => {
-      Api.getToken().then(response => {
-        Axios.defaults.headers.common.token = response.data.token;
-        AsyncStorage.setItem('token', response.data.token).then(() =>
-          navigation.replace('Drawer'),
-        );
-      });
+  const loginUser = (res: IResponse<IUser>, name: string, emailId: string) => {
+    Axios.defaults.headers.common.token = res.data.token;
+    AsyncStorage.setItem('token', res.data.token).then(() => {
+      Singleton.NAME = name;
+      Singleton.EMAIL = emailId;
+      navigation.replace('Drawer');
     });
   };
 
@@ -77,7 +70,7 @@ const Login = () => {
       />
       <SButton title="Login" style={styles.button} onPress={callAPI} />
       <GoogleSigninButton
-        style={{width: '90%', alignSelf: 'center'}}
+        style={styles.googleButton}
         size={GoogleSigninButton.Size.Wide}
         color={isDarkMode ? 1 : 0}
         onPress={googleSignIn}
@@ -110,6 +103,7 @@ const styles = StyleSheet.create({
     color: Colors.THEME_TEXT,
   },
   button: {marginTop: 20},
+  googleButton: {width: '90%', alignSelf: 'center'},
   signup: {
     color: Colors.PRIMARY,
     alignSelf: 'center',

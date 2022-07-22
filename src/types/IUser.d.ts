@@ -4,6 +4,7 @@ type IUser = {
   password: string;
   email: string;
   address: IUserAddress;
+  token: string;
 };
 
 type IUserAddress = {

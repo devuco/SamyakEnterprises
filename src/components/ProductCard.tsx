@@ -1,4 +1,4 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, Text, View, ViewStyle} from 'react-native';
 import React from 'react';
 import {Colors, Singleton} from '../utils';
 import {useNavigation} from '@react-navigation/native';
@@ -9,6 +9,10 @@ type Props = {
   onAddProduct?: () => void;
   onSubtractProduct?: () => void;
   canUpdateQuantity: boolean;
+  showPrice?: boolean;
+  showQuantity?: boolean;
+  showDiscount?: boolean;
+  containerStyle?: ViewStyle;
 };
 
 const ProductCard: React.FC<Props> = ({
@@ -16,38 +20,53 @@ const ProductCard: React.FC<Props> = ({
   onAddProduct,
   onSubtractProduct,
   canUpdateQuantity,
+  showPrice = true,
+  showQuantity = true,
+  showDiscount = true,
+  containerStyle,
 }) => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
+
+  const {product, quantity, total} = item;
+  const {
+    name: pName,
+    price: pPrice,
+    discount: pDiscount,
+    image: pImage,
+    color: pColor,
+    discountedPrice: pDiscountedPrice,
+    _id: p_id,
+  } = product ?? {};
   return (
-    <TouchableOpacity
-      style={styles.itemContainer}
-      onPress={() =>
-        navigation.push('ProductDetails', {
-          id: item.product._id,
-        })
-      }
-      disabled={canUpdateQuantity}>
+    <View
+      style={[styles.itemContainer, containerStyle]}
+      // onPress={() =>
+      //   navigation.push('ProductDetails', {
+      //     id: p_id,
+      //   })
+      // }
+    >
       <Image
-        source={{uri: Singleton.BASE_URL + item.product.image}}
-        style={[styles.itemImage, {backgroundColor: item.product.color}]}
+        source={{uri: Singleton.BASE_URL + pImage}}
+        style={[styles.itemImage, {backgroundColor: pColor}]}
       />
 
       {/* Column 2 contains name price discount and viewText */}
       <View style={styles.itemColumn2}>
-        <Text style={styles.itemName}>{item.product.name}</Text>
+        <Text style={styles.itemName}>{pName}</Text>
         <View style={styles.itemPriceContainer}>
-          <Text style={styles.itemDiscountedPrice}>
-            ₹{item.product.discountedPrice}
-          </Text>
-          <Text style={styles.itemPrice}>₹{item.product.price}</Text>
-          <Text style={styles.itemDiscount}>{item.product.discount}%off</Text>
+          <Text style={styles.itemDiscountedPrice}>₹{pDiscountedPrice}</Text>
+          {showPrice && <Text style={styles.itemPrice}>₹{pPrice}</Text>}
+          {showDiscount && (
+            <Text style={styles.itemDiscount}>{pDiscount}%off</Text>
+          )}
         </View>
         {canUpdateQuantity && (
           <Text
             style={styles.itemViewProduct}
             onPress={() =>
               navigation.push('ProductDetails', {
-                id: item.product._id,
+                id: p_id,
               })
             }>
             View Product
@@ -57,17 +76,17 @@ const ProductCard: React.FC<Props> = ({
 
       {/* Column 3 contains Quanity Button and Total Text */}
       <View style={styles.itemColumn3}>
-        <Text style={styles.itemTotal}>₹{item.total}</Text>
+        <Text style={styles.itemTotal}>₹{total}</Text>
         <View style={styles.itemQuantityContainer}>
           {canUpdateQuantity && (
             <Text onPress={onAddProduct} style={styles.itemQuantityButton}>
               -
             </Text>
           )}
-          {!canUpdateQuantity && (
+          {!canUpdateQuantity && showQuantity && (
             <Text style={styles.itemQuantity}>{'QTY:'}</Text>
           )}
-          <Text style={styles.itemQuantity}>{item.quantity}</Text>
+          <Text style={styles.itemQuantity}>{quantity}</Text>
           {canUpdateQuantity && (
             <Text onPress={onSubtractProduct} style={styles.itemQuantityButton}>
               +
@@ -75,7 +94,7 @@ const ProductCard: React.FC<Props> = ({
           )}
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 

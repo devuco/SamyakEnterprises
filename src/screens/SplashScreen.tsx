@@ -12,12 +12,7 @@ const SplashScreen = () => {
     AsyncStorage.getItem('token').then(token => {
       if (token !== null) {
         Axios.defaults.headers.common.token = token;
-        AsyncStorage.getItem('userId').then(userID => {
-          if (userID !== null) {
-            Axios.defaults.headers.common.userId = userID;
-            navigation.replace('Drawer');
-          }
-        });
+        navigation.replace('Drawer');
       } else {
         navigation.replace('Login');
       }

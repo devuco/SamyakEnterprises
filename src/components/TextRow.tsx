@@ -1,13 +1,14 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, ViewStyle} from 'react-native';
 import React from 'react';
 import {Colors} from '../utils';
 
 type Props = {
   texts: Array<string>;
+  style?: ViewStyle;
 };
-const TextRow: React.FC<Props> = ({texts}) => {
+const TextRow: React.FC<Props> = ({texts, style}) => {
   return (
-    <View style={styles.Container}>
+    <View style={[styles.Container, style]}>
       {texts.map((text, index) => {
         return (
           <Text style={styles.Text} key={index}>
