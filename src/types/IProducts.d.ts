@@ -12,4 +12,5 @@ type IProducts = {
   totalRatings?: number;
   stock?: number;
   color?: string;
+  isSaved?: boolean;
 };

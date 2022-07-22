@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     margin: 20,
     elevation: 5,
-    backgroundColor: Colors.WHITE,
+    backgroundColor: Colors.THEME_PRIMARY,
     borderRadius: 10,
     shadowColor: Colors.BLACK,
     shadowOffset: {width: 0, height: 2},
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   },
   productCardContainer: {
     elevation: 5,
-    backgroundColor: Colors.WHITE,
+    backgroundColor: Colors.THEME_PRIMARY,
     borderRadius: 10,
     shadowColor: Colors.BLACK,
     shadowOffset: {width: 0, height: 2},

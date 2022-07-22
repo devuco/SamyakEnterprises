@@ -5,6 +5,7 @@ import {
 } from '@react-navigation/bottom-tabs';
 import TabBar from '../components/TabBar';
 import Home from '../screens/Home';
+import Wishlist from '../screens/Wishlist';
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator<TabsParamList>();
@@ -25,7 +26,7 @@ const TabNavigator = () => {
       />
       <Tab.Screen
         name="Whishlist"
-        component={Home}
+        component={Wishlist}
         initialParams={{icon: 'bookmark'}}
       />
       <Tab.Screen

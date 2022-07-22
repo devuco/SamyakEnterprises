@@ -14,4 +14,5 @@ export default {
   DARK_GREY: '#808080',
   DISCOUNT_GREEN: '#00b300',
   TRANSLUCENT_GREY: '#00000020',
+  RED: '#FF0000',
 };

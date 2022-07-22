@@ -38,6 +38,12 @@ const Home = () => {
     Api.getCategories().then(response => setCategoriesData(response.data.data));
   }, []);
 
+  const updateWishList = (pid: string) => {
+    Api.updateWishList(pid).then(() =>
+      Api.getProducts().then(res => setProductsData(res.data.data)),
+    );
+  };
+
   const renderProducts: ListRenderItem<IProducts> = ({
     item: product,
     index,
@@ -61,7 +67,8 @@ const Home = () => {
             name="favorite"
             style={styles.productHeart}
             size={25}
-            color={Colors.DARK_GREY}
+            color={product.isSaved ? Colors.RED : Colors.DARK_GREY}
+            onPress={() => updateWishList(product._id)}
           />
         </View>
         <Image

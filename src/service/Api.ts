@@ -47,6 +47,11 @@ const Api = {
 
   getOrders: (page: number) =>
     Axios.get<IResponse<Array<IOrder>>>(`/orders?page=${page}`),
+
+  updateWishList: (productId: string) =>
+    Axios.put<IResponse<IWishist>>(`/wishlist?productId=${productId}`),
+
+  getWishlist: () => Axios.get<IResponse<IWishist>>('/wishlist'),
 };
 
 export default Api;
