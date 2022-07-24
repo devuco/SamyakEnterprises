@@ -39,9 +39,10 @@ const Home = () => {
   }, []);
 
   const updateWishList = (pid: string) => {
-    Api.updateWishList(pid).then(() =>
-      Api.getProducts().then(res => setProductsData(res.data.data)),
-    );
+    Api.updateWishList(pid).then(() => {
+      Api.getProducts().then(res => setProductsData(res.data.data));
+      console.log('here');
+    });
   };
 
   const renderProducts: ListRenderItem<IProducts> = ({
@@ -127,6 +128,7 @@ const Home = () => {
               style={styles.companyList}
               data={companiesData}
               renderItem={renderCompanies}
+              showsHorizontalScrollIndicator={false}
             />
             <Text style={styles.heading}>Top Categories</Text>
             <FlatList
@@ -134,12 +136,14 @@ const Home = () => {
               style={styles.companyList}
               data={categoriesData}
               renderItem={renderCategories}
+              showsHorizontalScrollIndicator={false}
             />
             <Text style={styles.heading}>Top Picks For You</Text>
             <FlatList
               horizontal
               data={productsData}
               renderItem={renderProducts}
+              showsHorizontalScrollIndicator={false}
             />
           </ScrollView>
         )}

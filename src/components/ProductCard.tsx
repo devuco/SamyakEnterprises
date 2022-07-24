@@ -1,4 +1,11 @@
-import {Image, StyleSheet, Text, View, ViewStyle} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native';
 import React from 'react';
 import {Colors, Singleton} from '../utils';
 import {useNavigation} from '@react-navigation/native';
@@ -17,8 +24,8 @@ type Props = {
 
 const ProductCard: React.FC<Props> = ({
   item,
-  onAddProduct,
-  onSubtractProduct,
+  onAddProduct: addProduct,
+  onSubtractProduct: subtractProduct,
   canUpdateQuantity,
   showPrice = true,
   showQuantity = true,
@@ -38,29 +45,33 @@ const ProductCard: React.FC<Props> = ({
     _id: p_id,
   } = product ?? {};
   return (
-    <View
-      style={[styles.itemContainer, containerStyle]}
-      // onPress={() =>
-      //   navigation.push('ProductDetails', {
-      //     id: p_id,
-      //   })
-      // }
-    >
-      <Image
-        source={{uri: Singleton.BASE_URL + pImage}}
-        style={[styles.itemImage, {backgroundColor: pColor}]}
-      />
+    <View style={[styles.itemContainer, containerStyle]}>
+      {/* Column 1 contains Image */}
+      <View
+        style={[
+          styles.itemColumn1,
+          {
+            backgroundColor: pColor,
+          },
+        ]}>
+        <Image
+          source={{uri: Singleton.BASE_URL + pImage}}
+          style={[styles.itemImage]}
+        />
+      </View>
 
       {/* Column 2 contains name price discount and viewText */}
       <View style={styles.itemColumn2}>
         <Text style={styles.itemName}>{pName}</Text>
         <View style={styles.itemPriceContainer}>
           <Text style={styles.itemDiscountedPrice}>₹{pDiscountedPrice}</Text>
-          {showPrice && <Text style={styles.itemPrice}>₹{pPrice}</Text>}
-          {showDiscount && (
-            <Text style={styles.itemDiscount}>{pDiscount}%off</Text>
+          {showPrice && (pDiscount ?? 0) > 0 && (
+            <Text style={styles.itemPrice}>₹{pPrice}</Text>
           )}
         </View>
+        {showDiscount && (pDiscount ?? 0) > 0 && (
+          <Text style={styles.itemDiscount}>{pDiscount}%off</Text>
+        )}
         {canUpdateQuantity && (
           <Text
             style={styles.itemViewProduct}
@@ -74,23 +85,27 @@ const ProductCard: React.FC<Props> = ({
         )}
       </View>
 
-      {/* Column 3 contains Quanity Button and Total Text */}
+      {/* Column 3 contains Total Text and Quanity Button*/}
       <View style={styles.itemColumn3}>
         <Text style={styles.itemTotal}>₹{total}</Text>
         <View style={styles.itemQuantityContainer}>
           {canUpdateQuantity && (
-            <Text onPress={onAddProduct} style={styles.itemQuantityButton}>
-              -
-            </Text>
+            <TouchableOpacity
+              onPress={addProduct}
+              style={styles.itemQuantityButton}>
+              <Text>-</Text>
+            </TouchableOpacity>
           )}
           {!canUpdateQuantity && showQuantity && (
             <Text style={styles.itemQuantity}>{'QTY:'}</Text>
           )}
           <Text style={styles.itemQuantity}>{quantity}</Text>
           {canUpdateQuantity && (
-            <Text onPress={onSubtractProduct} style={styles.itemQuantityButton}>
-              +
-            </Text>
+            <TouchableOpacity
+              onPress={subtractProduct}
+              style={styles.itemQuantityButton}>
+              <Text>+</Text>
+            </TouchableOpacity>
           )}
         </View>
       </View>
@@ -108,10 +123,17 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     margin: 10,
   },
-  itemImage: {
-    height: 100,
-    width: 100,
+  itemColumn1: {
+    overflow: 'hidden',
     borderRadius: 12,
+    justifyContent: 'center',
+  },
+  itemImage: {
+    height: 'auto',
+    width: 100,
+    aspectRatio: 1,
+    borderRadius: 12,
+    resizeMode: 'cover',
   },
   itemColumn2: {
     flex: 1,
@@ -141,6 +163,7 @@ const styles = StyleSheet.create({
     color: Colors.DISCOUNT_GREEN,
     marginRight: 5,
     fontWeight: 'bold',
+    flexShrink: 1,
   },
   itemViewProduct: {
     color: Colors.PRIMARY,
@@ -164,8 +187,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: 20,
     width: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
     overflow: 'hidden',
   },
   itemQuantity: {

@@ -65,7 +65,7 @@ const Navigator: React.FC<Props> = ({navigationRef}) => {
           }
 
           NetInfo.fetch().then(
-            state => !state.isWifiEnabled && setShowNetworkModal(true),
+            state => !state.isConnected && setShowNetworkModal(true),
           );
           return Promise.reject(error);
         },

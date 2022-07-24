@@ -39,7 +39,7 @@ const ProductDetails = () => {
     } else if (stock <= 5) {
       return `Hurry! Only ${stock} left`;
     }
-    return 'Available in Stock';
+    return 'In Stock';
   };
 
   const addToCart = () => {
@@ -174,12 +174,14 @@ const styles = StyleSheet.create({
     color: Colors.THEME_TEXT,
     textDecorationLine: 'line-through',
     marginLeft: 15,
-    flex: 1,
   },
   stock: {
     color: Colors.THEME_TEXT,
     fontWeight: 'bold',
     fontSize: 18,
+    flexShrink: 1,
+    flex: 1,
+    textAlign: 'right',
   },
   aboutText: {
     color: Colors.THEME_TEXT,

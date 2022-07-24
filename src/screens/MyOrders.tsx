@@ -87,9 +87,11 @@ const MyOrders = () => {
                     />
                   ))}
                 </View>
-                <Text style={styles.viewMore}>
-                  {`${products.length - 2} more`}
-                </Text>
+                {products.length > 2 && (
+                  <Text style={styles.viewMore}>
+                    {`${products.length - 2} more`}
+                  </Text>
+                )}
                 <TextRow
                   texts={['Net Total :', `₹${netTotal}`]}
                   style={styles.netTotalRow}

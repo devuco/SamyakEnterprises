@@ -1,4 +1,4 @@
-import {FlatList, SafeAreaView, StyleSheet} from 'react-native';
+import {FlatList, SafeAreaView, StyleSheet, Text} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Api from '../service/Api';
 import {RouteProp, useRoute} from '@react-navigation/native';
@@ -29,11 +29,23 @@ const OrderedProducts = () => {
       <ParentView isLoading={isParentLoading}>
         <FlatList
           data={products}
+          style={{flexGrow: 0, marginBottom: 20}}
           renderItem={({item}) => (
             <ProductCard item={item} canUpdateQuantity={false} />
           )}
         />
         <TextRow texts={['Total:', `₹${data.netTotal}`]} />
+        <Text
+          style={{
+            color: Colors.THEME_TEXT,
+            fontWeight: 'bold',
+            fontSize: 18,
+            marginHorizontal: 20,
+            marginTop: 18,
+          }}>
+          Delivery Address
+        </Text>
+        <TextRow texts={[data.address]} />
       </ParentView>
     </SafeAreaView>
   );

@@ -30,18 +30,21 @@ const Login = () => {
   const googleSignIn = async () => {
     const userInfo = await GoogleSignin.signIn();
     const {name, id, email: gmail} = userInfo.user;
-    Singleton.NAME = name;
-    Singleton.EMAIL = gmail;
     let body = {name: name ?? '', email: gmail, password: id};
     Api.register(body).then(res => loginUser(res.data, name ?? '', gmail));
   };
 
   const loginUser = (res: IResponse<IUser>, name: string, emailId: string) => {
     Axios.defaults.headers.common.token = res.data.token;
+    console.log('res.data.token', JSON.stringify(res.data, null, 2));
     AsyncStorage.setItem('token', res.data.token).then(() => {
-      Singleton.NAME = name;
-      Singleton.EMAIL = emailId;
-      navigation.replace('Drawer');
+      AsyncStorage.setItem('name', name).then(() =>
+        AsyncStorage.setItem('email', emailId).then(() => {
+          Singleton.NAME = name;
+          Singleton.EMAIL = emailId;
+          navigation.replace('Drawer');
+        }),
+      );
     });
   };
 

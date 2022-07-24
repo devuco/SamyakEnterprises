@@ -31,7 +31,8 @@ const Api = {
   updateAddress: (body: IUserAddress) =>
     Axios.put<IResponse<IUserAddress>>('/checkout/address', body),
 
-  getAddress: () => Axios.get<IResponse<IUserAddress>>('/checkout/address'),
+  getAddress: () =>
+    Axios.get<IResponse<Array<IUserAddress>>>('/checkout/address'),
 
   createOrder: (amount: number) =>
     Axios.post<IResponse<{id: string}>>('/checkout/order/create', {amount}),

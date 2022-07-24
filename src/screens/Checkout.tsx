@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {Colors, Toast} from '../utils';
+import {Colors, Singleton, Toast} from '../utils';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Toolbar from '../components/Toolbar';
@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import SButton from '../components/SButton';
 import Api from '../service/Api';
 import Loader from '../components/Loader';
-// import RazorpayCheckout from 'react-native-razorpay';
+import RazorpayCheckout from 'react-native-razorpay';
 import LabelledTextInput from '../components/LabelledTextInput';
 import Box from '../components/Box';
 import ParentView from '../components/ParentView';
@@ -32,7 +32,7 @@ const Checkout = () => {
 
   const getAddress = () => {
     Api.getAddress()
-      .then(response => setAddress(response.data.data))
+      .then(response => setAddress(response.data.data[0]))
       .finally(() => {
         setIsParentLoading(false);
         setIsLoading(false);
@@ -62,39 +62,39 @@ const Checkout = () => {
       .then(response => {
         const orderId = response.data.data.id;
 
-        // const options = {
-        //   description: 'Credits towards consultation',
-        //   image: 'https://i.imgur.com/3g7nmJC.png',
-        //   currency: 'INR',
-        //   key: 'rzp_test_GfxJZDSYJvQ0Gf',
-        //   amount: total * 100,
-        //   name: 'Shopping App',
-        //   order_id: orderId,
-        //   prefill: {
-        //     email: 'gaurav.kumar@example.com',
-        //     contact: '9191919191',
-        //     name: 'Gaurav Kumar',
-        //   },
-        //   theme: {color: Colors.PRIMARY},
-        // };
-        // RazorpayCheckout.open(options)
-        //   .then((data: any) => {
-        Api.placeOrder({
-          orderId: orderId,
-          amount: total,
-        })
+        const options = {
+          description: 'Credits towards consultation',
+          image: 'https://i.imgur.com/3g7nmJC.png',
+          currency: 'INR',
+          key: 'rzp_test_GfxJZDSYJvQ0Gf',
+          amount: total * 100,
+          name: 'Shopping App',
+          order_id: orderId,
+          prefill: {
+            email: 'gaurav.kumar@example.com',
+            contact: '9191919191',
+            name: 'Gaurav Kumar',
+          },
+          theme: {color: Colors.PRIMARY},
+        };
+        RazorpayCheckout.open(options)
           .then(() => {
-            navigation.popToTop();
-            navigation.navigate('OrderPlaced', {orderId});
+            Api.placeOrder({
+              orderId: orderId,
+              amount: total,
+            })
+              .then(() => {
+                navigation.popToTop();
+                navigation.navigate('OrderPlaced', {orderId});
+              })
+              .finally(() => setIsLoading(false));
           })
-          .finally(() => setIsLoading(false));
+          .catch(
+            (error: any) =>
+              console.log('error', JSON.stringify(error, null, 2)),
+            setIsLoading(false),
+          );
       })
-      //     .catch(
-      //       (error: any) =>
-      //         console.log('error', JSON.stringify(error, null, 2)),
-      //       setIsLoading(false),
-      //     );
-      // })
       .catch(() => setIsLoading(false));
   };
 
@@ -121,7 +121,7 @@ const Checkout = () => {
            */}
           <LabelledTextInput
             label={'Name'}
-            input={'Samyak Agrawal'}
+            input={Singleton.NAME ?? ''}
             onChangeText={() => {}}
           />
           <LabelledTextInput

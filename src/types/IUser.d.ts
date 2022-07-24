@@ -3,7 +3,7 @@ type IUser = {
   name: string;
   password: string;
   email: string;
-  address: IUserAddress;
+  address: Array<IUserAddress>;
   token: string;
 };
 
