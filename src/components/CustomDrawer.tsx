@@ -12,13 +12,15 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 const CustomDrawer = (props: DrawerContentComponentProps) => {
   const {index} = props.state;
 
-  const drawerIcon = (focused: boolean, icon: string) => (
-    <Icon
-      name={icon}
-      color={!focused ? Colors.THEME_TEXT : Colors.PRIMARY}
-      size={25}
-    />
-  );
+  const drawerIcon = (focused: boolean, icon: string) => {
+    return (
+      <Icon
+        name={icon}
+        color={!focused ? Colors.THEME_TEXT : Colors.WHITE}
+        size={25}
+      />
+    );
+  };
 
   return (
     <DrawerContentScrollView {...props}>
@@ -27,6 +29,8 @@ const CustomDrawer = (props: DrawerContentComponentProps) => {
         onPress={() => props.navigation.navigate('Tabs')}
         icon={({focused}) => drawerIcon(focused, 'home')}
         style={index === 0 ? {backgroundColor: Colors.PRIMARY} : {}}
+        labelStyle={index === 0 ? {color: Colors.WHITE} : {}}
+        focused={true}
       />
       <DrawerItem
         label="My Orders"

@@ -1,11 +1,9 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import {Image, StyleSheet, Text, View} from 'react-native';
+import React, {useCallback, useState} from 'react';
 import Api from '../service/Api';
 import ParentView from '../components/ParentView';
 import {FlatList} from 'react-native-gesture-handler';
 import {Colors, Singleton} from '../utils';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import ProductCard from '../components/ProductCard';
 import {useFocusEffect} from '@react-navigation/native';
 
 const Wishlist = () => {
@@ -21,31 +19,16 @@ const Wishlist = () => {
   );
   return (
     <ParentView isLoading={isLoading}>
-      <View style={{flex: 1, backgroundColor: Colors.THEME_PRIMARY}}>
+      <View style={styles.parent}>
         <FlatList
-          style={{marginTop: 10}}
           data={data}
           renderItem={({item}) => (
-            <View
-              style={{
-                flexDirection: 'row',
-                margin: 10,
-                elevation: 5,
-                borderRadius: 8,
-                backgroundColor: Colors.WHITE,
-              }}>
+            <View style={styles.itemContainer}>
               <Image
                 source={{uri: Singleton.BASE_URL + item.image}}
-                style={{width: 100, height: 100}}
+                style={styles.itemImage}
               />
-              <Text
-                style={{
-                  color: Colors.THEME_TEXT,
-                  alignSelf: 'center',
-                  marginLeft: 15,
-                }}>
-                {item.name}
-              </Text>
+              <Text style={styles.itemName}>{item.name}</Text>
             </View>
           )}
         />
@@ -56,4 +39,19 @@ const Wishlist = () => {
 
 export default Wishlist;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  parent: {flex: 1, backgroundColor: Colors.THEME_PRIMARY, paddingBottom: 10},
+  itemContainer: {
+    flexDirection: 'row',
+    margin: 10,
+    elevation: 5,
+    borderRadius: 8,
+    backgroundColor: Colors.WHITE,
+  },
+  itemImage: {width: 100, height: 100},
+  itemName: {
+    color: Colors.THEME_TEXT,
+    alignSelf: 'center',
+    marginLeft: 15,
+  },
+});

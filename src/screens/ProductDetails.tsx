@@ -1,4 +1,5 @@
 import {
+  Alert,
   Dimensions,
   Image,
   SafeAreaView,
@@ -49,6 +50,10 @@ const ProductDetails = () => {
       .then(() => Toast.showSuccess('Added Successfully'))
       .catch(err => Toast.showError(err.response.data.message)) //TODO change button text to go to cart
       .finally(() => setIsLoading(false));
+  };
+
+  const notifyMe = () => {
+    Alert.alert('Oops!', 'This feature is not available yet.');
   };
 
   return (
@@ -109,8 +114,8 @@ const ProductDetails = () => {
           </View>
         </ScrollView>
         <SButton
-          title={'Add to cart'}
-          onPress={addToCart}
+          title={product?.stock !== 0 ? 'Add to cart' : 'Notify Me'}
+          onPress={product?.stock !== 0 ? addToCart : notifyMe}
           isLoading={isLoading}
           loadingText="Please Wait..."
         />

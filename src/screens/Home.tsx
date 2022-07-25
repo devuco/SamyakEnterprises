@@ -7,7 +7,6 @@ import {
   FlatList,
   Image,
   ListRenderItem,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -32,16 +31,17 @@ const Home = () => {
 
   useEffect(() => {
     Api.getProducts()
-      .then(response => setProductsData(response.data.data))
+      .then(res => setProductsData(res.data.data))
       .finally(() => setIsParentLoading(false));
-    Api.getCompanies().then(response => setCompaniesData(response.data.data));
-    Api.getCategories().then(response => setCategoriesData(response.data.data));
+    Api.getCompanies().then(res => setCompaniesData(res.data.data));
+    Api.getCategories().then(res => setCategoriesData(res.data.data));
   }, []);
 
-  const updateWishList = (pid: string) => {
+  const updateWishList = (pid: string, index: number) => {
     Api.updateWishList(pid).then(() => {
-      Api.getProducts().then(res => setProductsData(res.data.data));
-      console.log('here');
+      let products = [...productsData];
+      products[index].isSaved = !products[index].isSaved;
+      setProductsData(products);
     });
   };
 
@@ -69,7 +69,7 @@ const Home = () => {
             style={styles.productHeart}
             size={25}
             color={product.isSaved ? Colors.RED : Colors.DARK_GREY}
-            onPress={() => updateWishList(product._id)}
+            onPress={() => updateWishList(product._id, index)}
           />
         </View>
         <Image
@@ -115,13 +115,14 @@ const Home = () => {
   };
 
   return (
-    <SafeAreaView style={styles.parent}>
+    <View style={styles.parent}>
       <ParentView isLoading={isParentLoading}>
         <HomeToolbar isSearch={setSearch} />
         {!search && (
           <ScrollView
             contentContainerStyle={styles.scrollView}
-            keyboardShouldPersistTaps="handled">
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}>
             <Text style={styles.heading}>Top Brands</Text>
             <FlatList
               horizontal
@@ -144,6 +145,7 @@ const Home = () => {
               data={productsData}
               renderItem={renderProducts}
               showsHorizontalScrollIndicator={false}
+              extraData={productsData}
             />
           </ScrollView>
         )}
@@ -153,7 +155,7 @@ const Home = () => {
           <Icon name="shopping-cart" size={25} color={Colors.SECONDARY} />
         </TouchableOpacity>
       </ParentView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -164,8 +166,7 @@ const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: Colors.THEME_PRIMARY,
     paddingHorizontal: 10,
-    paddingBottom: 150,
-    flexGrow: 1,
+    paddingBottom: 50,
   },
   heading: {
     color: Colors.PRIMARY,
@@ -181,6 +182,10 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     backgroundColor: Colors.WHITE,
     elevation: 5,
+    shadowColor: Colors.BLACK,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
   },
   companyImage: {
     height: 40,
@@ -194,6 +199,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.WHITE,
     elevation: 5,
     padding: 5,
+    shadowColor: Colors.BLACK,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
   },
   categoryImage: {
     height: 40,

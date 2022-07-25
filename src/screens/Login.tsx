@@ -1,4 +1,11 @@
-import {Alert, Image, StyleSheet, Text, TextInput, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+} from 'react-native';
 import React, {useRef, useState} from 'react';
 import {Colors, Images, isDarkMode, Singleton} from '../utils';
 import SButton from '../components/SButton';
@@ -36,7 +43,6 @@ const Login = () => {
 
   const loginUser = (res: IResponse<IUser>, name: string, emailId: string) => {
     Axios.defaults.headers.common.token = res.data.token;
-    console.log('res.data.token', JSON.stringify(res.data, null, 2));
     AsyncStorage.setItem('token', res.data.token).then(() => {
       AsyncStorage.setItem('name', name).then(() =>
         AsyncStorage.setItem('email', emailId).then(() => {
@@ -49,7 +55,7 @@ const Login = () => {
   };
 
   return (
-    <View style={styles.parent}>
+    <SafeAreaView style={styles.parent}>
       <Image source={Images.LOGO} style={styles.image} />
       <TextInput
         onChangeText={setEmail}
@@ -80,7 +86,7 @@ const Login = () => {
       />
 
       <Text style={styles.signup}>New User? Sign Up</Text>
-    </View>
+    </SafeAreaView>
   );
 };
 
