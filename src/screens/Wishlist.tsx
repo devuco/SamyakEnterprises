@@ -26,9 +26,10 @@ const Wishlist = () => {
             <View style={styles.itemContainer}>
               <Image
                 source={{uri: Singleton.BASE_URL + item.image}}
-                style={styles.itemImage}
+                style={[styles.itemImage, {backgroundColor: item.color}]}
               />
               <Text style={styles.itemName}>{item.name}</Text>
+              <Text style={styles.itemName}>{`₹${item.price}`}</Text>
             </View>
           )}
         />
@@ -46,12 +47,13 @@ const styles = StyleSheet.create({
     margin: 10,
     elevation: 5,
     borderRadius: 8,
-    backgroundColor: Colors.WHITE,
+    backgroundColor: Colors.THEME_PRIMARY,
   },
-  itemImage: {width: 100, height: 100},
+  itemImage: {width: 100, height: 100, borderRadius: 12},
   itemName: {
     color: Colors.THEME_TEXT,
     alignSelf: 'center',
     marginLeft: 15,
+    fontWeight: 'bold',
   },
 });
