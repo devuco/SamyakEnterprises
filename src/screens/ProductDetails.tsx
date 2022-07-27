@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Alert,
   Dimensions,
   Image,
@@ -18,21 +19,32 @@ import Api from '../service/Api';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import ParentView from '../components/ParentView';
+import {useRecoilState} from 'recoil';
+import {productDetail} from '../atom';
 
 const ProductDetails = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
   const route = useRoute<RouteProp<StackParamList, 'ProductDetails'>>();
   const {id} = route.params;
 
-  const [product, setProduct] = useState<IProducts>();
+  const [product, setProduct] = useRecoilState<IProducts>(productDetail);
   const [isParentLoading, setIsParentLoading] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [heartLoading, setHeartLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log(Singleton.FETCH_PRODUCT);
+    if (product._id === id && !Singleton.FETCH_PRODUCT) {
+      setIsParentLoading(false);
+      return;
+    }
     Api.getProduct(id)
-      .then(response => setProduct(response.data.data))
+      .then(response => {
+        setProduct(response.data.data);
+        Singleton.FETCH_PRODUCT = false;
+      })
       .finally(() => setIsParentLoading(false));
-  }, [id]);
+  }, [id, product._id, setProduct]);
 
   const getStock = (stock: number) => {
     if (stock === 0) {
@@ -45,9 +57,12 @@ const ProductDetails = () => {
 
   const addToCart = () => {
     setIsLoading(true);
-    let body = {product: id, quantity: 1};
+    let body = {product: id};
     Api.addToCart(body)
-      .then(() => Toast.showSuccess('Added Successfully'))
+      .then(() => {
+        Toast.showSuccess('Added Successfully');
+        Singleton.FETCH_CART = true;
+      })
       .catch(err => Toast.showError(err.response.data.message)) //TODO change button text to go to cart
       .finally(() => setIsLoading(false));
   };
@@ -56,24 +71,40 @@ const ProductDetails = () => {
     Alert.alert('Oops!', 'This feature is not available yet.');
   };
 
+  const updateWishList = (pid: string) => {
+    setHeartLoading(true);
+    Api.updateWishList(pid).then(() => {
+      Singleton.FETCH_WISHLIST = true;
+      Singleton.FETCH_HOME = true;
+      let updatedProduct = {...product};
+      updatedProduct.isSaved = !updatedProduct.isSaved;
+      setProduct(updatedProduct);
+      setHeartLoading(false);
+    });
+  };
+
   return (
     <SafeAreaView style={styles.parent}>
       <StatusBar backgroundColor={product?.color} />
-      <View style={[styles.header, {backgroundColor: product?.color}]}>
-        <Icon
-          name="arrow-back"
-          color={Colors.BLACK}
-          size={25}
-          onPress={() => navigation.goBack()}
-        />
-        <Icon
-          name="shopping-cart"
-          color={Colors.BLACK}
-          size={25}
-          onPress={() => navigation.navigate('Cart')}
-        />
-      </View>
       <ParentView isLoading={isParentLoading}>
+        <View style={[styles.header, {backgroundColor: product?.color}]}>
+          <Icon
+            name="arrow-back"
+            color={Colors.BLACK}
+            size={25}
+            onPress={() => navigation.goBack()}
+          />
+          {!heartLoading ? (
+            <Icon
+              name="favorite"
+              size={25}
+              color={product.isSaved ? Colors.RED : Colors.DARK_GREY}
+              onPress={() => updateWishList(product._id)}
+            />
+          ) : (
+            <ActivityIndicator animating color={Colors.RED} size={'small'} />
+          )}
+        </View>
         <ScrollView>
           <View
             style={[styles.imageBackground, {backgroundColor: product?.color}]}>

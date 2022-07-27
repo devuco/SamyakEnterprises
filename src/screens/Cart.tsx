@@ -1,7 +1,7 @@
 import {FlatList, SafeAreaView, StyleSheet} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Api from '../service/Api';
-import {Colors, Images} from '../utils';
+import {Colors, Images, Singleton} from '../utils';
 import Toolbar from '../components/Toolbar';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -11,31 +11,39 @@ import TextRow from '../components/TextRow';
 import ProductCard from '../components/ProductCard';
 import NoData from '../components/NoData';
 import ParentView from '../components/ParentView';
+import {useRecoilState} from 'recoil';
+import {cart} from '../atom';
 
 const Cart = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
-  const [products, setProducts] = useState<Array<ICartProduct>>([]);
+  const [products, setProducts] = useRecoilState<Array<ICartProduct>>(cart);
   const [netTotal, setNetTotal] = useState<number>(0);
-  const [isParentLoading, setIsParentLoading] = useState<boolean>(true);
+  const [isParentLoading, setIsParentLoading] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const getCart = useCallback(() => {
+    Api.getCart()
+      .then(response => {
+        setProducts(response.data.data.products);
+        setNetTotal(response.data.data.netTotal);
+        Singleton.FETCH_CART = false;
+      })
+      .finally(() => setIsParentLoading(false));
+  }, [setProducts]);
+
   useEffect(() => {
-    getCart();
-  }, []);
+    if (Singleton.FETCH_CART) {
+      console.log(Singleton.FETCH_CART);
+      setIsParentLoading(true);
+      getCart();
+    }
+  }, [getCart]);
 
   /**
    * @method getCart
    * @description get cart products
    */
-  const getCart = () => {
-    Api.getCart()
-      .then(response => {
-        setProducts(response.data.data.products);
-        setNetTotal(response.data.data.netTotal);
-      })
-      .finally(() => setIsParentLoading(false));
-  };
 
   /**
    * @method updateProduct
@@ -49,7 +57,7 @@ const Cart = () => {
         .then(() => getCart())
         .finally(() => setIsLoading(false));
     } else {
-      let body = {product: id, quantity};
+      let body = {product: id};
       Api.updateCart(body)
         .then(response => {
           setProducts(prevProducts => {

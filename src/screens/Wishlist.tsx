@@ -11,10 +11,17 @@ const Wishlist = () => {
   const [data, setData] = useState<Array<IProducts>>([]);
   useFocusEffect(
     useCallback(() => {
-      setIsLoading(true);
-      Api.getWishlist()
-        .then(res => setData(res.data.data.products))
-        .finally(() => setIsLoading(false));
+      if (Singleton.FETCH_WISHLIST) {
+        setIsLoading(true);
+        Api.getWishlist()
+          .then(res => {
+            setData(res.data.data.products);
+            Singleton.FETCH_WISHLIST = false;
+          })
+          .finally(() => setIsLoading(false));
+      } else {
+        setIsLoading(false);
+      }
     }, []),
   );
   return (

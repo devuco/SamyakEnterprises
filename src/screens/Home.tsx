@@ -1,8 +1,9 @@
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {useState} from 'react';
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   Image,
@@ -28,20 +29,32 @@ const Home = () => {
   const [categoriesData, setCategoriesData] = useState<Array<ICategories>>([]);
   const [search, setSearch] = useState<boolean>(false);
   const [isParentLoading, setIsParentLoading] = useState<boolean>(true);
+  const [heartIndex, setHeartIndex] = useState<number>(-1);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (Singleton.FETCH_HOME) {
+        Api.getProducts()
+          .then(res => setProductsData(res.data.data))
+          .finally(() => setIsParentLoading(false));
+      }
+    }, []),
+  );
 
   useEffect(() => {
-    Api.getProducts()
-      .then(res => setProductsData(res.data.data))
-      .finally(() => setIsParentLoading(false));
     Api.getCompanies().then(res => setCompaniesData(res.data.data));
     Api.getCategories().then(res => setCategoriesData(res.data.data));
   }, []);
 
   const updateWishList = (pid: string, index: number) => {
+    setHeartIndex(index);
     Api.updateWishList(pid).then(() => {
+      Singleton.FETCH_WISHLIST = true;
+      Singleton.FETCH_PRODUCT = true;
       let products = [...productsData];
       products[index].isSaved = !products[index].isSaved;
       setProductsData(products);
+      setHeartIndex(-1);
     });
   };
 
@@ -51,7 +64,12 @@ const Home = () => {
   }) => {
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate('ProductDetails', {id: product._id})}
+        onPress={() =>
+          navigation.navigate('ProductDetails', {
+            id: product._id,
+            isSaved: product.isSaved,
+          })
+        }
         key={index}
         style={[styles.productContainer, {backgroundColor: product.color}]}>
         <View style={styles.productTopRow}>
@@ -64,13 +82,17 @@ const Home = () => {
             </View>
           )}
           <Box />
-          <Icon
-            name="favorite"
-            style={styles.productHeart}
-            size={25}
-            color={product.isSaved ? Colors.RED : Colors.DARK_GREY}
-            onPress={() => updateWishList(product._id, index)}
-          />
+          {heartIndex !== index ? (
+            <Icon
+              name="favorite"
+              style={styles.productHeart}
+              size={25}
+              color={product.isSaved ? Colors.RED : Colors.DARK_GREY}
+              onPress={() => updateWishList(product._id, index)}
+            />
+          ) : (
+            <ActivityIndicator animating color={Colors.RED} size={'small'} />
+          )}
         </View>
         <Image
           source={{uri: Singleton.BASE_URL + product.image}}

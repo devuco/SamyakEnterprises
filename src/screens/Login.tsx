@@ -35,10 +35,14 @@ const Login = () => {
   };
 
   const googleSignIn = async () => {
-    const userInfo = await GoogleSignin.signIn();
-    const {name, id, email: gmail} = userInfo.user;
-    let body = {name: name ?? '', email: gmail, password: id};
-    Api.register(body).then(res => loginUser(res.data, name ?? '', gmail));
+    try {
+      const userInfo = await GoogleSignin.signIn();
+      const {name, id, email: gmail} = userInfo.user;
+      let body = {name: name ?? '', email: gmail, password: id};
+      Api.register(body).then(res => loginUser(res.data, name ?? '', gmail));
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const loginUser = (res: IResponse<IUser>, name: string, emailId: string) => {

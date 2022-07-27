@@ -6,6 +6,7 @@ import React from 'react';
 import {LogBox} from 'react-native';
 import Navigator from './src/routes/Navigator';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {RecoilRoot} from 'recoil';
 
 LogBox.ignoreAllLogs();
 export const navigationRef = createNavigationContainerRef<StackParamList>();
@@ -20,9 +21,11 @@ GoogleSignin.configure({
 
 const App = () => {
   return (
-    <NavigationContainer ref={navigationRef}>
-      <Navigator navigationRef={navigationRef} />
-    </NavigationContainer>
+    <RecoilRoot>
+      <NavigationContainer ref={navigationRef}>
+        <Navigator navigationRef={navigationRef} />
+      </NavigationContainer>
+    </RecoilRoot>
   );
 };
 
