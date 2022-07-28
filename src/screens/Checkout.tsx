@@ -30,6 +30,9 @@ const Checkout = () => {
     getAddress();
   }, []);
 
+  /**
+   * Triggers Api to fetch user address
+   */
   const getAddress = () => {
     Api.getAddress()
       .then(response => setAddress(response.data.data[0]))
@@ -40,6 +43,9 @@ const Checkout = () => {
       });
   };
 
+  /**
+   * Triggers Api to save user address
+   */
   const saveAddress = () => {
     setIsLoading(true);
     Api.updateAddress(address)
@@ -51,11 +57,18 @@ const Checkout = () => {
       .finally(() => setIsLoading(false));
   };
 
+  /**
+   * Triggers Api to clear fields and fetch user address
+   */
   const cancelAddress = () => {
     setIsLoading(true);
     getAddress();
   };
 
+  /**
+   * Triggers Api to create a razopay order, then navigates user to razopay payment screen.
+   * On success, user will be navigated to Order Placed screen.
+   */
   const proceedToPayment = () => {
     setIsLoading(true);
     Api.createOrder(total)

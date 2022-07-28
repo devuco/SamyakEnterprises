@@ -5,6 +5,7 @@ import ParentView from '../components/ParentView';
 import {FlatList} from 'react-native-gesture-handler';
 import {Colors, Singleton} from '../utils';
 import {useFocusEffect} from '@react-navigation/native';
+import HomeToolbar from '../components/HomeToolbar';
 
 const Wishlist = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -26,6 +27,7 @@ const Wishlist = () => {
   );
   return (
     <ParentView isLoading={isLoading}>
+      <HomeToolbar route={'WISHLIST'} />
       <View style={styles.parent}>
         <FlatList
           data={data}
@@ -53,7 +55,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     margin: 10,
     elevation: 5,
-    borderRadius: 8,
+    borderRadius: 12,
     backgroundColor: Colors.THEME_PRIMARY,
   },
   itemImage: {width: 100, height: 100, borderRadius: 12},

@@ -22,8 +22,8 @@ const Api = {
 
   getCart: () => Axios.get<IResponse<ICart>>('/cart'),
 
-  updateCart: (body: {product: string}) =>
-    Axios.put<IResponse<ICartProduct>>('/cart', body),
+  updateCart: (body: {product: string; action: 0 | 1}) =>
+    Axios.put<IResponse<ICart>>('/cart', body),
 
   deleteFromCart: (id: string) =>
     Axios.delete<IResponse<string>>(`/cart/${id}`),

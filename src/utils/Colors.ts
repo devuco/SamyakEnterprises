@@ -1,7 +1,7 @@
 import {Appearance} from 'react-native';
 
 const colorScheme = Appearance.getColorScheme();
-export const isDarkMode = colorScheme === 'dark';
+export const isDarkMode = colorScheme === 'light';
 export default {
   PRIMARY: '#f26b27',
   SECONDARY: '#fcf0e7',

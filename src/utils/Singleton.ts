@@ -1,3 +1,5 @@
+export const DEV = false;
+
 type Props = {
   BASE_URL: string;
   NAME: string | null;
@@ -9,7 +11,9 @@ type Props = {
   FETCH_HOME: boolean;
 };
 const Singleton: Props = {
-  BASE_URL: 'https://samyak-app-server.herokuapp.com/',
+  BASE_URL: DEV
+    ? 'http://172.16.3.134:3000'
+    : 'https://samyak-app-server.herokuapp.com/',
   NAME: '' || null,
   EMAIL: '',
   FETCH_WISHLIST: true,

@@ -12,16 +12,20 @@ import ProductCard from '../components/ProductCard';
 import NoData from '../components/NoData';
 import ParentView from '../components/ParentView';
 import {useRecoilState} from 'recoil';
-import {cart} from '../atom';
+import {cartAtom, netTotalAtom} from '../atom/cart';
 
 const Cart = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
-  const [products, setProducts] = useRecoilState<Array<ICartProduct>>(cart);
-  const [netTotal, setNetTotal] = useState<number>(0);
+  const [products, setProducts] = useRecoilState<Array<ICartProduct>>(cartAtom);
+  const [netTotal, setNetTotal] = useRecoilState<number>(netTotalAtom);
   const [isParentLoading, setIsParentLoading] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  /**
+   * Retrieve cart products and net total from API and set them to the state.
+   * Notify Singleton that cart is fetched.
+   */
   const getCart = useCallback(() => {
     Api.getCart()
       .then(response => {
@@ -30,50 +34,36 @@ const Cart = () => {
         Singleton.FETCH_CART = false;
       })
       .finally(() => setIsParentLoading(false));
-  }, [setProducts]);
+  }, [setNetTotal, setProducts]);
 
   useEffect(() => {
     if (Singleton.FETCH_CART) {
-      console.log(Singleton.FETCH_CART);
       setIsParentLoading(true);
       getCart();
     }
   }, [getCart]);
 
   /**
-   * @method getCart
-   * @description get cart products
+   * Update product quantity, if quantity is 0 then delete product from cart.
+   * @param id Product id
+   * @param action Action to be performed. 0 for decrease, 1 for increase
    */
-
-  /**
-   * @method updateProduct
-   * @description Update product quantity, if quantity is 0 then delete product from cart.
-   * Update object of selected product and net total.
-   */
-  const updateProduct = (id: string, quantity: number) => {
+  const updateProduct = (id: string, action: 0 | 1) => {
     setIsLoading(true);
-    if (quantity === 0) {
-      Api.deleteFromCart(id)
-        .then(() => getCart())
-        .finally(() => setIsLoading(false));
-    } else {
-      let body = {product: id};
-      Api.updateCart(body)
-        .then(response => {
-          setProducts(prevProducts => {
-            let index = prevProducts.findIndex(
-              product => product.product._id === response.data.data._id,
-            );
-            prevProducts[index].quantity = response.data.data.quantity;
-            prevProducts[index].total = response.data.data.total;
-            return [...prevProducts];
-          });
-          setNetTotal(response.data.data.netTotal);
-        })
-        .finally(() => setIsLoading(false));
-    }
+
+    let body = {product: id, action};
+    Api.updateCart(body)
+      .then(response => {
+        setProducts(response.data.data.products);
+        setNetTotal(response.data.data.netTotal);
+      })
+      .finally(() => setIsLoading(false));
   };
 
+  /**
+   *
+   * Returns a component when cart is empty and parent loading is false.
+   */
   const listEmptyComponent = () => {
     return !isParentLoading ? (
       <NoData
@@ -94,12 +84,8 @@ const Cart = () => {
             return (
               <ProductCard
                 item={item}
-                onAddProduct={() =>
-                  updateProduct(item.product._id, item.quantity - 1)
-                }
-                onSubtractProduct={() =>
-                  updateProduct(item.product._id, item.quantity + 1)
-                }
+                onAddProduct={() => updateProduct(item.product._id, 1)}
+                onSubtractProduct={() => updateProduct(item.product._id, 0)}
                 canUpdateQuantity
               />
             );

@@ -45,7 +45,7 @@ const OrderedProducts = () => {
           }}>
           Delivery Address
         </Text>
-        <TextRow texts={[data.address]} />
+        {/* <TextRow texts={[data.address[0]]} /> */}
       </ParentView>
     </SafeAreaView>
   );

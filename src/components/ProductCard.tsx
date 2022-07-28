@@ -75,11 +75,7 @@ const ProductCard: React.FC<Props> = ({
         {canUpdateQuantity && (
           <Text
             style={styles.itemViewProduct}
-            onPress={() =>
-              navigation.push('ProductDetails', {
-                id: p_id,
-              })
-            }>
+            onPress={() => navigation.push('ProductDetails', {id: p_id})}>
             View Product
           </Text>
         )}
@@ -91,7 +87,7 @@ const ProductCard: React.FC<Props> = ({
         <View style={styles.itemQuantityContainer}>
           {canUpdateQuantity && (
             <TouchableOpacity
-              onPress={addProduct}
+              onPress={subtractProduct}
               style={styles.itemQuantityButton}>
               <Text>-</Text>
             </TouchableOpacity>
@@ -102,7 +98,7 @@ const ProductCard: React.FC<Props> = ({
           <Text style={styles.itemQuantity}>{quantity}</Text>
           {canUpdateQuantity && (
             <TouchableOpacity
-              onPress={subtractProduct}
+              onPress={addProduct}
               style={styles.itemQuantityButton}>
               <Text>+</Text>
             </TouchableOpacity>

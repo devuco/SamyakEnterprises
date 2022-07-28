@@ -1,5 +1,10 @@
 import {atom} from 'recoil';
-export default atom<Array<ICartProduct>>({
+export const cartAtom = atom<Array<ICartProduct>>({
   key: 'cart',
   default: [],
+});
+
+export const netTotalAtom = atom<number>({
+  key: 'netTotal',
+  default: 0,
 });

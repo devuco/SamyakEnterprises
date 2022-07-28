@@ -33,7 +33,6 @@ const ProductDetails = () => {
   const [heartLoading, setHeartLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log(Singleton.FETCH_PRODUCT);
     if (product._id === id && !Singleton.FETCH_PRODUCT) {
       setIsParentLoading(false);
       return;
@@ -46,6 +45,11 @@ const ProductDetails = () => {
       .finally(() => setIsParentLoading(false));
   }, [id, product._id, setProduct]);
 
+  /**
+   * Returns text according to stock of the product
+   * @param stock stock of the product from api
+   * @returns text
+   */
   const getStock = (stock: number) => {
     if (stock === 0) {
       return 'Out of Stock';
@@ -55,25 +59,34 @@ const ProductDetails = () => {
     return 'In Stock';
   };
 
+  /**
+   * Calls api to add product to cart, then shows a modal that product is added to cart
+   */
   const addToCart = () => {
     setIsLoading(true);
     let body = {product: id};
     Api.addToCart(body)
       .then(() => {
-        Toast.showSuccess('Added Successfully');
+        Toast.showSuccess('Added Successfully'); //TODO implement modal
         Singleton.FETCH_CART = true;
       })
       .catch(err => Toast.showError(err.response.data.message)) //TODO change button text to go to cart
       .finally(() => setIsLoading(false));
   };
 
+  /**
+   * Shows an alert stating 'The feature is not implemented yet'
+   */
   const notifyMe = () => {
     Alert.alert('Oops!', 'This feature is not available yet.');
   };
 
-  const updateWishList = (pid: string) => {
+  /**
+   * Calls api to update the wishlist and heart status of the product
+   */
+  const updateWishList = () => {
     setHeartLoading(true);
-    Api.updateWishList(pid).then(() => {
+    Api.updateWishList(id).then(() => {
       Singleton.FETCH_WISHLIST = true;
       Singleton.FETCH_HOME = true;
       let updatedProduct = {...product};
@@ -99,7 +112,7 @@ const ProductDetails = () => {
               name="favorite"
               size={25}
               color={product.isSaved ? Colors.RED : Colors.DARK_GREY}
-              onPress={() => updateWishList(product._id)}
+              onPress={updateWishList}
             />
           ) : (
             <ActivityIndicator animating color={Colors.RED} size={'small'} />

@@ -46,6 +46,11 @@ const Home = () => {
     Api.getCategories().then(res => setCategoriesData(res.data.data));
   }, []);
 
+  /**
+   * Update the Wishlist and Heart index
+   * @param pid id of the product
+   * @param index index of the product
+   */
   const updateWishList = (pid: string, index: number) => {
     setHeartIndex(index);
     Api.updateWishList(pid).then(() => {
@@ -58,18 +63,17 @@ const Home = () => {
     });
   };
 
+  /**
+   * renders the product card
+   * @param item renderItem item of products
+   */
   const renderProducts: ListRenderItem<IProducts> = ({
     item: product,
     index,
   }) => {
     return (
       <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('ProductDetails', {
-            id: product._id,
-            isSaved: product.isSaved,
-          })
-        }
+        onPress={() => navigation.navigate('ProductDetails', {id: product._id})}
         key={index}
         style={[styles.productContainer, {backgroundColor: product.color}]}>
         <View style={styles.productTopRow}>
@@ -114,6 +118,10 @@ const Home = () => {
     );
   };
 
+  /**
+   * renders the comapany card
+   * @param item renderItem item of company
+   */
   const renderCompanies: ListRenderItem<ICompanies> = ({item: company}) => {
     return (
       <View style={styles.companyContainer}>
@@ -125,6 +133,10 @@ const Home = () => {
     );
   };
 
+  /**
+   * renders the category card
+   * @param item renderItem item of category
+   */
   const renderCategories: ListRenderItem<ICategories> = ({item: category}) => {
     return (
       <View style={styles.categoryContainer}>
@@ -139,7 +151,7 @@ const Home = () => {
   return (
     <View style={styles.parent}>
       <ParentView isLoading={isParentLoading}>
-        <HomeToolbar isSearch={setSearch} />
+        <HomeToolbar isSearch={setSearch} route={'HOME'} />
         {!search && (
           <ScrollView
             contentContainerStyle={styles.scrollView}

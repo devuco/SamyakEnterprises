@@ -27,6 +27,9 @@ const Login = () => {
 
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
+  /**
+   * Call API to login
+   */
   const callAPI = () => {
     const body = {email, password};
     Api.login(body)
@@ -34,6 +37,9 @@ const Login = () => {
       .catch(err => Alert.alert(err.response.data.message));
   };
 
+  /**
+   * Sign in with google
+   */
   const googleSignIn = async () => {
     try {
       const userInfo = await GoogleSignin.signIn();
@@ -45,6 +51,12 @@ const Login = () => {
     }
   };
 
+  /**
+   * Login user
+   * @param res response.data from API
+   * @param name Fetched name from google or empty string
+   * @param emailId Fetched email from google or user
+   */
   const loginUser = (res: IResponse<IUser>, name: string, emailId: string) => {
     Axios.defaults.headers.common.token = res.data.token;
     AsyncStorage.setItem('token', res.data.token).then(() => {

@@ -17,9 +17,10 @@ import {Singleton} from '../utils';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 interface Props {
-  isSearch: (value: boolean) => void;
+  isSearch?: (value: boolean) => void;
+  route: 'HOME' | 'WISHLIST' | 'CATEGORY' | 'PROFILE';
 }
-const HomeToolbar: React.FC<Props> = ({isSearch}) => {
+const HomeToolbar: React.FC<Props> = ({isSearch, route}) => {
   const drawerNavigation =
     useNavigation<DrawerNavigationProp<DrawerParamList>>();
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
@@ -75,14 +76,18 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
         )}
         {!searchPressed && (
           <Icon
-            name="search"
+            name={route === 'WISHLIST' ? 'shopping-cart' : 'search'}
             size={25}
             color={Colors.THEME_TEXT}
             style={styles.icon}
             onPress={() => {
-              setSearchPressed(true);
-              setTimeout(() => searchRef.current?.focus(), 100);
-              isSearch(true);
+              if (route === 'WISHLIST') {
+                navigation.navigate('Cart');
+              } else {
+                setSearchPressed(true);
+                setTimeout(() => searchRef.current?.focus(), 100);
+                isSearch && isSearch(true);
+              }
             }}
           />
         )}
@@ -106,7 +111,7 @@ const HomeToolbar: React.FC<Props> = ({isSearch}) => {
               style={styles.openIcon}
               onPress={() => {
                 setSearchPressed(false);
-                isSearch(false);
+                isSearch && isSearch(false);
               }}
             />
           </View>
