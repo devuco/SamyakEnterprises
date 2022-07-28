@@ -84,12 +84,12 @@ const Checkout = () => {
           name: 'Shopping App',
           order_id: orderId,
           prefill: {
-            email: 'gaurav.kumar@example.com',
-            contact: '9191919191',
-            name: 'Gaurav Kumar',
+            email: Singleton.EMAIL,
+            name: Singleton.NAME,
           },
           theme: {color: Colors.PRIMARY},
         };
+        //TODO Check Razorpay failure case
         RazorpayCheckout.open(options)
           .then(() => {
             Api.placeOrder({
@@ -130,7 +130,7 @@ const Checkout = () => {
             )}
           </View>
           {/**
-           * //TODO Get Name and Phone from api and save in Constant
+           * //TODO Get Phone from api and save in Constant
            */}
           <LabelledTextInput
             label={'Name'}
@@ -138,8 +138,8 @@ const Checkout = () => {
             onChangeText={() => {}}
           />
           <LabelledTextInput
-            label={'Phone'}
-            input={'9524658201'}
+            label={'Email'}
+            input={Singleton.EMAIL ?? ''}
             onChangeText={() => {}}
           />
           {Object.keys(address).length === 0 && !editing && (

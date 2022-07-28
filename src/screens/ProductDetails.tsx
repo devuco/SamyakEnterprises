@@ -3,7 +3,6 @@ import {
   Alert,
   Dimensions,
   Image,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -21,6 +20,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import ParentView from '../components/ParentView';
 import {useRecoilState} from 'recoil';
 import {productDetail} from '../atom';
+import ReactNativeModal from 'react-native-modal';
 
 const ProductDetails = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
@@ -31,6 +31,7 @@ const ProductDetails = () => {
   const [isParentLoading, setIsParentLoading] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [heartLoading, setHeartLoading] = useState<boolean>(false);
+  const [showCartModal, setShowCartModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (product._id === id && !Singleton.FETCH_PRODUCT) {
@@ -67,7 +68,7 @@ const ProductDetails = () => {
     let body = {product: id};
     Api.addToCart(body)
       .then(() => {
-        Toast.showSuccess('Added Successfully'); //TODO implement modal
+        setShowCartModal(true); //TODO implement modal
         Singleton.FETCH_CART = true;
       })
       .catch(err => Toast.showError(err.response.data.message)) //TODO change button text to go to cart
@@ -97,81 +98,100 @@ const ProductDetails = () => {
   };
 
   return (
-    <SafeAreaView style={styles.parent}>
+    <ParentView isLoading={isParentLoading}>
       <StatusBar backgroundColor={product?.color} />
-      <ParentView isLoading={isParentLoading}>
-        <View style={[styles.header, {backgroundColor: product?.color}]}>
-          <Icon
-            name="arrow-back"
-            color={Colors.BLACK}
-            size={25}
-            onPress={() => navigation.goBack()}
-          />
-          {!heartLoading ? (
-            <Icon
-              name="favorite"
-              size={25}
-              color={product.isSaved ? Colors.RED : Colors.DARK_GREY}
-              onPress={updateWishList}
-            />
-          ) : (
-            <ActivityIndicator animating color={Colors.RED} size={'small'} />
-          )}
-        </View>
-        <ScrollView>
-          <View
-            style={[styles.imageBackground, {backgroundColor: product?.color}]}>
-            <Image
-              source={{uri: Singleton.BASE_URL + product?.image}}
-              style={styles.image}
-            />
-          </View>
-          <View style={styles.container}>
-            <Text style={styles.name}>{product?.name}</Text>
-            <View style={styles.ratingContainer}>
-              <AirbnbRating
-                count={5}
-                size={20}
-                isDisabled
-                defaultRating={product?.avgRating || 0}
-                ratingContainerStyle={styles.starsContainer}
-                reviewSize={0}
-                selectedColor={Colors.STAR_YELLOW}
-              />
-              <Text
-                style={
-                  styles.ratingText
-                }>{`(${product?.totalRatings} Reviews)`}</Text>
-            </View>
-            <View style={styles.priceContainer}>
-              <Text
-                style={
-                  styles.discountedPrice
-                }>{`₹${product?.discountedPrice}`}</Text>
-              <Text style={styles.price}>
-                {product?.discount !== 0 && `₹${product?.price}`}
-              </Text>
-              <Text style={styles.stock}>{getStock(product?.stock ?? 0)}</Text>
-            </View>
-            <Text style={styles.aboutText}>About</Text>
-            <Text style={styles.description}>{product?.description}</Text>
-          </View>
-        </ScrollView>
-        <SButton
-          title={product?.stock !== 0 ? 'Add to cart' : 'Notify Me'}
-          onPress={product?.stock !== 0 ? addToCart : notifyMe}
-          isLoading={isLoading}
-          loadingText="Please Wait..."
+      <View style={[styles.header, {backgroundColor: product?.color}]}>
+        <Icon
+          name="arrow-back"
+          color={Colors.BLACK}
+          size={25}
+          onPress={() => navigation.goBack()}
         />
-      </ParentView>
-    </SafeAreaView>
+        {!heartLoading ? (
+          <Icon
+            name="favorite"
+            size={25}
+            color={product.isSaved ? Colors.RED : Colors.DARK_GREY}
+            onPress={updateWishList}
+          />
+        ) : (
+          <ActivityIndicator animating color={Colors.RED} size={'small'} />
+        )}
+      </View>
+      <ScrollView>
+        <View
+          style={[styles.imageBackground, {backgroundColor: product?.color}]}>
+          <Image
+            source={{uri: Singleton.BASE_URL + product?.image}}
+            style={styles.image}
+          />
+        </View>
+        <View style={styles.container}>
+          <Text style={styles.name}>{product?.name}</Text>
+          <View style={styles.ratingContainer}>
+            <AirbnbRating
+              count={5}
+              size={20}
+              isDisabled
+              defaultRating={product?.avgRating || 0}
+              ratingContainerStyle={styles.starsContainer}
+              reviewSize={0}
+              selectedColor={Colors.STAR_YELLOW}
+            />
+            <Text
+              style={
+                styles.ratingText
+              }>{`(${product?.totalRatings} Reviews)`}</Text>
+          </View>
+          <View style={styles.priceContainer}>
+            <Text
+              style={
+                styles.discountedPrice
+              }>{`₹${product?.discountedPrice}`}</Text>
+            <Text style={styles.price}>
+              {product?.discount !== 0 && `₹${product?.price}`}
+            </Text>
+            <Text style={styles.stock}>{getStock(product?.stock ?? 0)}</Text>
+          </View>
+          <Text style={styles.aboutText}>About</Text>
+          <Text style={styles.description}>{product?.description}</Text>
+        </View>
+      </ScrollView>
+      <SButton
+        title={product?.stock !== 0 ? 'Add to cart' : 'Notify Me'}
+        onPress={product?.stock !== 0 ? addToCart : notifyMe}
+        isLoading={isLoading}
+        loadingText="Please Wait..."
+      />
+      <ReactNativeModal
+        isVisible={showCartModal}
+        backdropOpacity={0.2}
+        style={styles.modal}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalText}>Product added to cart</Text>
+          <SButton
+            title="Proceed to Checkout"
+            onPress={() => {
+              navigation.navigate('Cart');
+              setShowCartModal(false);
+            }}
+            iconName="check"
+          />
+          <SButton
+            title="Continue Shopping"
+            onPress={() => setShowCartModal(false)}
+            style={{backgroundColor: Colors.DARK_GREY}}
+            iconName="shopping-bag"
+          />
+        </View>
+      </ReactNativeModal>
+    </ParentView>
   );
 };
 
 export default ProductDetails;
 
 const styles = StyleSheet.create({
-  parent: {flex: 1, backgroundColor: Colors.THEME_PRIMARY},
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -239,4 +259,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   description: {color: Colors.THEME_TEXT, marginTop: 14},
+  modal: {
+    justifyContent: 'flex-end',
+    marginBottom: 0,
+    marginHorizontal: 0,
+  },
+  modalContainer: {
+    backgroundColor: Colors.THEME_PRIMARY,
+    borderRadius: 12,
+    paddingVertical: 15,
+  },
+  modalText: {
+    color: Colors.THEME_TEXT,
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 18,
+    alignSelf: 'center',
+    textAlign: 'center',
+  },
 });

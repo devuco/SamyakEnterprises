@@ -12,7 +12,7 @@ type Props = {
 };
 const Singleton: Props = {
   BASE_URL: DEV
-    ? 'http://172.16.3.134:3000'
+    ? 'http://172.16.3.134:3000/'
     : 'https://samyak-app-server.herokuapp.com/',
   NAME: '' || null,
   EMAIL: '',

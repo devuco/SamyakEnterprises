@@ -29,22 +29,13 @@ const OrderedProducts = () => {
       <ParentView isLoading={isParentLoading}>
         <FlatList
           data={products}
-          style={{flexGrow: 0, marginBottom: 20}}
+          style={styles.flatlist}
           renderItem={({item}) => (
             <ProductCard item={item} canUpdateQuantity={false} />
           )}
         />
         <TextRow texts={['Total:', `₹${data.netTotal}`]} />
-        <Text
-          style={{
-            color: Colors.THEME_TEXT,
-            fontWeight: 'bold',
-            fontSize: 18,
-            marginHorizontal: 20,
-            marginTop: 18,
-          }}>
-          Delivery Address
-        </Text>
+        <Text style={styles.deliveryAddress}>Delivery Address</Text>
         {/* <TextRow texts={[data.address[0]]} /> */}
       </ParentView>
     </SafeAreaView>
@@ -55,4 +46,12 @@ export default OrderedProducts;
 
 const styles = StyleSheet.create({
   parent: {backgroundColor: Colors.THEME_PRIMARY, flex: 1},
+  flatlist: {flexGrow: 0, marginBottom: 20},
+  deliveryAddress: {
+    color: Colors.THEME_TEXT,
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginHorizontal: 20,
+    marginTop: 18,
+  },
 });
