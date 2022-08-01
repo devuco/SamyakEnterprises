@@ -37,6 +37,7 @@ const Home = () => {
         Api.getProducts()
           .then(res => setProductsData(res.data.data))
           .finally(() => setIsParentLoading(false));
+        Singleton.FETCH_HOME = false;
       }
     }, []),
   );

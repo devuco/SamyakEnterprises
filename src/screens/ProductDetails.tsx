@@ -168,7 +168,7 @@ const ProductDetails = () => {
         backdropOpacity={0.2}
         style={styles.modal}>
         <View style={styles.modalContainer}>
-          <Text style={styles.modalText}>Product added to cart</Text>
+          <Text style={styles.modalText}>Product Added to Cart</Text>
           <SButton
             title="Proceed to Checkout"
             onPress={() => {

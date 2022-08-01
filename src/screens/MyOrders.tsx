@@ -144,11 +144,10 @@ const styles = StyleSheet.create({
     color: Colors.PRIMARY,
     alignSelf: 'flex-end',
     marginHorizontal: 20,
-    marginBottom: 10,
     fontWeight: 'bold',
     fontSize: 16,
     textDecorationLine: 'underline',
     marginTop: 5,
   },
-  netTotalRow: {marginHorizontal: 10, marginBottom: 10},
+  netTotalRow: {marginHorizontal: 10, marginBottom: 10, marginTop: 10},
 });
