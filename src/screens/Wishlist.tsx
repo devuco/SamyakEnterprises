@@ -31,6 +31,10 @@ const Wishlist = () => {
     }, []),
   );
 
+  /**
+   * Triggers API to remove product from user's wishlist
+   * @param id id of the product
+   */
   const removeFromWishlist = (id: string) => {
     setIsLoading(true);
     Api.updateWishList(id)
@@ -42,6 +46,9 @@ const Wishlist = () => {
       .finally(() => setIsLoading(false));
   };
 
+  /**
+   * returns a component when the wishlist is empty
+   */
   const listEmptyComponent = () => (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyText}>No items in wishlist</Text>

@@ -175,13 +175,12 @@ const ProductDetails = () => {
               navigation.navigate('Cart');
               setShowCartModal(false);
             }}
-            iconName="check"
+            iconName="shopping-bag"
           />
           <SButton
             title="Continue Shopping"
             onPress={() => setShowCartModal(false)}
             style={{backgroundColor: Colors.DARK_GREY}}
-            iconName="shopping-bag"
           />
         </View>
       </ReactNativeModal>

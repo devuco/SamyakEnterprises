@@ -15,6 +15,8 @@ import {
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useRecoilState} from 'recoil';
+import {homeData} from '../atom';
 import Box from '../components/Box';
 import HomeToolbar from '../components/HomeToolbar';
 import ParentView from '../components/ParentView';
@@ -24,7 +26,8 @@ import {Colors, Singleton} from '../utils';
 const Home = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
-  const [productsData, setProductsData] = useState<Array<IProducts>>([]);
+  const [productsData, setProductsData] =
+    useRecoilState<Array<IProducts>>(homeData);
   const [companiesData, setCompaniesData] = useState<Array<ICompanies>>([]);
   const [categoriesData, setCategoriesData] = useState<Array<ICategories>>([]);
   const [search, setSearch] = useState<boolean>(false);
@@ -35,11 +38,15 @@ const Home = () => {
     useCallback(() => {
       if (Singleton.FETCH_HOME) {
         Api.getProducts()
-          .then(res => setProductsData(res.data.data))
+          .then(res => {
+            setProductsData(res.data.data);
+            Singleton.FETCH_HOME = false;
+          })
           .finally(() => setIsParentLoading(false));
-        Singleton.FETCH_HOME = false;
+      } else {
+        setIsParentLoading(false);
       }
-    }, []),
+    }, [setProductsData]),
   );
 
   useEffect(() => {
@@ -57,9 +64,13 @@ const Home = () => {
     Api.updateWishList(pid).then(() => {
       Singleton.FETCH_WISHLIST = true;
       Singleton.FETCH_PRODUCT = true;
-      let products = [...productsData];
-      products[index].isSaved = !products[index].isSaved;
-      setProductsData(products);
+      const obj = {...productsData[index]};
+      obj.isSaved = !obj.isSaved;
+      setProductsData([
+        ...productsData.slice(0, index),
+        obj,
+        ...productsData.slice(index + 1),
+      ]);
       setHeartIndex(-1);
     });
   };

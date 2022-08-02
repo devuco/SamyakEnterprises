@@ -1,10 +1,12 @@
 import {
   Alert,
+  Animated,
   Image,
   SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
+  View,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 import {Colors, Images, isDarkMode, Singleton} from '../utils';
@@ -18,14 +20,23 @@ import {
   GoogleSignin,
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
 
 //TODO user validation UI
 const Login = () => {
   const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const passwordRef = useRef<TextInput>(null);
+  const [slideDown] = useState(new Animated.Value(-80));
+  const [confirm, setConfirm] = useState(null);
 
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
+
+  const slide = () => {
+    Animated.timing(slideDown, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: false,
+    }).start();
+  };
 
   /**
    * Call API to login
@@ -35,6 +46,21 @@ const Login = () => {
     Api.login(body)
       .then(res => loginUser(res.data, '', email))
       .catch(err => Alert.alert(err.response.data.message));
+  };
+
+  /**
+   * Slides the view down and calls the function to call the login API
+   */
+  const phoneSignin = () => {
+    slide();
+    if ((slideDown as any).__getValue() === 0) {
+      auth()
+        .signInWithPhoneNumber(email)
+        .then(confirmationResult => {
+          setConfirm(confirmationResult);
+          callAPI();
+        });
+    }
   };
 
   /**
@@ -59,15 +85,15 @@ const Login = () => {
    */
   const loginUser = (res: IResponse<IUser>, name: string, emailId: string) => {
     Axios.defaults.headers.common.token = res.data.token;
-    AsyncStorage.setItem('token', res.data.token).then(() => {
+    AsyncStorage.setItem('token', res.data.token).then(() =>
       AsyncStorage.setItem('name', name).then(() =>
         AsyncStorage.setItem('email', emailId).then(() => {
           Singleton.NAME = name;
           Singleton.EMAIL = emailId;
           navigation.replace('Drawer');
         }),
-      );
-    });
+      ),
+    );
   };
 
   return (
@@ -76,15 +102,12 @@ const Login = () => {
       <TextInput
         onChangeText={setEmail}
         value={email}
-        placeholder="Email"
+        placeholder="Phone number"
         style={styles.input}
         placeholderTextColor={Colors.THEME_TEXT}
-        keyboardType="email-address"
-        onSubmitEditing={() => passwordRef.current?.focus()}
-        blurOnSubmit={false}
-        autoCapitalize="none"
+        keyboardType="phone-pad"
       />
-      <TextInput
+      {/* <TextInput
         ref={passwordRef}
         onChangeText={setPassword}
         value={password}
@@ -92,16 +115,25 @@ const Login = () => {
         style={styles.input}
         placeholderTextColor={Colors.THEME_TEXT}
         secureTextEntry
-      />
-      <SButton title="Login" style={styles.button} onPress={callAPI} />
-      <GoogleSigninButton
-        style={styles.googleButton}
-        size={GoogleSigninButton.Size.Wide}
-        color={isDarkMode ? 1 : 0}
-        onPress={googleSignIn}
-      />
-
-      <Text style={styles.signup}>New User? Sign Up</Text>
+      /> */}
+      <Animated.View
+        style={{
+          backgroundColor: Colors.THEME_PRIMARY,
+          transform: [{translateY: slideDown}],
+        }}>
+        <SButton
+          title="Login with phone"
+          style={styles.button}
+          onPress={phoneSignin}
+        />
+        <GoogleSigninButton
+          style={styles.googleButton}
+          size={GoogleSigninButton.Size.Wide}
+          color={isDarkMode ? 1 : 0}
+          onPress={googleSignIn}
+        />
+        <Text style={styles.signup}>New User? Sign Up</Text>
+      </Animated.View>
     </SafeAreaView>
   );
 };
