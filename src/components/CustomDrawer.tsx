@@ -48,7 +48,8 @@ const CustomDrawer = (props: DrawerContentComponentProps) => {
           if (googleSignedIn) {
             await GoogleSignin.signOut();
           }
-          props.navigation.navigate('Login');
+          // props.navigation.navigate('Login');
+          props.navigation.reset({index: 0, routes: [{name: 'Login'}]});
           props.navigation.closeDrawer();
         }}
         icon={({focused}) => drawerIcon(focused, 'logout')}

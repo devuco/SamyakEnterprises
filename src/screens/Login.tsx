@@ -1,14 +1,12 @@
 import {
-  Alert,
   Animated,
   Image,
   SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
-  View,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {Colors, Images, isDarkMode, Singleton} from '../utils';
 import SButton from '../components/SButton';
 import Api from '../service/Api';
@@ -20,46 +18,61 @@ import {
   GoogleSignin,
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
-import auth from '@react-native-firebase/auth';
+import Loader from '../components/Loader';
+// import {FirebaseAuthTypes}  from '@react-native-firebase/auth';
 
 //TODO user validation UI
 const Login = () => {
-  const [email, setEmail] = useState<string>('');
-  const [slideDown] = useState(new Animated.Value(-80));
-  const [confirm, setConfirm] = useState(null);
-
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
+
+  const [phone, setPhone] = useState<string>('');
+  const [slideDown] = useState<Animated.Value>(new Animated.Value(-80));
+  const [isPhoneVisible, setIsPhoneVisible] = useState<boolean>(false);
+  const [phoneError, setPhoneError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [confirm, setConfirm] = useState<FirebaseAuthTypes.ConfirmationResult>({
+  //   verificationId: null,
+  //   confirm: () => Promise.resolve(null),
+  // });
 
   const slide = () => {
     Animated.timing(slideDown, {
       toValue: 0,
       duration: 500,
-      useNativeDriver: false,
+      useNativeDriver: true,
     }).start();
+    setIsPhoneVisible(true);
   };
 
   /**
    * Call API to login
    */
-  const callAPI = () => {
-    const body = {email, password};
-    Api.login(body)
-      .then(res => loginUser(res.data, '', email))
-      .catch(err => Alert.alert(err.response.data.message));
-  };
+  // const callAPI = async () => {
+  //   try {
+  //     // const res = await confirm.confirm(email);
+  //     // console.log(res);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  //   // const body = {email, password};
+  //   // Api.login(body)
+  //   //   .then(res => loginUser(res.data, '', email))
+  //   //   .catch(err => Alert.alert(err.response.data.message));
+  // };
 
   /**
    * Slides the view down and calls the function to call the login API
    */
   const phoneSignin = () => {
-    slide();
-    if ((slideDown as any).__getValue() === 0) {
-      auth()
-        .signInWithPhoneNumber(email)
-        .then(confirmationResult => {
-          setConfirm(confirmationResult);
-          callAPI();
-        });
+    if (isPhoneVisible) {
+      const phone_regex = /^\+?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4,6}$/;
+      if (phone_regex.test(phone)) {
+        navigation.navigate('OTP', {phone});
+      } else {
+        setPhoneError('Please enter a valid phone number');
+      }
+    } else {
+      slide();
     }
   };
 
@@ -67,6 +80,7 @@ const Login = () => {
    * Sign in with google
    */
   const googleSignIn = async () => {
+    setIsLoading(true);
     try {
       const userInfo = await GoogleSignin.signIn();
       const {name, id, email: gmail} = userInfo.user;
@@ -74,6 +88,7 @@ const Login = () => {
       Api.register(body).then(res => loginUser(res.data, name ?? '', gmail));
     } catch (err) {
       console.log(err);
+      setIsLoading(false);
     }
   };
 
@@ -90,7 +105,9 @@ const Login = () => {
         AsyncStorage.setItem('email', emailId).then(() => {
           Singleton.NAME = name;
           Singleton.EMAIL = emailId;
+          Singleton.FETCH_HOME = true;
           navigation.replace('Drawer');
+          setIsLoading(false);
         }),
       ),
     );
@@ -100,40 +117,42 @@ const Login = () => {
     <SafeAreaView style={styles.parent}>
       <Image source={Images.LOGO} style={styles.image} />
       <TextInput
-        onChangeText={setEmail}
-        value={email}
+        onChangeText={e => {
+          setPhone(e);
+          setPhoneError('');
+        }}
+        value={phone}
         placeholder="Phone number"
         style={styles.input}
         placeholderTextColor={Colors.THEME_TEXT}
         keyboardType="phone-pad"
+        maxLength={10}
       />
-      {/* <TextInput
-        ref={passwordRef}
-        onChangeText={setPassword}
-        value={password}
-        placeholder="Password"
-        style={styles.input}
-        placeholderTextColor={Colors.THEME_TEXT}
-        secureTextEntry
-      /> */}
+      {phoneError && <Text style={styles.phoneError}>{phoneError}</Text>}
       <Animated.View
         style={{
           backgroundColor: Colors.THEME_PRIMARY,
           transform: [{translateY: slideDown}],
         }}>
         <SButton
-          title="Login with phone"
-          style={styles.button}
+          title="Sign in with phone"
           onPress={phoneSignin}
+          style={styles.button}
+          iconName="phone"
+          iconStyle={styles.buttonIcon}
+          iconColor={Colors.PRIMARY}
+          iconSize={26}
+          textStyle={styles.buttonText}
         />
         <GoogleSigninButton
+          onPress={googleSignIn}
           style={styles.googleButton}
           size={GoogleSigninButton.Size.Wide}
           color={isDarkMode ? 1 : 0}
-          onPress={googleSignIn}
         />
         <Text style={styles.signup}>New User? Sign Up</Text>
       </Animated.View>
+      <Loader isLoading={isLoading} />
     </SafeAreaView>
   );
 };
@@ -159,8 +178,29 @@ const styles = StyleSheet.create({
     padding: 10,
     color: Colors.THEME_TEXT,
   },
-  button: {marginTop: 20},
-  googleButton: {width: '90%', alignSelf: 'center'},
+  phoneError: {
+    color: Colors.RED,
+    marginHorizontal: 20,
+    alignSelf: 'center',
+  },
+  button: {
+    marginTop: 20,
+    justifyContent: 'flex-start',
+    elevation: 5,
+    borderRadius: 0,
+  },
+  buttonIcon: {
+    backgroundColor: Colors.THEME_PRIMARY,
+    marginLeft: 0,
+    borderColor: Colors.PRIMARY,
+    borderWidth: 1,
+    padding: 7,
+  },
+  buttonText: {
+    flex: 1,
+    fontSize: 14,
+  },
+  googleButton: {alignSelf: 'center', width: '91.6%', height: 50},
   signup: {
     color: Colors.PRIMARY,
     alignSelf: 'center',

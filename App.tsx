@@ -9,9 +9,9 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {RecoilRoot} from 'recoil';
 
 LogBox.ignoreAllLogs();
-export const navigationRef = createNavigationContainerRef<StackParamList>();
+const navigationRef = createNavigationContainerRef<StackParamList>();
 
-navigationRef.current?.dispatch;
+// navigationRef.current?.dispatch;
 GoogleSignin.configure({
   webClientId:
     '150963877015-o1pdjsna91e31856h5islrra5qub878e.apps.googleusercontent.com',

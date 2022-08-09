@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text, TextStyle} from 'react-native';
+import {ImageStyle, Pressable, StyleSheet, Text, TextStyle} from 'react-native';
 import React from 'react';
 import Colors from '../utils/Colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -10,6 +10,10 @@ type Props = {
   isLoading?: boolean;
   loadingText?: string;
   iconName?: string;
+  iconStyle?: ImageStyle;
+  textStyle?: TextStyle;
+  iconColor?: string;
+  iconSize?: number;
 };
 
 const SButton: React.FC<Props> = ({
@@ -19,6 +23,10 @@ const SButton: React.FC<Props> = ({
   isLoading,
   loadingText,
   iconName,
+  iconStyle,
+  textStyle,
+  iconColor,
+  iconSize,
 }) => {
   const ICON_MARGIN = iconName ? -10 : 0;
   return (
@@ -26,12 +34,14 @@ const SButton: React.FC<Props> = ({
       {iconName && (
         <Icon
           name={iconName}
-          size={30}
-          color={Colors.THEME_PRIMARY}
-          style={{marginLeft: ICON_MARGIN}}
+          size={iconSize ?? 30}
+          color={iconColor ?? Colors.THEME_PRIMARY}
+          style={[{marginLeft: ICON_MARGIN}, iconStyle]}
         />
       )}
-      <Text style={styles.text}>{isLoading ? loadingText : title}</Text>
+      <Text style={[styles.text, textStyle]}>
+        {isLoading ? loadingText : title}
+      </Text>
     </Pressable>
   );
 };

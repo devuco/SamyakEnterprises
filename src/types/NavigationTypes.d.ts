@@ -2,6 +2,7 @@ type StackParamList = {
   SplashScreen: undefined;
   Drawer?: DrawerParamList;
   Login: undefined;
+  OTP: {phone: string};
   ProductDetails: {id: string};
   CategoryDetails: {id: string};
   CompanyDetails: {id: string};

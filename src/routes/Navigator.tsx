@@ -22,15 +22,16 @@ import MyOrders from '../screens/MyOrders';
 import OrderedProducts from '../screens/OrderedProducts';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import SessionExpiredModal from '../components/SessionExpiredModal';
+import OTP from '../screens/OTP';
 
 type Props = {
   navigationRef: NavigationContainerRef<StackParamList>;
 };
 const Navigator: React.FC<Props> = ({navigationRef}) => {
   const [showNetworkModal, setShowNetworkModal] = useState<boolean>(false);
-  const [isScreenAnimation, setIsScreenAnimation] = useState(true);
+  const [isScreenAnimation, setIsScreenAnimation] = useState<boolean>(true);
   const [isSessionExpiredModalVisible, setIsSessionExpiredModalVisible] =
-    useState(false);
+    useState<boolean>(false);
 
   const Stack = createNativeStackNavigator<StackParamList>();
 
@@ -104,6 +105,12 @@ const Navigator: React.FC<Props> = ({navigationRef}) => {
           component={Login}
           options={() => ({animation: 'fade'})}
         />
+        <Stack.Screen
+          name="OTP"
+          component={OTP}
+          options={() => ({animation: 'slide_from_bottom'})}
+        />
+
         <Stack.Screen
           name="Drawer"
           component={DrawerNavigator}
