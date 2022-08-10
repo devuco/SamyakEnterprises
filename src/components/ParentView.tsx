@@ -6,12 +6,17 @@ import {Colors} from '../utils';
 type Props = {
   children: React.ReactNode;
   isLoading: boolean;
+  text?: string;
 };
-const ParentView: React.FC<Props> = ({children, isLoading}) => {
+const ParentView: React.FC<Props> = ({children, isLoading, text}) => {
   return (
     <SafeAreaView style={styles.parent}>
       {!isLoading && children}
-      <Loader isLoading={isLoading} backgroundColor={Colors.THEME_PRIMARY} />
+      <Loader
+        isLoading={isLoading}
+        backgroundColor={Colors.THEME_PRIMARY}
+        text={text}
+      />
     </SafeAreaView>
   );
 };

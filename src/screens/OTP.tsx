@@ -1,65 +1,95 @@
-import {StyleSheet, View} from 'react-native';
+import {Platform, SafeAreaView, StyleSheet, Text} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import OTPView from '../components/OTPView';
-import {RouteProp, useRoute} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import Axios from '../service/Axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Colors, Singleton} from '../utils';
+import Api from '../service/Api';
+import Toolbar from '../components/Toolbar';
+import ParentView from '../components/ParentView';
 
 const OTP = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
   const {phone} = useRoute<RouteProp<StackParamList, 'OTP'>>().params;
 
-  const [code, setCode] = useState<string>('');
+  const [verifying, setVerifying] = useState<boolean>(false);
   const [confirm, setConfirm] = useState<FirebaseAuthTypes.ConfirmationResult>({
     verificationId: '',
     confirm: () => Promise.reject(null),
   });
 
   const verifyPhone = useCallback(async () => {
-    // const confirmation = await auth()
-    //   .verifyPhoneNumber(`+91${phone}`, 90)
-    //   .on('state_changed', phoneAuthSnapshot => {
-    //     console.log('phonea', JSON.stringify(phoneAuthSnapshot, null, 2));
-    //   });
-    // setConfirm(confirmation);
-
     const confirmation = await auth().signInWithPhoneNumber(`+91${phone}`);
     setConfirm(confirmation);
   }, [phone]);
 
+  /**
+   * Login user
+   * @param res response.data from API
+   * @param name Fetched name from google or empty string
+   * @param emailId Fetched email from google or user
+   */
+  const loginUser = useCallback(
+    (uid: string) => {
+      const body = {name: phone, email: phone, password: uid};
+      Api.register(body).then(res => {
+        Axios.defaults.headers.common.token = res.data.data.token;
+        AsyncStorage.setItem('token', res.data.data.token).then(() =>
+          AsyncStorage.setItem('name', '').then(() =>
+            AsyncStorage.setItem('email', phone).then(async () => {
+              Singleton.NAME = '';
+              Singleton.EMAIL = phone;
+              Singleton.FETCH_HOME = true;
+              await auth().currentUser?.delete();
+              navigation.replace('Drawer');
+              // setIsLoading(false);
+            }),
+          ),
+        );
+      });
+    },
+    [navigation, phone],
+  );
+
   useEffect(() => {
-    const unsubscribe = auth().onAuthStateChanged(user => {
-      console.log(user);
-    });
-    verifyPhone();
-
-    return () => unsubscribe();
-  }, [verifyPhone]);
-
-  const onCodeFilled = async (e: string) => {
-    setCode(e);
-    try {
-      const result = await confirm.confirm(e);
-      console.log(result);
-    } catch (err) {
-      console.log(err);
+    if (Platform.OS === 'android') {
+      setVerifying(true);
     }
-    // try {
-    //   const credential = auth.PhoneAuthProvider.credential(
-    //     confirm.verificationId,
-    //     code,
-    //   );
-    //   let userData = await auth().currentUser?.linkWithCredential(credential);
-    //   console.log(userData);
+    verifyPhone();
+    const unsubscribe = auth().onAuthStateChanged(async user => {
+      if (user) {
+        loginUser(user.uid);
+      }
+      setTimeout(() => {
+        setVerifying(false);
+        unsubscribe();
+      }, 10000);
+    });
+    return () => unsubscribe();
+  }, [loginUser, verifyPhone]);
 
-    //   // setUser(userData.user);
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  };
+  const onCodeFilled = async (e: string) =>
+    confirm
+      .confirm(e)
+      .then(res => loginUser(res?.user.uid!))
+      .catch(err => console.log(err));
 
   return (
-    <View style={styles.parent}>
-      <OTPView length={6} onCodeFilled={onCodeFilled} />
-    </View>
+    <SafeAreaView style={styles.parent}>
+      <Toolbar color={Colors.THEME_PRIMARY} title={'Verify Phone Number'} />
+      <ParentView
+        isLoading={verifying}
+        text={'Please Wait\nWe are verifying your Phone Number'}>
+        <Text style={styles.text}>{`${
+          Platform.OS === 'android' &&
+          "We couldn't verify your phone number.\n\n"
+        }Please Enter OTP`}</Text>
+        <OTPView length={6} onCodeFilled={onCodeFilled} />
+      </ParentView>
+    </SafeAreaView>
   );
 };
 
@@ -67,17 +97,15 @@ export default OTP;
 
 const styles = StyleSheet.create({
   parent: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: Colors.THEME_PRIMARY,
     flex: 1,
   },
-  textInput: {
-    height: 45,
-    width: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    color: 'black',
+  text: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.PRIMARY,
+    alignSelf: 'center',
     textAlign: 'center',
-    fontSize: 16,
+    marginVertical: 20,
   },
 });
