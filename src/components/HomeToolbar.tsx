@@ -44,20 +44,18 @@ const HomeToolbar: React.FC<Props> = ({isSearch, route}) => {
     itemArray: Array<IProducts | ICategories | ICompanies>,
     screen: 'ProductDetails' | 'CategoryDetails' | 'CompanyDetails',
   ) => {
-    return itemArray?.map((item, index) => {
-      return (
-        <TouchableOpacity
-          style={styles.resultItemContainer}
-          key={index}
-          onPress={() => navigation.navigate(screen, {id: item._id})}>
-          <Image
-            source={{uri: Singleton.BASE_URL + item.image}}
-            style={styles.resultItemImage}
-          />
-          <Text style={styles.resultItemName}>{item.name}</Text>
-        </TouchableOpacity>
-      );
-    });
+    return itemArray?.map((item, index) => (
+      <TouchableOpacity
+        style={styles.resultItemContainer}
+        key={index}
+        onPress={() => navigation.navigate(screen, {id: item._id})}>
+        <Image
+          source={{uri: Singleton.BASE_URL + item.image}}
+          style={styles.resultItemImage}
+        />
+        <Text style={styles.resultItemName}>{item.name}</Text>
+      </TouchableOpacity>
+    ));
   };
 
   const CONDITIONAL_FLEX = searchPressed ? 1 : 0;

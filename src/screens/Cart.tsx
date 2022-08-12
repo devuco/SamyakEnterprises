@@ -23,8 +23,8 @@ const Cart = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   /**
-   * Retrieve cart products and net total from API and set them to the state.
-   * Notify Singleton that cart is fetched.
+   * Retrieves cart products and net total from API and set them to the state.
+   * Notifies Singleton that cart is fetched.
    */
   const getCart = useCallback(() => {
     Api.getCart()
@@ -44,7 +44,7 @@ const Cart = () => {
   }, [getCart]);
 
   /**
-   * Update product quantity, if quantity is 0 then delete product from cart.
+   * Updates product quantity, if quantity is 0 then deletes product from cart.
    * @param id Product id
    * @param action Action to be performed. 0 for decrease, 1 for increase
    */

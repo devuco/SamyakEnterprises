@@ -30,10 +30,6 @@ const Login = () => {
   const [isPhoneVisible, setIsPhoneVisible] = useState<boolean>(false);
   const [phoneError, setPhoneError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const [confirm, setConfirm] = useState<FirebaseAuthTypes.ConfirmationResult>({
-  //   verificationId: null,
-  //   confirm: () => Promise.resolve(null),
-  // });
 
   const slide = () => {
     Animated.timing(slideDown, {
@@ -43,22 +39,6 @@ const Login = () => {
     }).start();
     setIsPhoneVisible(true);
   };
-
-  /**
-   * Call API to login
-   */
-  // const callAPI = async () => {
-  //   try {
-  //     // const res = await confirm.confirm(email);
-  //     // console.log(res);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  //   // const body = {email, password};
-  //   // Api.login(body)
-  //   //   .then(res => loginUser(res.data, '', email))
-  //   //   .catch(err => Alert.alert(err.response.data.message));
-  // };
 
   /**
    * Slides the view down and calls the function to call the login API

@@ -35,7 +35,7 @@ const Checkout = () => {
    */
   const getAddress = () => {
     Api.getAddress()
-      .then(response => setAddress(response.data.data[0]))
+      .then(response => setAddress(response.data.data[0] ?? {}))
       .finally(() => {
         setIsParentLoading(false);
         setIsLoading(false);
@@ -97,6 +97,7 @@ const Checkout = () => {
               amount: total,
             })
               .then(() => {
+                Singleton.FETCH_CART = true;
                 navigation.popToTop();
                 navigation.navigate('OrderPlaced', {orderId});
               })
@@ -120,7 +121,7 @@ const Checkout = () => {
           keyboardShouldPersistTaps="always">
           <View style={styles.addressHeadingRow}>
             <Text style={styles.addressHeading}>Deliver To</Text>
-            {Object.keys(address).length > 0 && !editing && (
+            {Object.keys(address ?? {}).length > 0 && !editing && (
               <Icon
                 name="edit"
                 size={20}
@@ -142,14 +143,14 @@ const Checkout = () => {
             input={Singleton.EMAIL ?? ''}
             onChangeText={() => {}}
           />
-          {Object.keys(address).length === 0 && !editing && (
+          {Object.keys(address ?? {}).length === 0 && !editing && (
             <SButton
               title="Add New Address"
               onPress={() => setEditing(true)}
               style={styles.addAddressButton}
             />
           )}
-          {(Object.keys(address).length > 0 || editing) && (
+          {(Object.keys(address ?? {}).length > 0 || editing) && (
             <View>
               <Text style={styles.addressHeading}>Address</Text>
               <LabelledTextInput
@@ -204,7 +205,7 @@ const Checkout = () => {
 
         <Box />
         {!editing && <TextRow texts={['Total', `₹${total}`]} />}
-        {Object.keys(address).length > 0 && !editing && (
+        {Object.keys(address ?? {}).length > 0 && !editing && (
           <SNextButton onPress={proceedToPayment} leftText="Proceed to Pay" />
         )}
       </ParentView>

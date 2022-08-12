@@ -44,6 +44,9 @@ const MyOrders = () => {
     }
   }, [emptyData, page]);
 
+  /**
+   * Returns a loader which is displayed at the bottom for pagination
+   */
   const listFooterComponent = () => (
     <ActivityIndicator
       size="large"
@@ -55,7 +58,6 @@ const MyOrders = () => {
   return (
     <SafeAreaView style={styles.parent}>
       <Toolbar color={Colors.THEME_PRIMARY} title={'My Orders'} />
-
       <ParentView isLoading={isParentLoading}>
         <FlatList
           ListFooterComponent={listFooterComponent}

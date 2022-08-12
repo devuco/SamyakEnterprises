@@ -1,4 +1,4 @@
-import {Platform, SafeAreaView, StyleSheet, Text} from 'react-native';
+import {SafeAreaView, StyleSheet, Text} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import OTPView from '../components/OTPView';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
@@ -10,21 +10,16 @@ import {Colors, Singleton} from '../utils';
 import Api from '../service/Api';
 import Toolbar from '../components/Toolbar';
 import ParentView from '../components/ParentView';
+import SmsRetriever from 'react-native-sms-retriever';
 
 const OTP = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
   const {phone} = useRoute<RouteProp<StackParamList, 'OTP'>>().params;
 
   const [verifying, setVerifying] = useState<boolean>(false);
-  const [confirm, setConfirm] = useState<FirebaseAuthTypes.ConfirmationResult>({
-    verificationId: '',
-    confirm: () => Promise.reject(null),
-  });
-
-  const verifyPhone = useCallback(async () => {
-    const confirmation = await auth().signInWithPhoneNumber(`+91${phone}`);
-    setConfirm(confirmation);
-  }, [phone]);
+  const [code, setCode] = useState<string>('');
+  const [confirm, setConfirm] =
+    useState<FirebaseAuthTypes.ConfirmationResult>();
 
   /**
    * Login user
@@ -54,40 +49,82 @@ const OTP = () => {
     [navigation, phone],
   );
 
-  useEffect(() => {
-    if (Platform.OS === 'android') {
+  /**
+   * Triggers when the code is filled in otp view
+   * @param e code received from otp view
+   */
+  const onCodeFilled = useCallback(
+    async (e: string) => {
       setVerifying(true);
-    }
-    verifyPhone();
-    const unsubscribe = auth().onAuthStateChanged(async user => {
-      if (user) {
-        loginUser(user.uid);
-      }
-      setTimeout(() => {
-        setVerifying(false);
-        unsubscribe();
-      }, 10000);
-    });
-    return () => unsubscribe();
-  }, [loginUser, verifyPhone]);
+      try {
+        console.log(confirm);
 
-  const onCodeFilled = async (e: string) =>
-    confirm
-      .confirm(e)
-      .then(res => loginUser(res?.user.uid!))
-      .catch(err => console.log(err));
+        const res = auth.PhoneAuthProvider.credential(
+          confirm?.verificationId!,
+          e,
+        );
+        console.log('success');
+        loginUser(res.token);
+      } catch (error) {
+        console.log('Invalid code.', error);
+      }
+    },
+    [confirm, loginUser],
+  );
+
+  /**
+   * Triggers a listener which reads text message if correct has is provided in text message.
+   * After listening for it extracts otp from msg then removes itself.
+   */
+  const _onSmsListenerPressed = useCallback(async () => {
+    try {
+      const registered = await SmsRetriever.startSmsRetriever();
+      if (registered) {
+        SmsRetriever.addSmsListener(event => {
+          const message = event.message;
+          const otp = message && /(\d{6})/g.exec(message)![1];
+
+          if (otp) {
+            setCode(otp);
+            onCodeFilled(otp);
+            SmsRetriever.removeSmsListener();
+          }
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [onCodeFilled]);
+
+  useEffect(() => {
+    if (confirm) {
+      setCode('000000');
+      onCodeFilled('000000');
+    }
+  }, [confirm, onCodeFilled]);
+
+  useEffect(() => {
+    const verifyPhone = async () => {
+      try {
+        const confirmation = await auth().signInWithPhoneNumber(`+91${phone}`);
+        setConfirm(confirmation);
+        _onSmsListenerPressed();
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    verifyPhone();
+  }, [_onSmsListenerPressed, phone]);
 
   return (
     <SafeAreaView style={styles.parent}>
       <Toolbar color={Colors.THEME_PRIMARY} title={'Verify Phone Number'} />
+      {console.log(confirm)}
       <ParentView
         isLoading={verifying}
         text={'Please Wait\nWe are verifying your Phone Number'}>
-        <Text style={styles.text}>{`${
-          Platform.OS === 'android' &&
-          "We couldn't verify your phone number.\n\n"
-        }Please Enter OTP`}</Text>
-        <OTPView length={6} onCodeFilled={onCodeFilled} />
+        <Text style={styles.text}>{'Please Enter OTP'}</Text>
+        <OTPView length={6} onCodeFilled={onCodeFilled} code={code} />
       </ParentView>
     </SafeAreaView>
   );

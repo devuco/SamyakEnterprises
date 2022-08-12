@@ -55,7 +55,7 @@ const Home = () => {
   }, []);
 
   /**
-   * Update the Wishlist and Heart index
+   * Updates the Wishlist and Heart index
    * @param pid id of the product
    * @param index index of the product
    */
