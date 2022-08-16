@@ -1,22 +1,24 @@
-import {StyleSheet, Text, View, ViewStyle} from 'react-native';
+import {Pressable, StyleSheet, Text, TextStyle, ViewStyle} from 'react-native';
 import React from 'react';
 import {Colors} from '../utils';
 
 type Props = {
   texts: Array<string>;
   style?: ViewStyle;
+  textStyle?: TextStyle;
+  onPress?: () => void;
 };
-const TextRow: React.FC<Props> = ({texts, style}) => {
+const TextRow: React.FC<Props> = ({texts, style, textStyle, onPress}) => {
   return (
-    <View style={[styles.Container, style]}>
+    <Pressable style={[styles.Container, style]} onPress={onPress}>
       {texts.map((text, index) => {
         return (
-          <Text style={styles.Text} key={index}>
+          <Text style={[styles.Text, textStyle]} key={index}>
             {text}
           </Text>
         );
       })}
-    </View>
+    </Pressable>
   );
 };
 

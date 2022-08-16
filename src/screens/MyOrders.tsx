@@ -123,6 +123,8 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 2,
+    borderColor: Colors.SHADOW,
+    borderWidth: 2,
   },
   orderDate: {
     fontSize: 16,
@@ -140,6 +142,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     marginHorizontal: 10,
+    borderColor: Colors.SHADOW,
+    borderWidth: 1,
   },
   productCard: {marginBottom: 10},
   viewMore: {

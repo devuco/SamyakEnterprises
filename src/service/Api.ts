@@ -8,7 +8,10 @@ const Api = {
 
   getCategories: () => Axios.get<IResponse<Array<ICategories>>>('categories'),
 
-  getCompanies: () => Axios.get<IResponse<Array<ICompanies>>>('company'),
+  getCompanies: (page?: number) =>
+    Axios.get<IResponse<Array<ICompanies>>>(
+      `company${page !== undefined ? `?page=${page}` : ''}`,
+    ),
 
   getProducts: () => Axios.get<IResponse<Array<IProducts>>>('products'),
 

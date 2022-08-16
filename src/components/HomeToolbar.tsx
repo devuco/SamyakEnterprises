@@ -18,7 +18,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 interface Props {
   isSearch?: (value: boolean) => void;
-  route: 'HOME' | 'WISHLIST' | 'CATEGORY' | 'PROFILE';
+  route: 'HOME' | 'WISHLIST' | 'CATEGORY' | 'COMPANIES';
 }
 const HomeToolbar: React.FC<Props> = ({isSearch, route}) => {
   const drawerNavigation =

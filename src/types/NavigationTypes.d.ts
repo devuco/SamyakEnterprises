@@ -3,6 +3,7 @@ type StackParamList = {
   Drawer?: DrawerParamList;
   Login: undefined;
   OTP: {phone: string};
+  Products?: {id: string};
   ProductDetails: {id: string};
   CategoryDetails: {id: string};
   CompanyDetails: {id: string};
@@ -20,6 +21,6 @@ type DrawerParamList = {
 type TabsParamList = {
   Home: {icon: 'home'};
   Categories: {icon: 'category'};
+  Brands: {icon: 'local-offer'};
   Whishlist: {icon: 'bookmark'};
-  Account: {icon: 'person'};
 };

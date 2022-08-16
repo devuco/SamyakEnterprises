@@ -23,6 +23,7 @@ import OrderedProducts from '../screens/OrderedProducts';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import SessionExpiredModal from '../components/SessionExpiredModal';
 import OTP from '../screens/OTP';
+import Products from '../screens/Products';
 
 type Props = {
   navigationRef: NavigationContainerRef<StackParamList>;
@@ -116,6 +117,8 @@ const Navigator: React.FC<Props> = ({navigationRef}) => {
           component={DrawerNavigator}
           options={() => ({animation: 'fade'})}
         />
+
+        <Stack.Screen name="Products" component={Products} />
         <Stack.Screen name="ProductDetails" component={ProductDetails} />
         <Stack.Screen name="Cart" component={Cart} />
         <Stack.Screen name="Checkout" component={Checkout} />

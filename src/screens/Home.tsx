@@ -20,6 +20,7 @@ import {homeData} from '../atom';
 import Box from '../components/Box';
 import HomeToolbar from '../components/HomeToolbar';
 import ParentView from '../components/ParentView';
+import TextRow from '../components/TextRow';
 import Api from '../service/Api';
 import {Colors, Singleton} from '../utils';
 
@@ -185,7 +186,12 @@ const Home = () => {
               renderItem={renderCategories}
               showsHorizontalScrollIndicator={false}
             />
-            <Text style={styles.heading}>Top Picks For You</Text>
+            <TextRow
+              texts={['Top Picks For You', 'View All']}
+              textStyle={styles.heading}
+              style={styles.textRow}
+              onPress={() => navigation.navigate('Products')}
+            />
             <FlatList
               horizontal
               data={productsData}
@@ -217,8 +223,8 @@ const styles = StyleSheet.create({
   heading: {
     color: Colors.PRIMARY,
     fontSize: 18,
-    marginHorizontal: 10,
     fontWeight: '600',
+    marginHorizontal: 10,
     marginBottom: 10,
   },
   companyList: {flexGrow: 0, paddingHorizontal: 5, marginBottom: 30},
@@ -255,6 +261,7 @@ const styles = StyleSheet.create({
     width: 40,
     resizeMode: 'contain',
   },
+  textRow: {marginBottom: 0, marginHorizontal: 0, paddingHorizontal: 0},
   productContainer: {
     alignItems: 'center',
     margin: 5,
@@ -265,9 +272,7 @@ const styles = StyleSheet.create({
   },
   productTopRow: {
     flexDirection: 'row',
-    alignSelf: 'stretch',
-    marginHorizontal: 10,
-    marginVertical: 10,
+    margin: 10,
   },
   productDiscountContainer: {
     backgroundColor: Colors.WHITE,

@@ -103,6 +103,8 @@ const styles = StyleSheet.create({
     elevation: 5,
     borderRadius: 12,
     backgroundColor: Colors.THEME_PRIMARY,
+    borderWidth: 2,
+    borderColor: Colors.SHADOW,
   },
   itemImage: {width: 100, height: 100, borderRadius: 12},
   itemName: {

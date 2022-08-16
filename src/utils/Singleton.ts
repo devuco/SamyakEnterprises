@@ -1,4 +1,4 @@
-export const DEV = false;
+export const DEV = true;
 
 type Props = {
   BASE_URL: string;

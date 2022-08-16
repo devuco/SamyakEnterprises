@@ -6,6 +6,7 @@ import {
 import TabBar from '../components/TabBar';
 import Home from '../screens/Home';
 import Wishlist from '../screens/Wishlist';
+import Companies from '../screens/Companies';
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator<TabsParamList>();
@@ -25,14 +26,14 @@ const TabNavigator = () => {
         initialParams={{icon: 'category'}}
       />
       <Tab.Screen
+        name="Brands"
+        component={Companies}
+        initialParams={{icon: 'local-offer'}}
+      />
+      <Tab.Screen
         name="Whishlist"
         component={Wishlist}
         initialParams={{icon: 'bookmark'}}
-      />
-      <Tab.Screen
-        name="Account"
-        component={Home}
-        initialParams={{icon: 'person'}}
       />
     </Tab.Navigator>
   );
