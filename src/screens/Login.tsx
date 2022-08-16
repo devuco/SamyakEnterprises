@@ -47,7 +47,7 @@ const Login = () => {
     if (isPhoneVisible) {
       const phone_regex = /^\+?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4,6}$/;
       if (phone_regex.test(phone)) {
-        navigation.navigate('OTP', {phone});
+        navigation.replace('OTP', {phone});
       } else {
         setPhoneError('Please enter a valid phone number');
       }

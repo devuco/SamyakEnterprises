@@ -134,9 +134,8 @@ const ProductDetails = () => {
               size={20}
               isDisabled
               defaultRating={product?.avgRating || 0}
-              ratingContainerStyle={styles.starsContainer}
-              reviewSize={0}
               selectedColor={Colors.STAR_YELLOW}
+              showRating={false}
             />
             <Text
               style={
@@ -221,11 +220,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
   },
-  ratingContainer: {flexDirection: 'row', alignItems: 'flex-end'},
-  starsContainer: {alignSelf: 'baseline', marginTop: -15},
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
   ratingText: {
     color: Colors.THEME_TEXT,
-    marginBottom: 3,
     marginLeft: 20,
   },
   priceContainer: {

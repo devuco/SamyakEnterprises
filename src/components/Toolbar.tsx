@@ -10,12 +10,14 @@ interface Props {
   title: string;
   statusBarColor?: string;
   canGoBack?: boolean;
+  onBackPress?: () => void;
 }
 const Toolbar: React.FC<Props> = ({
   color,
   title,
   statusBarColor,
   canGoBack = true,
+  onBackPress,
 }) => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
   const TEXT_PADDING = canGoBack ? 10 : 0;
@@ -30,7 +32,7 @@ const Toolbar: React.FC<Props> = ({
           name="arrow-back"
           color={Colors.THEME_TEXT}
           size={25}
-          onPress={() => navigation.goBack()}
+          onPress={onBackPress || (() => navigation.goBack())}
         />
       )}
       <Text style={[styles.title, {paddingHorizontal: TEXT_PADDING}]}>

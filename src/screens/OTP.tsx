@@ -118,8 +118,11 @@ const OTP = () => {
 
   return (
     <SafeAreaView style={styles.parent}>
-      <Toolbar color={Colors.THEME_PRIMARY} title={'Verify Phone Number'} />
-      {console.log(confirm)}
+      <Toolbar
+        color={Colors.THEME_PRIMARY}
+        title={'Verify Phone Number'}
+        onBackPress={() => navigation.replace('Login')}
+      />
       <ParentView
         isLoading={verifying}
         text={'Please Wait\nWe are verifying your Phone Number'}>
