@@ -1,4 +1,4 @@
-export const DEV = true;
+export const DEV = false;
 
 type Props = {
   BASE_URL: string;
@@ -9,6 +9,7 @@ type Props = {
   FETCH_ORDERS: boolean;
   FETCH_PRODUCT: boolean;
   FETCH_HOME: boolean;
+  FETCH_ALL_PRODUCTS: prevScreen | '' | 'null';
 };
 const Singleton: Props = {
   BASE_URL: DEV
@@ -21,6 +22,7 @@ const Singleton: Props = {
   FETCH_ORDERS: true,
   FETCH_PRODUCT: true,
   FETCH_HOME: true,
+  FETCH_ALL_PRODUCTS: '',
 };
 
 export default Singleton;

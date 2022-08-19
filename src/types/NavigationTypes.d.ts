@@ -3,7 +3,7 @@ type StackParamList = {
   Drawer?: DrawerParamList;
   Login: undefined;
   OTP: {phone: string};
-  Products?: {id: string};
+  Products: {id: string; prevScreen: prevScreen};
   ProductDetails: {id: string};
   CategoryDetails: {id: string};
   CompanyDetails: {id: string};
@@ -24,3 +24,5 @@ type TabsParamList = {
   Brands: {icon: 'local-offer'};
   Whishlist: {icon: 'bookmark'};
 };
+
+type prevScreen = 'Products' | 'Categories' | 'Companies';

@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Colors} from '../utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {StyleSheet} from 'react-native';
 
 const CustomDrawer = (props: DrawerContentComponentProps) => {
   const {index} = props.state;
@@ -39,6 +40,7 @@ const CustomDrawer = (props: DrawerContentComponentProps) => {
           props.navigation.closeDrawer();
         }}
         icon={({focused}) => drawerIcon(focused, 'local-shipping')}
+        labelStyle={styles.label}
       />
       <DrawerItem
         label="Logout"
@@ -53,9 +55,12 @@ const CustomDrawer = (props: DrawerContentComponentProps) => {
           props.navigation.closeDrawer();
         }}
         icon={({focused}) => drawerIcon(focused, 'logout')}
+        labelStyle={styles.label}
       />
     </DrawerContentScrollView>
   );
 };
 
 export default CustomDrawer;
+
+const styles = StyleSheet.create({label: {color: Colors.THEME_TEXT}});

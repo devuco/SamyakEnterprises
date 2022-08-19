@@ -8,6 +8,7 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import HomeToolbar from '../components/HomeToolbar';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import utils from '../utils/utils';
 
 const Wishlist = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
@@ -40,8 +41,7 @@ const Wishlist = () => {
     Api.updateWishList(id)
       .then(res => {
         setData(res.data.data.products);
-        Singleton.FETCH_HOME = true;
-        Singleton.FETCH_PRODUCT = true;
+        utils.updateHearts();
       })
       .finally(() => setIsLoading(false));
   };

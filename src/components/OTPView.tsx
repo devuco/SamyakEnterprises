@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     width: 40,
     borderColor: Colors.PRIMARY,
     borderWidth: 3,
-    color: 'black',
+    color: Colors.THEME_TEXT,
     textAlign: 'center',
     fontSize: 16,
     borderRadius: 5,

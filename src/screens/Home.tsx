@@ -8,6 +8,7 @@ import {
   FlatList,
   Image,
   ListRenderItem,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -23,6 +24,7 @@ import ParentView from '../components/ParentView';
 import TextRow from '../components/TextRow';
 import Api from '../service/Api';
 import {Colors, Singleton} from '../utils';
+import utils from '../utils/utils';
 
 const Home = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
@@ -38,7 +40,7 @@ const Home = () => {
   useFocusEffect(
     useCallback(() => {
       if (Singleton.FETCH_HOME) {
-        Api.getProducts()
+        Api.getProducts('', '')
           .then(res => {
             setProductsData(res.data.data);
             Singleton.FETCH_HOME = false;
@@ -63,8 +65,7 @@ const Home = () => {
   const updateWishList = (pid: string, index: number) => {
     setHeartIndex(index);
     Api.updateWishList(pid).then(() => {
-      Singleton.FETCH_WISHLIST = true;
-      Singleton.FETCH_PRODUCT = true;
+      utils.updateHearts();
       const obj = {...productsData[index]};
       obj.isSaved = !obj.isSaved;
       setProductsData([
@@ -137,12 +138,20 @@ const Home = () => {
    */
   const renderCompanies: ListRenderItem<ICompanies> = ({item: company}) => {
     return (
-      <View style={styles.companyContainer}>
+      <Pressable
+        style={styles.companyContainer}
+        onPress={() => {
+          Singleton.FETCH_ALL_PRODUCTS = 'null';
+          navigation.navigate('Products', {
+            id: company._id,
+            prevScreen: 'Companies',
+          });
+        }}>
         <Image
           source={{uri: Singleton.BASE_URL + company.image}}
           style={styles.companyImage}
         />
-      </View>
+      </Pressable>
     );
   };
 
@@ -190,7 +199,12 @@ const Home = () => {
               texts={['Top Picks For You', 'View All']}
               textStyle={styles.heading}
               style={styles.textRow}
-              onPress={() => navigation.navigate('Products')}
+              onPress={() =>
+                navigation.navigate('Products', {
+                  id: '',
+                  prevScreen: 'Products',
+                })
+              }
             />
             <FlatList
               horizontal

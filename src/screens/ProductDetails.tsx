@@ -21,6 +21,7 @@ import ParentView from '../components/ParentView';
 import {useRecoilState} from 'recoil';
 import {productDetail} from '../atom';
 import ReactNativeModal from 'react-native-modal';
+import utils from '../utils/utils';
 
 const ProductDetails = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
@@ -88,8 +89,7 @@ const ProductDetails = () => {
   const updateWishList = () => {
     setHeartLoading(true);
     Api.updateWishList(id).then(() => {
-      Singleton.FETCH_WISHLIST = true;
-      Singleton.FETCH_HOME = true;
+      utils.updateHearts();
       let updatedProduct = {...product};
       updatedProduct.isSaved = !updatedProduct.isSaved;
       setProduct(updatedProduct);

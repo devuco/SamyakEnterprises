@@ -50,7 +50,7 @@ const OTP = () => {
 
   /**
    * Triggers when the code is filled in otp view
-   * @param e code received from otp view
+   * @param _e code received from otp view
    */
   const onCodeFilled =
     // useCallback(

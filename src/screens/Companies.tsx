@@ -4,7 +4,7 @@ import {
   Image,
   StyleSheet,
   Text,
-  View,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import ParentView from '../components/ParentView';
@@ -13,8 +13,12 @@ import HomeToolbar from '../components/HomeToolbar';
 import Api from '../service/Api';
 import {useRecoilState} from 'recoil';
 import {companies} from '../atom';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 const Companies = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
+
   const [page, setPage] = useState<number>(0);
   const [data, setData] = useRecoilState<Array<ICompanies>>(companies);
   const [emptyData, setEmptyData] = useState<boolean>(false);
@@ -41,8 +45,17 @@ const Companies = () => {
         data={data}
         numColumns={2}
         style={styles.flatlist}
-        renderItem={({item}) => (
-          <View style={styles.itemContainer}>
+        renderItem={({item, index}) => (
+          <TouchableOpacity
+            onPress={() => {
+              Singleton.FETCH_ALL_PRODUCTS = 'null';
+              navigation.navigate('Products', {
+                id: item._id,
+                prevScreen: 'Companies',
+              });
+            }}
+            key={index}
+            style={styles.itemContainer}>
             <Image
               source={
                 imageLoaded
@@ -53,7 +66,7 @@ const Companies = () => {
               onLoadEnd={() => setImageLoaded(true)}
             />
             <Text style={styles.itemText}>{item.name}</Text>
-          </View>
+          </TouchableOpacity>
         )}
         onEndReached={() => setPage(prev => prev + 1)}
       />

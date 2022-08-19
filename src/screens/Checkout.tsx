@@ -90,25 +90,25 @@ const Checkout = () => {
           theme: {color: Colors.PRIMARY},
         };
         //TODO Check Razorpay failure case
-        // RazorpayCheckout.open(options)
-        //   .then(() => {
-        Api.placeOrder({
-          orderId: orderId,
-          amount: total,
-        })
+        RazorpayCheckout.open(options)
           .then(() => {
-            Singleton.FETCH_CART = true;
-            navigation.popToTop();
-            navigation.navigate('OrderPlaced', {orderId});
+            Api.placeOrder({
+              orderId: orderId,
+              amount: total,
+            })
+              .then(() => {
+                Singleton.FETCH_CART = true;
+                navigation.popToTop();
+                navigation.navigate('OrderPlaced', {orderId});
+              })
+              .finally(() => setIsLoading(false));
           })
-          .finally(() => setIsLoading(false));
+          .catch(
+            (error: any) =>
+              console.log('error', JSON.stringify(error, null, 2)),
+            setIsLoading(false),
+          );
       })
-      //     .catch(
-      //       (error: any) =>
-      //         console.log('error', JSON.stringify(error, null, 2)),
-      //       setIsLoading(false),
-      //     );
-      // })
       .catch(() => setIsLoading(false));
   };
 

@@ -1,6 +1,11 @@
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import React, {useEffect} from 'react';
+import React, {useCallback} from 'react';
 import {useState} from 'react';
 import {
   ActivityIndicator,
@@ -8,41 +13,55 @@ import {
   FlatList,
   Image,
   ListRenderItem,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useRecoilState} from 'recoil';
+import {productsData} from '../atom';
 import Box from '../components/Box';
 import ParentView from '../components/ParentView';
 import Toolbar from '../components/Toolbar';
 import Api from '../service/Api';
 import {Colors, Singleton} from '../utils';
+import utils from '../utils/utils';
 
 const Products = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
   const route = useRoute<RouteProp<StackParamList, 'Products'>>();
-  const id = route.params?.id ?? '';
-  const {name} = route;
+  const {prevScreen, id} = route.params;
 
-  const [productsData, setProductsData] = useState<Array<IProducts>>([]);
+  const [isParentLoading, setIsParentLoading] = useState<boolean>(false);
+  const [data, setData] = useRecoilState<Array<IProducts>>(productsData);
   const [heartIndex, setHeartIndex] = useState<number>(-1);
 
-  useEffect(() => {
-    // let param=getParam()
-    console.log(name);
-
-    Api.getProducts().then(res => {
-      setProductsData(res.data.data);
-      Singleton.FETCH_HOME = false;
-    });
-    //   .finally(() => setIsParentLoading(false));
-  }, []);
-
-  //   const getParam=()=>{
-  //     if(name==='Companies')
-  //   }
+  useFocusEffect(
+    useCallback(() => {
+      if (data.length === 0) {
+        setIsParentLoading(true);
+      }
+      if (Singleton.FETCH_ALL_PRODUCTS !== prevScreen) {
+        if (Singleton.FETCH_ALL_PRODUCTS !== '') {
+          setIsParentLoading(true);
+        }
+        let param =
+          prevScreen === 'Categories'
+            ? 'category'
+            : prevScreen === 'Companies'
+            ? 'company'
+            : '';
+        Api.getProducts(param, id)
+          .then(res => {
+            setData(res.data.data);
+            Singleton.FETCH_ALL_PRODUCTS = prevScreen;
+          })
+          .finally(() => setIsParentLoading(false));
+      }
+    }, [data.length, id, prevScreen, setData]),
+  );
 
   /**
    * Updates the Wishlist and Heart index
@@ -52,16 +71,10 @@ const Products = () => {
   const updateWishList = (pid: string, index: number) => {
     setHeartIndex(index);
     Api.updateWishList(pid).then(() => {
-      Singleton.FETCH_WISHLIST = true;
-      Singleton.FETCH_PRODUCT = true;
-      Singleton.FETCH_HOME = true;
-      const obj = {...productsData[index]};
+      utils.updateHearts();
+      const obj = {...data[index]};
       obj.isSaved = !obj.isSaved;
-      setProductsData([
-        ...productsData.slice(0, index),
-        obj,
-        ...productsData.slice(index + 1),
-      ]);
+      setData([...data.slice(0, index), obj, ...data.slice(index + 1)]);
       setHeartIndex(-1);
     });
   };
@@ -122,22 +135,25 @@ const Products = () => {
   };
 
   return (
-    <ParentView isLoading={false}>
+    <SafeAreaView style={styles.parent}>
       <Toolbar color={Colors.THEME_PRIMARY} title={'Products'} />
-      <FlatList
-        numColumns={2}
-        data={productsData}
-        renderItem={renderProducts}
-        showsHorizontalScrollIndicator={false}
-        extraData={productsData}
-      />
-    </ParentView>
+      <ParentView isLoading={isParentLoading}>
+        <FlatList
+          numColumns={2}
+          data={data}
+          renderItem={renderProducts}
+          showsHorizontalScrollIndicator={false}
+          extraData={data}
+        />
+      </ParentView>
+    </SafeAreaView>
   );
 };
 
 export default Products;
 
 const styles = StyleSheet.create({
+  parent: {flex: 1},
   productContainer: {
     alignItems: 'center',
     margin: 5,
