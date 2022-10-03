@@ -40,7 +40,7 @@ const Home = () => {
   useFocusEffect(
     useCallback(() => {
       if (Singleton.FETCH_HOME) {
-        Api.getProducts('', '')
+        Api.getProducts()
           .then(res => {
             setProductsData(res.data.data);
             Singleton.FETCH_HOME = false;
@@ -161,12 +161,20 @@ const Home = () => {
    */
   const renderCategories: ListRenderItem<ICategories> = ({item: category}) => {
     return (
-      <View style={styles.categoryContainer}>
+      <Pressable
+        style={styles.categoryContainer}
+        onPress={() => {
+          Singleton.FETCH_ALL_PRODUCTS = 'null';
+          navigation.navigate('Products', {
+            id: category._id,
+            prevScreen: 'Categories',
+          });
+        }}>
         <Image
           source={{uri: Singleton.BASE_URL + category.image}}
           style={styles.categoryImage}
         />
-      </View>
+      </Pressable>
     );
   };
 
