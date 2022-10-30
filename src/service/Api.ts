@@ -13,7 +13,7 @@ const Api = {
       `company${page !== undefined ? `?page=${page}` : ''}`,
     ),
 
-  getProducts: (param: string, id: string) =>
+  getProducts: (param?: string, id?: string) =>
     Axios.get<IResponse<Array<IProducts>>>(`products?${param}=${id}`),
 
   getProduct: (id: string) => Axios.get<IResponse<IProducts>>(`products/${id}`),
