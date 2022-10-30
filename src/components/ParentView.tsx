@@ -8,18 +8,16 @@ type Props = {
   isLoading: boolean;
   text?: string;
 };
-const ParentView: React.FC<Props> = ({children, isLoading, text}) => {
-  return (
-    <SafeAreaView style={styles.parent}>
-      {!isLoading && children}
-      <Loader
-        isLoading={isLoading}
-        backgroundColor={Colors.THEME_PRIMARY}
-        text={text}
-      />
-    </SafeAreaView>
-  );
-};
+const ParentView: React.FC<Props> = ({children, isLoading, text}) => (
+  <SafeAreaView style={styles.parent}>
+    {!isLoading && children}
+    <Loader
+      isLoading={isLoading}
+      backgroundColor={Colors.THEME_PRIMARY}
+      text={text}
+    />
+  </SafeAreaView>
+);
 
 export default ParentView;
 

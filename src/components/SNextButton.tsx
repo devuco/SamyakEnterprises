@@ -14,18 +14,16 @@ const SNextButton: React.FC<Props> = ({
   rightText,
   onPress,
   style,
-}) => {
-  return (
-    <TouchableOpacity
-      activeOpacity={1}
-      style={[styles.bottomContainer, style]}
-      onPress={onPress}>
-      <Text style={styles.leftText}>{leftText}</Text>
-      <Text style={styles.rightText}>{rightText}</Text>
-      <Icon name="arrow-forward-ios" size={20} color={Colors.THEME_PRIMARY} />
-    </TouchableOpacity>
-  );
-};
+}) => (
+  <TouchableOpacity
+    activeOpacity={1}
+    style={[styles.bottomContainer, style]}
+    onPress={onPress}>
+    <Text style={styles.leftText}>{leftText}</Text>
+    <Text style={styles.rightText}>{rightText}</Text>
+    <Icon name="arrow-forward-ios" size={20} color={Colors.THEME_PRIMARY} />
+  </TouchableOpacity>
+);
 
 export default SNextButton;
 

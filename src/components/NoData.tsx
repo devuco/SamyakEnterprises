@@ -14,15 +14,13 @@ type Props = {
   heading: string;
   description?: string;
 };
-const NoData: React.FC<Props> = ({image, heading, description}) => {
-  return (
-    <View style={styles.parent}>
-      <Image style={styles.image} source={image} />
-      <Text style={styles.heading}>{heading}</Text>
-      <Text style={styles.description}>{description}</Text>
-    </View>
-  );
-};
+const NoData: React.FC<Props> = ({image, heading, description}) => (
+  <View style={styles.parent}>
+    <Image style={styles.image} source={image} />
+    <Text style={styles.heading}>{heading}</Text>
+    <Text style={styles.description}>{description}</Text>
+  </View>
+);
 
 export default NoData;
 

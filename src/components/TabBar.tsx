@@ -9,12 +9,12 @@ type Props = {
   state: BottomTabBarProps['state'];
 };
 const TabBar: React.FC<Props> = ({state}) => {
-  const [selected, setSelected] = useState('Home');
+  const [selected, setSelected] = useState<string>('Home');
   const {routes} = state;
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
-  const [y, setY] = useState(0);
-  const [transAnimation] = useState(new Animated.Value(0));
+  const [width, setWidth] = useState<number>(0);
+  const [height, setHeight] = useState<number>(0);
+  const [y, setY] = useState<number>(0);
+  const [transAnimation] = useState<Animated.Value>(new Animated.Value(0));
 
   const navigation = useNavigation();
 

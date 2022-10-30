@@ -7,19 +7,17 @@ type Props = {
   onPress: () => void;
   isVisible: boolean;
 };
-const SessionExpiredModal: React.FC<Props> = ({onPress, isVisible}) => {
-  return (
-    <Modal transparent visible={isVisible}>
-      <View style={styles.parent}>
-        <View style={styles.container}>
-          <Text style={[styles.text, styles.heading]}>Session Expired</Text>
-          <Text style={styles.text}>Please login again</Text>
-          <SButton title={'Ok'} onPress={onPress} style={styles.button} />
-        </View>
+const SessionExpiredModal: React.FC<Props> = ({onPress, isVisible}) => (
+  <Modal transparent visible={isVisible}>
+    <View style={styles.parent}>
+      <View style={styles.container}>
+        <Text style={[styles.text, styles.heading]}>Session Expired</Text>
+        <Text style={styles.text}>Please login again</Text>
+        <SButton title={'Ok'} onPress={onPress} style={styles.button} />
       </View>
-    </Modal>
-  );
-};
+    </View>
+  </Modal>
+);
 
 export default SessionExpiredModal;
 

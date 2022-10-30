@@ -8,7 +8,7 @@ import {
   Pressable,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {Colors} from '../utils';
+import {Colors, Singleton} from '../utils';
 import Toolbar from '../components/Toolbar';
 import ParentView from '../components/ParentView';
 import Api from '../service/Api';
@@ -17,32 +17,42 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import ProductCard from '../components/ProductCard';
 import TextRow from '../components/TextRow';
+import {useRecoilState} from 'recoil';
+import {orderAtom} from '../atom/order';
 
 const MyOrders = () => {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
-  const [data, setData] = useState<Array<IOrder>>([]);
-  const [isParentLoading, setIsParentLoading] = useState<boolean>(true);
+  const [data, setData] = useRecoilState<Array<IOrder>>(orderAtom);
+  const [isParentLoading, setIsParentLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
-  const [emptyData, setemptyData] = useState<boolean>(false);
+  const [noMoreDataFromAPI, setNoMoreDataFromAPI] = useState<boolean>(false);
   const [isListLoading, setIsListLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!emptyData) {
-      setIsListLoading(true);
-      Api.getOrders(page)
-        .then(res => {
-          setData(prev => prev.concat(res.data.data));
-          if (res.data.data.length === 0) {
-            setemptyData(true);
-          }
-        })
-        .finally(() => {
-          setIsParentLoading(false);
-          setIsListLoading(false);
-        });
+    if (Singleton.FETCH_ORDERS) {
+      if (data.length === 0) {
+        setIsParentLoading(true);
+      }
+      if (!noMoreDataFromAPI) {
+        setIsListLoading(true);
+        Api.getOrders(page)
+          .then(res => {
+            console.log('here');
+
+            setData(prev => prev.concat(res.data.data));
+            if (res.data.data.length === 0) {
+              Singleton.FETCH_ORDERS = false;
+              setNoMoreDataFromAPI(true);
+            }
+          })
+          .finally(() => {
+            setIsParentLoading(false);
+            setIsListLoading(false);
+          });
+      }
     }
-  }, [emptyData, page]);
+  }, [noMoreDataFromAPI, page, setData]);
 
   /**
    * Returns a loader which is displayed at the bottom for pagination
@@ -78,7 +88,7 @@ const MyOrders = () => {
                   {moment(orderDate).format('MMM DD, YYYY')}
                 </Text>
                 <View style={styles.productCardContainer}>
-                  {products.slice(0, 2).map((product, index) => (
+                  {products?.slice(0, 2).map((product, index) => (
                     <ProductCard
                       key={index}
                       item={product}
@@ -89,9 +99,9 @@ const MyOrders = () => {
                     />
                   ))}
                 </View>
-                {products.length > 2 && (
+                {products?.length > 2 && (
                   <Text style={styles.viewMore}>
-                    {`${products.length - 2} more`}
+                    {`${products?.length - 2} more`}
                   </Text>
                 )}
                 <TextRow

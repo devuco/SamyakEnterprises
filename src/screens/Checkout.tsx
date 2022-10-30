@@ -98,6 +98,7 @@ const Checkout = () => {
             })
               .then(() => {
                 Singleton.FETCH_CART = true;
+                Singleton.FETCH_ORDERS = true;
                 navigation.popToTop();
                 navigation.navigate('OrderPlaced', {orderId});
               })

@@ -8,37 +8,33 @@ type Props = {
   onCancel: () => void;
   onRetry: () => void;
 };
-const NetworkModal: React.FC<Props> = ({isVisible, onCancel, onRetry}) => {
-  return (
-    <Modal visible={isVisible} transparent={true}>
-      <View style={styles.parent}>
-        <View style={styles.container}>
-          <Icon name="signal-wifi-off" size={50} color={Colors.PRIMARY} />
-          <Text style={styles.heading}>No Internet Connection</Text>
-          <Text style={styles.subHeading}>
-            Please check your internet connection
-          </Text>
-          <View style={styles.buttonRow}>
-            <Button text="Cancel" onPress={onCancel} />
-            <Button text="Retry" onPress={onRetry} />
-          </View>
+const NetworkModal: React.FC<Props> = ({isVisible, onCancel, onRetry}) => (
+  <Modal visible={isVisible} transparent={true}>
+    <View style={styles.parent}>
+      <View style={styles.container}>
+        <Icon name="signal-wifi-off" size={50} color={Colors.PRIMARY} />
+        <Text style={styles.heading}>No Internet Connection</Text>
+        <Text style={styles.subHeading}>
+          Please check your internet connection
+        </Text>
+        <View style={styles.buttonRow}>
+          <Button text="Cancel" onPress={onCancel} />
+          <Button text="Retry" onPress={onRetry} />
         </View>
       </View>
-    </Modal>
-  );
-};
+    </View>
+  </Modal>
+);
 
 type ButtonProps = {
   text: string;
   onPress: () => void;
 };
-const Button: React.FC<ButtonProps> = ({text, onPress}) => {
-  return (
-    <Text onPress={onPress} style={styles.button}>
-      {text}
-    </Text>
-  );
-};
+const Button: React.FC<ButtonProps> = ({text, onPress}) => (
+  <Text onPress={onPress} style={styles.button}>
+    {text}
+  </Text>
+);
 
 export default NetworkModal;
 
